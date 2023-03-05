@@ -1,0 +1,4 @@
+userid: "<netcup userid>"
+apikey: "<netcup apikey>"
+apipass: "<netcup apipass>"
+wan_interface: "<wan-interface>"
