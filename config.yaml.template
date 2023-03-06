@@ -2,3 +2,22 @@ userid: "<netcup userid>"
 apikey: "<netcup apikey>"
 apipass: "<netcup apipass>"
 wan_interface: "<wan-interface>"
+
+netcup_userid: "<netcup-userid>"
+netcup_apikey: "<netcup-apikey>"
+netcup_apipass: "<netcup-apipass>"
+wan_interface: "<wan-interface>"
+domains:
+  - name: "test.invalid"
+    hosts:
+      - name: "openwrt.lan"
+        fqdn: "openwrt.home.test.invalid"
+        public_ip_methods:
+          ipv4: "website"
+          ipv6: "wan_interface"
+      - name: "server.lan"
+        fqdn: "server.home.test.invalid"
+        public_ip_methods:
+          ipv4: "website"
+          ipv6: "wan_interface"
+
