@@ -1,7 +1,7 @@
 import sys
 import argparse
 import openwrtdyndnscli
-from typing import List
+from typing import List, Tuple
 import yaml
 import dns.resolver
 import netaddr
@@ -53,17 +53,65 @@ def get_public_ipv6(hostname: str) -> str:
             return val.address
     return None
 
-def update_domain(wan_interface, netcup_userid, netcup_apikey, netcup_apipass, domain):
-    print (domain)
+def update_domain(netcup_config, router_config, domain_config):
+    domain_name = domain_config['name']
+    
+    print (domain_config)
+
+class RouterAddresses:
+
+    def _get_public_ipv4(self, ipv4_config) -> str:
+        if ipv4_config['method'] == 'web':
+            url = ipv4_config['url']
+            #print ('Using URL to get external IPv4: {url}')
+        elif ipv4_config['method'] == 'wan':
+            wan_interface = ipv4_config['wan_interface']
+            #print ('Using wan interface as source for IPv4: {wan_interface}')
+            self.wan_interface_ipv4 = ipv4_config['wan_interface']
+            ipv4_list = get_ipv4_addresses_linux(self.wan_interface_ipv4)
+            # Return first address if any
+            return None if len(ipv4_list)==0 else ipv4_list[0]
+        return None
+
+    def _get_public_ipv6(self, ipv6_config) -> str:
+        if ipv6_config['method'] == 'web':
+            url = ipv6_config['url']
+            print ('Using URL to get external IPv4: {url}')
+        elif ipv6_config['method'] == 'wan':
+            self.wan_interface_ipv6 = ipv6_config['wan_interface']
+            ipv6_list = get_ipv6_addresses_linux(self.wan_interface_ipv6)
+            # Return first address if any
+            return None if len(ipv6_list)==0 else ipv6_list[0]
+        return None
+
+    def __init__(self, config):
+        router_public_address_config = config['router_public_address']
+        self.use_ipv4 = config.get('use_ipv4', False)
+        self.use_ipv6 = config.get('use_ipv6', False)
+        self.ipv4 = None
+        self.ipv6 = None
+        self.wan_interface_ipv4 = None
+        self.wan_interface_ipv6 = None
+        if self.use_ipv4:
+            self.ipv4 = self._get_public_ipv4(router_public_address_config['ipv4'])
+            print (f'Router has external IPv4: {self.ipv4}')
+        if self.use_ipv6:
+            self.ipv6 = self._get_public_ipv6(router_public_address_config['ipv6'])
+            print (f'Router has external IPv6: {self.ipv6}')
+        
+
+class NetcupConfig:
+    def __init__(self, config):
+        self.netcup_userid = config['netcup_userid']
+        self.netcup_apikey = config['netcup_apikey']
+        self.netcup_apipass = config['netcup_apipass']
 
 def update(config)->int:
-    wan_interface = config['wan_interface']
-    netcup_userid = config['netcup_userid']
-    netcup_apikey = config['netcup_apikey']
-    netcup_apipass = config['netcup_apipass']
-    domains = config['domains']
-    for domain in domains:
-        update_domain(wan_interface, netcup_userid, netcup_apikey, netcup_apipass, domain)
+    netcup_config = NetcupConfig(config)
+    router_config = RouterAddresses(config)
+    domain_config_list = config['domains']
+    for domain_config in domain_config_list:
+        update_domain(netcup_config, router_config, domain_config)
     #print(get_ipv4_addresses_linux(config['wan_interface']))
     #print(get_ipv6_addresses_linux(config['wan_interface']))
     #print (get_public_ipv6('homeassistant.lan'))

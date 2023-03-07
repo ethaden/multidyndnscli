@@ -1,8 +1,17 @@
 userid: "<netcup userid>"
 apikey: "<netcup apikey>"
 apipass: "<netcup apipass>"
-wan_interface: "<wan-interface>"
-
+use_ipv4: true
+use_ipv6: true
+router_public_address:
+  ipv4:
+    #method: "web"
+    #url: "http://myexternalip.com/raw"
+    method: "wan"
+    wan_interface: "<put-wan-iface-here>"
+  ipv6:
+    method: "wan"
+    wan_interface: "<put-wan-iface-here>"
 netcup_userid: "<netcup-userid>"
 netcup_apikey: "<netcup-apikey>"
 netcup_apipass: "<netcup-apipass>"
@@ -13,11 +22,11 @@ domains:
       - name: "openwrt.lan"
         fqdn: "openwrt.home.test.invalid"
         public_ip_methods:
-          ipv4: "website"
-          ipv6: "wan_interface"
+          ipv4: "router"
+          ipv6: "router"
       - name: "server.lan"
         fqdn: "server.home.test.invalid"
         public_ip_methods:
-          ipv4: "website"
-          ipv6: "wan_interface"
+          ipv4: "web"
+          ipv6: "local_dns"
 
