@@ -1,21 +1,18 @@
-userid: "<netcup userid>"
-apikey: "<netcup apikey>"
-apipass: "<netcup apipass>"
-use_ipv4: true
-use_ipv6: true
-router_public_address:
+netcup:
+  userid: "<netcup-userid>"
+  apikey: "<netcup-apikey>"
+  apipass: "<netcup-apipass>"
+router:
   ipv4:
+    enabled: true
     #method: "web"
     #url: "http://myexternalip.com/raw"
     method: "wan"
     wan_interface: "<put-wan-iface-here>"
   ipv6:
+    enabled: true
     method: "wan"
     wan_interface: "<put-wan-iface-here>"
-netcup_userid: "<netcup-userid>"
-netcup_apikey: "<netcup-apikey>"
-netcup_apipass: "<netcup-apipass>"
-wan_interface: "<wan-interface>"
 domains:
   - name: "test.invalid"
     hosts:

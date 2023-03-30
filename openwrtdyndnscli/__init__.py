@@ -85,26 +85,29 @@ class RouterAddresses:
         return None
 
     def __init__(self, config):
-        router_public_address_config = config['router_public_address']
-        self.use_ipv4 = config.get('use_ipv4', False)
-        self.use_ipv6 = config.get('use_ipv6', False)
+        router_config = config['router']
+        router_ipv4_config = router_config['ipv4']
+        router_ipv6_config = router_config['ipv4']
+        self.use_ipv4 = router_ipv4_config.get('enabled', False)
+        self.use_ipv6 = router_ipv6_config.get('enabled', False)
         self.ipv4 = None
         self.ipv6 = None
         self.wan_interface_ipv4 = None
         self.wan_interface_ipv6 = None
         if self.use_ipv4:
-            self.ipv4 = self._get_public_ipv4(router_public_address_config['ipv4'])
+            self.ipv4 = self._get_public_ipv4(router_config['ipv4'])
             print (f'Router has external IPv4: {self.ipv4}')
         if self.use_ipv6:
-            self.ipv6 = self._get_public_ipv6(router_public_address_config['ipv6'])
+            self.ipv6 = self._get_public_ipv6(router_config['ipv6'])
             print (f'Router has external IPv6: {self.ipv6}')
         
 
 class NetcupConfig:
     def __init__(self, config):
-        self.netcup_userid = config['netcup_userid']
-        self.netcup_apikey = config['netcup_apikey']
-        self.netcup_apipass = config['netcup_apipass']
+        netcup_config = config['netcup']
+        self.netcup_userid = netcup_config['userid']
+        self.netcup_apikey = netcup_config['apikey']
+        self.netcup_apipass = netcup_config['apipass']
 
 def update(config)->int:
     netcup_config = NetcupConfig(config)
