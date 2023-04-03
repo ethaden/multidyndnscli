@@ -9,6 +9,10 @@ router:
     #url: "http://myexternalip.com/raw"
     method: "wan"
     wan_interface: "<put-wan-iface-here>"
+    #method: "fritzbox"
+    fritzbox:
+      address: "<fritz-box-ip-address>"
+      tls: false
   ipv6:
     enabled: true
     method: "wan"
