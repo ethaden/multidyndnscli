@@ -3,12 +3,14 @@ import argparse
 import openwrtdyndnscli
 from typing import List, Optional, Tuple
 import yaml
+from schema import Schema, SchemaError
 import dns.resolver
 import netaddr
 import requests
 import logging
 
 from .util import *
+from .schemata import *
 
 class NetworkAddressException(Exception):
     pass
