@@ -8,7 +8,7 @@
             "name": "Python: update.py",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/update.py",
+            "program": "${workspaceFolder}/openwrt-dyndns-cli.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["config.yaml"]

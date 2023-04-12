@@ -3,6 +3,7 @@ import argparse
 import openwrtdyndnscli
 from typing import List, Optional, Tuple, Dict
 import yaml
+from schema import Schema, SchemaError
 import dns.resolver
 from netaddr import IPAddress
 import requests
@@ -10,6 +11,7 @@ import logging
 from nc_dnsapi import Client, DNSRecord
 
 from .util import *
+from .schemata import *
 
 class NetworkAddressException(Exception):
     pass

@@ -1,7 +1,8 @@
-netcup:
-  userid: "<netcup-userid>"
-  apikey: "<netcup-apikey>"
-  apipass: "<netcup-apipass>"
+dns-providers:
+  - name: "Netcup"
+    userid: "<netcup-userid>"
+    apikey: "<netcup-apikey>"
+    apipass: "<netcup-apipass>"
 router:
   ipv4:
     enabled: true
