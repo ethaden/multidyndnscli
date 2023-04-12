@@ -1,12 +1,13 @@
 import sys
 import argparse
 import openwrtdyndnscli
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict
 import yaml
 import dns.resolver
-import netaddr
+from netaddr import IPAddress
 import requests
 import logging
+from nc_dnsapi import Client, DNSRecord
 
 from .util import *
 
@@ -16,15 +17,62 @@ class NetworkAddressException(Exception):
 class RouterNotReachableException(Exception):
     pass
 
-class DomainConfig:
+class Domain:
 
-    def __init__(self, domain_config):
+    _target_records_ipv4: Dict[str, netaddr.IPAddress] = {}
+    _target_records_ipv6: Dict[str, netaddr.IPAddress] = {}
+
+    def __init__(self, router, domain_config):
+        self._router = router
         self._domain_name = domain_config['name']
+        hosts_config = domain_config['hosts']
+        for host_config in hosts_config:
+            name = host_config['name']
+            fqdn = host_config['fqdn']
+            public_ip_methods = host_config['public_ip_methods']
+            if 'ipv4' in public_ip_methods:
+                self._add_target_record_ipv4(name, fqdn, public_ip_methods['ipv4'])
+            if 'ipv6' in public_ip_methods:
+                self._add_target_record_ipv6(name, fqdn, public_ip_methods['ipv6'])
+        print (self._target_records_ipv4)
+        print (self._target_records_ipv6)
     
+    def _add_target_record_ipv4(self, name: str, fqdn: str, method: str):
+        address = None
+        if method == 'router':
+            address = self._router.ipv4
+        elif method == 'local_dns':
+            try:
+                result = dns.resolver.resolve(name, rdtype=dns.rdatatype.A)
+                if len(result.rrset) > 0:
+                    address = result.rrset[0].address
+            except Exception as e:
+                raise Exception(f'Local fqdn not found: {name}')
+
+        if address is not None:
+            self._target_records_ipv4[fqdn] = IPAddress(address)
+
+    def _add_target_record_ipv6(self, name: str, fqdn: str, method: str):
+        address = None
+        if method == 'router':
+            address = self._router.ipv6
+        elif method == 'local_dns':
+            try:
+                result = dns.resolver.resolve(name, rdtype=dns.rdatatype.AAAA)
+                for address_result in result.rrset:
+                    address_candidate = IPAddress(address_result.address)
+                    if is_public_ipv6(address_candidate):
+                        address = address_candidate
+                        break
+            except Exception as e:
+                raise Exception(f'Local fqdn not found: {name}')
+        if address is not None:
+            self._target_records_ipv6[fqdn] = address
+
     def update(self):
         print (self._domain_name)
 
-class RouterConfig:
+class Router:
 
     def _get_public_ipv4(self, ipv4_config) -> netaddr.IPAddress:
         if ipv4_config['method'] == 'web':
@@ -112,7 +160,7 @@ class RouterConfig:
         return self._use_ipv6
 
 
-class NetcupConfig:
+class Netcup:
     def __init__(self, config):
         netcup_config = config['netcup']
         self._userid = netcup_config['userid']
@@ -121,12 +169,12 @@ class NetcupConfig:
 
 def update(config)->int:
     try:
-        netcup_config = NetcupConfig(config)
-        router_config = RouterConfig(config)
+        netcup = Netcup(config)
+        router = Router(config)
         domain_config_list = config['domains']
         for domain_config_dict in domain_config_list:
-            domain_config = DomainConfig(domain_config_dict)
-            domain_config.update()
+            domain = Domain(router, domain_config_dict)
+            domain.update()
     except RouterNotReachableException as e:
         logging.error(e)
         return 1
