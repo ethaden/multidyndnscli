@@ -3,7 +3,8 @@ from schema import Schema, And, Or, Optional, Use
 def get_config_file_schema():
     return Schema({
         "dns-providers": [ Or({
-            "name": And(Use(str.lower), "netcup"),
+            "name": And(str, len),
+            "type": And(str, Use(str.lower), "netcup"),
             "userid": And(str, len),
             "apikey": And(str, len),
             "apipass": And(str, len)
@@ -12,20 +13,35 @@ def get_config_file_schema():
         "router": {
             "ipv4": {
                 "enabled": bool,
-                "method": ["wan", "fritzbox"],
+                "method": And(str, Use(str.lower), lambda x: x in ["wan", "fritzbox"]),
                 Optional("fritzbox"):
                     {
-                        "address": And(str, Use(str.lower), 
-                            lambda x: x.startswith('http://') or x.startswith('https://'))
-                    }        
+                        "address": And(str, len),
+                        Optional("tls"): bool
+                    },
+                    Optional("wan_interface"): And(str, len)
             },
             "ipv6": {
                 "enabled": bool,
-                "method": ["wan", "fritzbox"],
+                "method": And(str, Use(str.lower), lambda x: x in ["wan", "fritzbox"]),
                 Optional("fritzbox"):
                     {
-                        "address": And(str, Use(str.lower), lambda x: x.startswith('http://') or x.startswith('https://'))
-                    }
+                        "address": And(str, len),
+                        Optional("tls"): bool
+                    },
+                Optional("wan_interface"): And(str, len)
             }
-        }
+        },
+        "domains": [{
+            "name": And(str, len),
+            "dns-provider": And(str, len),
+            "hosts": [{
+                "name": And(str, len),
+                "fqdn": And(str, len),
+                "public_ip_methods": {
+                    Optional("ipv4"): Or("router", "local_dns"),
+                    Optional("ipv6"): Or("router", "local_dns")
+                }
+            }]
+        }]
     })

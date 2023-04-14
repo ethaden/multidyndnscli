@@ -1,5 +1,6 @@
 dns-providers:
   - name: "Netcup"
+    type: "Netcup"
     userid: "<netcup-userid>"
     apikey: "<netcup-apikey>"
     apipass: "<netcup-apipass>"
@@ -20,6 +21,7 @@ router:
     wan_interface: "<put-wan-iface-here>"
 domains:
   - name: "test.invalid"
+    dns-provider: "Netcup"
     hosts:
       - name: "openwrt.lan"
         fqdn: "openwrt.home.test.invalid"
@@ -29,6 +31,6 @@ domains:
       - name: "server.lan"
         fqdn: "server.home.test.invalid"
         public_ip_methods:
-          ipv4: "web"
+          ipv4: "router"
           ipv6: "local_dns"
 
