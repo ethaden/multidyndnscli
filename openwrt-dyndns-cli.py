@@ -18,4 +18,11 @@ if __name__ == '__main__':
         logging.getLogger().setLevel(logging.INFO)
     with open(config_file, 'r') as f:
         config = yaml.safe_load(f)
-        sys.exit(openwrtdyndnscli.update(config))
+        config_file_schema = openwrtdyndnscli.get_config_file_schema()
+        try:
+            config_file_schema.validate(config)
+            updater = openwrtdyndnscli.Updater(config)
+            sys.exit(updater.update())
+        except Exception as exc:
+            logging.critical(f'An exception occurred: {exc}.\nExiting...')
+            sys.exit(1)

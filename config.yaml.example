@@ -1,5 +1,9 @@
+common:
+  cache_dir: "<existing writable folder for caching data>"
 dns-providers:
+  # List of DNS providers, each having a unique name used below under "domains"
   - name: "Netcup"
+    # Type of DNS provider. Currently, only "Netcup" is supported
     type: "Netcup"
     userid: "<netcup-userid>"
     apikey: "<netcup-apikey>"
@@ -21,7 +25,10 @@ router:
     wan_interface: "<put-wan-iface-here>"
 domains:
   - name: "test.invalid"
+    # Name of the dns provider to be used. Configured above
     dns-provider: "Netcup"
+    # The minimal delay in minutes to wait until next updated. Increase if using dnssec (as resigning the updated records takes quite a lot time)
+    delay: 5
     hosts:
       - name: "openwrt.lan"
         fqdn: "openwrt.home.test.invalid"

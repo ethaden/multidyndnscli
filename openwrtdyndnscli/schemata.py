@@ -2,6 +2,9 @@ from schema import Schema, And, Or, Optional, Use
 
 def get_config_file_schema():
     return Schema({
+        Optional("common"): {
+            Optional("cache_dir"): And(str)
+        },
         "dns-providers": [ Or({
             "name": And(str, len),
             "type": And(str, Use(str.lower), "netcup"),
@@ -35,6 +38,7 @@ def get_config_file_schema():
         "domains": [{
             "name": And(str, len),
             "dns-provider": And(str, len),
+            Optional("delay"): And(int, lambda x: x>0),
             "hosts": [{
                 "name": And(str, len),
                 "fqdn": And(str, len),

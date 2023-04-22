@@ -2,3 +2,6 @@ config.yaml
 __pycache__
 .venv
 poetry.lock
+cache
+docs
+gh-pages
