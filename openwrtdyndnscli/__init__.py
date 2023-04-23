@@ -4,7 +4,7 @@ import pickle
 import sys
 import argparse
 import openwrtdyndnscli
-from typing import Final, List, Optional, Tuple, Dict
+from typing import Final, List, Optional, Tuple, Dict, Set
 import yaml
 from schema import Schema, SchemaError
 import dns.resolver
@@ -23,9 +23,117 @@ class NetworkAddressException(Exception):
 class RouterNotReachableException(Exception):
     pass
 
+class Host:
+
+    _name: str = None
+    _router: 'Router' = None
+    _current_ipv4: IPAddress = None
+    _current_ipv6_set: IPAddress = None
+    _target_ipv4: IPAddress = None
+    _target_ipv6_set: Set[IPAddress] = None
+    _public_ip_methods = None
+
+    def __init__(self, router: 'Router', host_config):
+        self._name = host_config['name']
+        self._fqdn = host_config['fqdn']
+        self._router = router
+        public_ip_methods = host_config['public_ip_methods']
+        if 'ipv4' in public_ip_methods:
+            self._get_current_ipv4()
+            self._get_target_ipv4(public_ip_methods['ipv4'])
+        if 'ipv6' in public_ip_methods:
+            self._get_current_ipv6()
+            self._get_target_ipv6(public_ip_methods['ipv6'])
+
+    def _get_current_ipv4(self):
+        # Get current address
+        try:
+            result = dns.resolver.resolve(self._fqdn, rdtype=dns.rdatatype.A)
+            if len(result.rrset) > 0:
+                self._current_ipv4 = result.rrset[0].address
+        except Exception as e:
+            self._current_ipv4 = None
+
+    def _get_current_ipv6(self):
+        # Get current address
+        addresses = set()
+        try:
+            result = dns.resolver.resolve(self._fqdn, rdtype=dns.rdatatype.AAAA)
+            for address in result.rrset:
+                if is_public_ipv6(address):
+                    addresses.add(address)
+            self._current_ipv6_set = addresses
+        except Exception as e:
+            self._current_ipv6_set = None
+
+    def _get_target_ipv4(self, method: str):
+
+        address = None
+        if method == 'router':
+            address = self._router.ipv4
+        elif method == 'local_dns':
+            try:
+                result = dns.resolver.resolve(self._name, rdtype=dns.rdatatype.A)
+                if len(result.rrset) > 0:
+                    address = result.rrset[0].address
+            except Exception as e:
+                raise Exception(f'Local hostname not found: {self._name}')
+
+        if address is not None:
+            self._target_ipv4 = IPAddress(address)
+
+    def _get_target_ipv6(self, method: str):
+        addresses = set()
+        if method == 'router':
+            addresses.append(self._router.ipv6)
+        elif method == 'local_dns':
+            try:
+                result = dns.resolver.resolve(self._name, rdtype=dns.rdatatype.AAAA)
+                for address_result in result.rrset:
+                    address_candidate = IPAddress(address_result.address)
+                    if is_public_ipv6(address_candidate):
+                        addresses.add(address_candidate)
+            except Exception as e:
+                raise Exception(f'Local hostname not found: {self._name}')
+        if len(addresses) > 0:
+            self._target_ipv6_set = addresses
+
+    def needs_update(self) -> bool:
+        update = False
+        if self._target_ipv4 is not None:
+            if self._current_ipv4 is None:
+                update = True
+            elif self._current_ipv4 != self._target_ipv4:
+                update = True
+        if self._target_ipv6_set is not None:
+            if self._current_ipv6_set is None:
+                update = True
+            else:
+                # Find disjoint set. An update is only required if none of the current addresses is in the set of target addresses
+                common_addresses = self._current_ipv6_set & self._target_ipv6_set
+                if len (common_addresses) == 0:
+                    update = True
+        return update
+
+    def get_updated_ipv4_record(self):
+        return self._target_ipv4
+    
+    def get_updated_ipv6_record(self):
+        if self._target_ipv6_set is None or len(self._target_ipv6_set)==0:
+            return None
+        return list(self._target_ipv6_set)[0]
+    
+    @property
+    def name(self):
+        return self._name
+    
+    @property
+    def fqdn(self):
+        return self._fqdn
+
 class Domain:
     _updater: 'Updater' = None
-    _delay: Optional(int) = None
+    _delay: Optional(int) = 0
     _target_records_ipv4: Dict[str, netaddr.IPAddress] = {}
     _target_records_ipv6: Dict[str, netaddr.IPAddress] = {}
     _router: 'Router' = None
@@ -34,77 +142,81 @@ class Domain:
     _last_update: datetime.datetime = None
     _key_domains: Final[str] = "domains"
     _key_last_update: Final[str] = "last_updated"
+    _host_list: List[Host] = []
 
     def __init__(self, updater: 'Updater', router, dns_providers: Dict[str, 'DNSProvider'], domain_config):
         self._updater = updater
         self._router = router
         self._domain_name = domain_config['name']
         self._dns_provider = dns_providers[domain_config['dns-provider']]
-        self._delay = domain_config.get('delay', None)
+        self._delay = domain_config.get('delay', 0)
         hosts_config = domain_config['hosts']
         for host_config in hosts_config:
-            name = host_config['name']
-            fqdn = host_config['fqdn']
-            public_ip_methods = host_config['public_ip_methods']
-            if 'ipv4' in public_ip_methods:
-                self._add_target_record_ipv4(name, fqdn, public_ip_methods['ipv4'])
-            if 'ipv6' in public_ip_methods:
-                self._add_target_record_ipv6(name, fqdn, public_ip_methods['ipv6'])
-    
+            host = Host(router, host_config)
+            self._host_list.append(host)
+        self._read_from_cache()
+ 
     def _read_from_cache(self):
-        cache = self._updater.cache
-        if cache is not None:
-            if self._key_domains in cache:
-                domains_cache = cache[self._key_domains]
-                if self._domain_name in domains_cache:
-                    domain_cache = domains_cache[self._domain_name]
-                    if self._key_last_update in domain_cache:
-                        self._last_update = domain_cache[self._key_last_update]
-
-    def _add_target_record_ipv4(self, name: str, fqdn: str, method: str):
-        address = None
-        if method == 'router':
-            address = self._router.ipv4
-        elif method == 'local_dns':
-            try:
-                result = dns.resolver.resolve(name, rdtype=dns.rdatatype.A)
-                if len(result.rrset) > 0:
-                    address = result.rrset[0].address
-            except Exception as e:
-                raise Exception(f'Local fqdn not found: {name}')
-
-        if address is not None:
-            self._target_records_ipv4[fqdn] = IPAddress(address)
-
-    def _add_target_record_ipv6(self, name: str, fqdn: str, method: str):
-        address = None
-        if method == 'router':
-            address = self._router.ipv6
-        elif method == 'local_dns':
-            try:
-                result = dns.resolver.resolve(name, rdtype=dns.rdatatype.AAAA)
-                for address_result in result.rrset:
-                    address_candidate = IPAddress(address_result.address)
-                    if is_public_ipv6(address_candidate):
-                        address = address_candidate
-                        break
-            except Exception as e:
-                raise Exception(f'Local fqdn not found: {name}')
-        if address is not None:
-            self._target_records_ipv6[fqdn] = address
+        domain_cache = self._updater.get_cache_domain(self._domain_name)
+        if self._key_last_update in domain_cache:
+            self._last_update = domain_cache[self._key_last_update]
 
     def update(self):
-        self._last_update = datetime.datetime.now()
-        print (f'Updating domain: {self._domain_name}')
+        if self._last_update is not None:
+            time_diff = int((datetime.datetime.now() - self._last_update).total_seconds())
+            if time_diff < self._delay:
+                logging.info(f'Skipping updates for domain "{self._domain_name}" due to update delay')
+                return
+        records_ipv4 = []
+        records_ipv6 = []
+        needs_update = False
+        for host in self._host_list:
+            if host.needs_update():
+                needs_update = True
+                dns_prefix = host.fqdn.removesuffix(self._domain_name).removesuffix('.')
+                ipv4 = host.get_updated_ipv4_record()
+                if ipv4 is not None:
+                    record = DNSRecord(hostname = dns_prefix, type = 'A', destination = str(ipv4))
+                    records_ipv4.append(record)
+                ipv6 = host.get_updated_ipv6_record()
+                if ipv6 is not None:
+                    record = DNSRecord(hostname= dns_prefix, type = 'AAAA', destination=str(ipv6))
+                    records_ipv6.append(record)
+        # Update if at least one record changed
+        if needs_update:
+            print (f'Updating domain: {self._domain_name}')
+            self._last_update = datetime.datetime.now()
+            domain_cache = self._updater.get_cache_domain(self._domain_name)
+            domain_cache[self._key_last_update] = self._last_update
+            self._updater.update_cache_domain(self._domain_name, domain_cache)
+            self._rebuild_domain_records_cache()
+            for record in records_ipv4:
+                current_record_id = self._find_record_id(record.hostname, 'A')
+                if current_record_id is not None:
+                    record.id = current_record_id
+            for record in records_ipv6:
+                current_record_id = self._find_record_id(record.hostname, 'AAAA')
+                if current_record_id is not None:
+                    record.id = current_record_id
+            records = records_ipv4 + records_ipv6
+            self._dns_provider.update_domain(self, records)
+        print ('done')
+
+
+    def _rebuild_domain_records_cache(self):
         record_dict = {}
         records = self._dns_provider.fetch_domain(self)
         for record in records:
             hostname_dict = record_dict.get(record.hostname, {})
             hostname_dict[record.type] = record
             record_dict[record.hostname] = hostname_dict
-        domain_cache = self._updater.get_cache_domain(self._domain_name)
-        domain_cache[self._key_last_update] = self._last_update
-        self._updater.update_cache_domain(self._domain_name, domain_cache)
+        self._domain_record_dict = record_dict
+
+
+    def _find_record_id(self, hostname, record_type):
+        if not hostname in self._domain_record_dict or not record_type in self._domain_record_dict[hostname]:
+            return None
+        return self._domain_record_dict[hostname][record_type].id
 
     @property
     def domain_name(self):
@@ -206,6 +318,10 @@ class DNSProvider(ABC):
     def fetch_domain(self, domain: Domain) -> List[DNSRecord]:
         pass
 
+    @abstractmethod
+    def update_domain(self, domain: Domain, records: Set[DNSRecord]):
+        pass
+
 class Netcup(DNSProvider):
     def __init__(self, config):
         self._userid = config['userid']
@@ -219,7 +335,12 @@ class Netcup(DNSProvider):
         return []
     
     def update_domain(self, domain: Domain, records: List[DNSRecord]):
-        pass
+        with Client(self._userid, self._apikey, self._apipass) as api:
+            # Update records
+            print(f'Would update domain {domain.domain_name}:')
+            for record in records:
+                print (record)
+            api.update_dns_records(domain.domain_name, records)
 
 
 class Updater():

@@ -27,8 +27,8 @@ domains:
   - name: "test.invalid"
     # Name of the dns provider to be used. Configured above
     dns-provider: "Netcup"
-    # The minimal delay in minutes to wait until next updated. Increase if using dnssec (as resigning the updated records takes quite a lot time)
-    delay: 5
+    # The minimal delay in seconds to wait until next updated. Increase if using dnssec (as resigning the updated records takes quite a lot time)
+    delay: 300
     hosts:
       - name: "openwrt.lan"
         fqdn: "openwrt.home.test.invalid"
