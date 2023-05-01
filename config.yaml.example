@@ -29,6 +29,7 @@ domains:
     dns-provider: "Netcup"
     # The minimal delay in seconds to wait until next updated. Increase if using dnssec (as resigning the updated records takes quite a lot time)
     delay: 300
+    # List of hosts
     hosts:
       - name: "openwrt.lan"
         fqdn: "openwrt.home.test.invalid"
@@ -40,4 +41,3 @@ domains:
         public_ip_methods:
           ipv4: "router"
           ipv6: "local_dns"
-

@@ -1,6 +1,8 @@
 config.yaml
 __pycache__
 .venv
+.python-version
+.coverage
 poetry.lock
 cache
 docs

@@ -17,10 +17,19 @@
             "name": "Python: update.py",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/openwrt-dyndns-cli.py",
+            "program": "${workspaceFolder}/multi-dyndns-cli.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["config.yaml"]
+            "args": ["-v", "config.yaml"]
+        },
+        {
+            "name": "Python: update.py (dry-run)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/multi-dyndns-cli.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["-v", "-n", "config.yaml"]
         }
     ]
 }
