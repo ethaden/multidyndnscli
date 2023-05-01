@@ -72,6 +72,16 @@ poetry run black .
 poetry run pylint multidyndnscli
 ```
 
+### Running code analysis with mypy
+```
+poetry run mypy multidyndnscli
+```
+
+### Run coverage analysis
+```
+poetry run coverage run -m pytest --cov=multidyndnscli && poetry run coverage report -m
+```
+
 ### Build the docs
 First, install the extra packages for building the docs:
 ```

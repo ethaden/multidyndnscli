@@ -1,4 +1,4 @@
-from schema import Schema, And, Or, Optional, Use
+from schema import Schema, And, Or, Optional, Use  # type: ignore
 
 
 def get_config_file_schema():

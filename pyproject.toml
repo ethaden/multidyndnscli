@@ -28,7 +28,9 @@ flake8 = "^6.0.0"
 mypy = "^1.2.0"
 pydantic = "^1.10.7"
 tox = "^4.5.1"
-coverage = "^7.2.5"
+coverage = {extras = ["toml"], version = "^7.2.5"}
+types-pyyaml = "^6.0.12.9"
+types-requests = "^2.29.0.0"
 
 [tool.poetry.extras]
 docs = ["pdoc"]
@@ -39,3 +41,9 @@ multi-dyndns-cli = "multidyndnscli:run"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+omit = [".*", "*/site-packages/*"]
+
+[tool.coverage.report]
+fail_under = 100

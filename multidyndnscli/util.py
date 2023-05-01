@@ -1,6 +1,6 @@
 from typing import List
-import netaddr
-import netifaces
+import netaddr  # type: ignore
+import netifaces  # type: ignore
 
 ipv4_private_net_192_168 = netaddr.IPNetwork("192.168.0.0/16")
 ipv4_private_net_172_16 = netaddr.IPNetwork("172.16.0.0/12")

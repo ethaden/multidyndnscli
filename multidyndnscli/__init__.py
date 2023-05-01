@@ -1,13 +1,13 @@
 import datetime
 from pathlib import Path
-from typing import Final, List, Dict, Set
-import netaddr
+from typing import Any, Final, List, Dict, Optional, Set
+import netaddr  # type: ignore
 import yaml
 import dns.resolver
 from netaddr import IPAddress
 import requests
 import logging
-from nc_dnsapi import Client, DNSRecord
+from nc_dnsapi import Client, DNSRecord  # type: ignore
 from abc import ABC, abstractmethod
 from . import util
 from .schemata import get_config_file_schema
@@ -22,13 +22,12 @@ class RouterNotReachableException(Exception):
 
 
 class Host:
-    _name: str = None
-    _router: "Router" = None
-    _current_ipv4: IPAddress = None
-    _current_ipv6_set: IPAddress = None
-    _target_ipv4: IPAddress = None
-    _target_ipv6_set: Set[IPAddress] = None
-    _public_ip_methods = None
+    _name: str
+    _router: "Router"
+    _current_ipv4: Optional[IPAddress] = None
+    _current_ipv6_set: Set[IPAddress] = set(IPAddress)
+    _target_ipv4: Optional[IPAddress] = None
+    _target_ipv6_set: Set[IPAddress] = set(IPAddress)
 
     def __init__(self, router: "Router", host_config):
         self._name = host_config["name"]
@@ -61,7 +60,7 @@ class Host:
                     addresses.add(address)
             self._current_ipv6_set = addresses
         except Exception:
-            self._current_ipv6_set = None
+            self._current_ipv6_set = {}
 
     def _get_target_ipv4(self, method: str):
         address = None
@@ -70,7 +69,7 @@ class Host:
         elif method == "local_dns":
             try:
                 result = dns.resolver.resolve(self._name, rdtype=dns.rdatatype.A)
-                if len(result.rrset) > 0:
+                if result.rrset is not None and len(result.rrset) > 0:
                     address = result.rrset[0].address
             except Exception:
                 raise Exception(f"Local hostname not found: {self._name}")
@@ -79,12 +78,14 @@ class Host:
             self._target_ipv4 = IPAddress(address)
 
     def _get_target_ipv6(self, method: str):
-        addresses = set()
+        addresses = set(IPAddress)
         if method == "router":
             addresses.add(self._router.ipv6)
         elif method == "local_dns":
             try:
                 result = dns.resolver.resolve(self._name, rdtype=dns.rdatatype.AAAA)
+                if result.rrset is None:
+                    return
                 for address_result in result.rrset:
                     address_candidate = IPAddress(address_result.address)
                     if util.is_public_ipv6(address_candidate):
@@ -101,15 +102,12 @@ class Host:
                 update = True
             elif self._current_ipv4 != self._target_ipv4:
                 update = True
-        if self._target_ipv6_set is not None:
-            if self._current_ipv6_set is None:
+        if len(self._target_ipv6_set) > 0:
+            # Find disjoint set. An update is only required if none of the current
+            # addresses is in the set of target addresses
+            common_addresses = self._current_ipv6_set & self._target_ipv6_set
+            if len(common_addresses) == 0:
                 update = True
-            else:
-                # Find disjoint set. An update is only required if none of the current
-                # addresses is in the set of target addresses
-                common_addresses = self._current_ipv6_set & self._target_ipv6_set
-                if len(common_addresses) == 0:
-                    update = True
         return update
 
     def get_updated_ipv4_record(self):
@@ -130,14 +128,14 @@ class Host:
 
 
 class Domain:
-    _updater: "Updater" = None
+    _updater: "Updater"
     _delay: int = 0
     _target_records_ipv4: Dict[str, netaddr.IPAddress] = {}
     _target_records_ipv6: Dict[str, netaddr.IPAddress] = {}
-    _router: "Router" = None
-    _domain_name: str = None
-    _dns_provider: "DNSProvider" = None
-    _last_update: datetime.datetime = None
+    _router: "Router"
+    _domain_name: str
+    _dns_provider: "DNSProvider"
+    _last_update: Optional[datetime.datetime] = None
     _key_domains: Final[str] = "domains"
     _key_last_update: Final[str] = "last_updated"
     _host_list: List[Host] = []
@@ -254,9 +252,9 @@ class Router:
             # Return first address if any
             return None if len(ipv4_list) == 0 else ipv4_list[0]
         elif ipv4_config["method"] == "fritzbox":
-            from fritzconnection import FritzConnection
-            from fritzconnection.lib.fritzstatus import FritzStatus
-            from fritzconnection.core.exceptions import FritzConnectionException
+            from fritzconnection import FritzConnection  # type: ignore
+            from fritzconnection.lib.fritzstatus import FritzStatus  # type: ignore
+            from fritzconnection.core.exceptions import FritzConnectionException  # type: ignore
 
             fritzbox_config = ipv4_config["fritzbox"]
             fritz_ip = fritzbox_config.get("address")
@@ -271,7 +269,7 @@ class Router:
             return status.external_ip
         return None
 
-    def _get_public_ipv6(self, ipv6_config) -> str:
+    def _get_public_ipv6(self, ipv6_config) -> Optional[str]:
         if ipv6_config["method"] == "web":
             url = ipv6_config["url"]
             response = requests.get(url)
@@ -337,7 +335,7 @@ class DNSProvider(ABC):
         pass
 
     @abstractmethod
-    def update_domain(self, domain: Domain, records: Set[DNSRecord]):
+    def update_domain(self, domain: Domain, records: List[DNSRecord]):
         pass
 
 
@@ -365,9 +363,9 @@ class Netcup(DNSProvider):
 
 
 class Updater:
-    _config = None
-    _cache_file: Path = None
-    _cache = {}
+    _config: Dict[str, Any]
+    _cache_file: Optional[Path] = None
+    _cache: Dict[str, Any]
 
     def __init__(self, config):
         self._config = config
@@ -380,7 +378,7 @@ class Updater:
                     self._read_cache()
 
     def _read_cache(self):
-        if self._cache_file.exists():
+        if self._cache_file is not None and self._cache_file.exists():
             with open(self._cache_file, "r") as f:
                 self._cache = yaml.safe_load(f)
                 if self._cache is None:
