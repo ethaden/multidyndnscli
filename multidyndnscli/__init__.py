@@ -25,9 +25,9 @@ class Host:
     _name: str
     _router: "Router"
     _current_ipv4: Optional[IPAddress] = None
-    _current_ipv6_set: Set[IPAddress] = set(IPAddress)
+    _current_ipv6_set: Set[IPAddress] = set()
     _target_ipv4: Optional[IPAddress] = None
-    _target_ipv6_set: Set[IPAddress] = set(IPAddress)
+    _target_ipv6_set: Set[IPAddress] = set()
 
     def __init__(self, router: "Router", host_config):
         self._name = host_config["name"]
