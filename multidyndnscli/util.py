@@ -20,6 +20,8 @@ def get_valid_ip(address: str) -> netaddr.IPAddress:
 
 
 def is_public_ipv4(address: netaddr.IPAddress) -> bool:
+    if address.version != 4:
+        return False
     return not (
         (address in ipv4_private_net_10)
         or (address in ipv4_private_net_172_16)
@@ -35,7 +37,7 @@ def get_ipv4_addresses_linux(
     """
 
     addrs = netifaces.ifaddresses(interface)
-    address_string_list = [addr["addr"] for addr in addrs[netifaces.AF_INET]]
+    address_string_list = [addr['addr'] for addr in addrs[netifaces.AF_INET]]
     address_list = [get_valid_ip(address) for address in address_string_list]
     if public_only:
         return [addr for addr in address_list if is_public_ipv4(addr)]
@@ -43,6 +45,8 @@ def get_ipv4_addresses_linux(
 
 
 def is_public_ipv6(address: netaddr.IPAddress) -> bool:
+    if address.version != 6:
+        return False
     return not (
         (address in ipv6_private_net_fc)
         or (address in ipv6_private_net_fd)
