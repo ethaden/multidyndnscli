@@ -31,6 +31,7 @@ tox = "^4.5.1"
 coverage = {extras = ["toml"], version = "^7.2.5"}
 types-pyyaml = "^6.0.12.9"
 types-requests = "^2.29.0.0"
+pytest-mock = "^3.10.0"
 
 [tool.poetry.extras]
 docs = ["pdoc"]
