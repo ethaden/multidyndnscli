@@ -46,7 +46,7 @@ class Host:
         try:
             result = dns.resolver.resolve(self._fqdn, rdtype=dns.rdatatype.A)
             if len(result.rrset) > 0:
-                self._current_ipv4 = result.rrset[0].address
+                self._current_ipv4 = IPAddress(result.rrset[0].address)
         except Exception:
             self._current_ipv4 = None
 
@@ -55,12 +55,13 @@ class Host:
         addresses = set()
         try:
             result = dns.resolver.resolve(self._fqdn, rdtype=dns.rdatatype.AAAA)
-            for address in result.rrset:
+            for rrset_address in result.rrset:
+                address = IPAddress(rrset_address.address)
                 if util.is_public_ipv6(address):
                     addresses.add(address)
             self._current_ipv6_set = addresses
         except Exception:
-            self._current_ipv6_set = {}
+            self._current_ipv6_set = set()
 
     def _get_target_ipv4(self, method: str):
         address = None
@@ -78,18 +79,18 @@ class Host:
             self._target_ipv4 = IPAddress(address)
 
     def _get_target_ipv6(self, method: str):
-        addresses = set(IPAddress)
+        addresses = set()
         if method == "router":
-            addresses.add(self._router.ipv6)
+            addresses.add(IPAddress(self._router.ipv6))
         elif method == "local_dns":
             try:
                 result = dns.resolver.resolve(self._name, rdtype=dns.rdatatype.AAAA)
                 if result.rrset is None:
                     return
-                for address_result in result.rrset:
-                    address_candidate = IPAddress(address_result.address)
-                    if util.is_public_ipv6(address_candidate):
-                        addresses.add(address_candidate)
+                for result_addr in result.rrset:
+                    address = IPAddress(result_addr.address)
+                    if util.is_public_ipv6(address):
+                        addresses.add(address)
             except Exception:
                 raise Exception(f"Local hostname not found: {self._name}")
         if len(addresses) > 0:

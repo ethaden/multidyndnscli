@@ -1,16 +1,17 @@
 import sys
 import argparse
+from typing import List, Optional
 import yaml
 import multidyndnscli
 import logging
 
 
-def run():
+def run(args:Optional[List[str]]=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("config_file")
     parser.add_argument("--verbose", "-v", action="count", default=0)
     parser.add_argument("--dry-run", "-n", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(args=args)
     config_file = args.config_file
     dry_run = args.dry_run
     FORMAT = "%(asctime)s - %(levelname)s: %(message)s"
