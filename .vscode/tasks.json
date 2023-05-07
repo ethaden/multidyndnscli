@@ -31,7 +31,7 @@
         {
             "label": "coverage",
             "type": "shell",
-            "command": "poetry run coverage run -m pytest --cov=multidyndnscli && poetry run coverage report -m"
+            "command": "poetry run coverage run -m pytest && poetry run coverage report -m --include 'multidyndnscli/*'"
         }
     ]
 }

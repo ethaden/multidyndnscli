@@ -30,11 +30,10 @@ def run(args:Optional[List[str]]=None)->int:
                 return updater.update(dry_run)
             except Exception as exc:
                 logging.critical(f"An exception occurred: {exc}.\nExiting...")
-                return 1
-    except (argparse.ArgumentError, SystemExit) as exc:
-        return 1
-    return 0
+    except (argparse.ArgumentError, SystemExit):
+        pass
+    return 1
 
 
 if __name__ == "__main__":
-    sys.exit(run())
+    sys.exit(run())         # pragma: no cover

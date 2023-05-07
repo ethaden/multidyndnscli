@@ -42,3 +42,10 @@ def test_run_logger_debug(mocker):
     args = ['--verbose', '--verbose', 'config.yaml.example']
     assert run(args) == 0
     assert logging.getLogger().level == logging.DEBUG
+
+def test_run_logger_exception(mocker):
+    updater_mock = MagicMock()
+    updater_mock.update = MagicMock(side_effect=Exception('Test'))
+    mocker.patch('multidyndnscli.Updater', return_value=updater_mock)
+    args = ['config.yaml.example']
+    assert run(args) == 1
