@@ -62,6 +62,8 @@ def get_ipv6_addresses_linux(interface: str, public_only: bool = True) -> List[s
     addrs = netifaces.ifaddresses(interface)
     # Note, that addresses used for autoconfiguration have the format
     # "ipv6_adddr%interface_name"
+    if netifaces.AF_INET6 not in addrs:
+        return []
     address_string_list = [
         addr["addr"].split("%")[0] for addr in addrs[netifaces.AF_INET6]
     ]

@@ -38,7 +38,7 @@ def test_class_host_init_target_addresses_from_router(mocker):
     dns_resolver_mock = mocker.patch('dns.resolver.resolve', side_effect=
             lambda fqdn, rdtype: resolved_ipv4 if rdtype==dns.rdatatype.A else resolved_ipv6)
 
-    host = multidyndnscli.Host(router, testdata_host_config_target_address_from_router)
+    host = multidyndnscli.Host.from_config(router, testdata_host_config_target_address_from_router)
     assert host._name == testdata_host_config_target_address_from_router['name']
     assert host._fqdn == testdata_host_config_target_address_from_router['fqdn']
     assert host._current_ipv4 == IPAddress(testdata_ipv4)
@@ -59,7 +59,7 @@ def test_class_host_init_target_addresses_from_local_dns(mocker):
     dns_resolver_mock = mocker.patch('dns.resolver.resolve', side_effect=
             lambda fqdn, rdtype: resolved_ipv4 if rdtype==dns.rdatatype.A else resolved_ipv6)
 
-    host = multidyndnscli.Host(router, testdata_host_config_target_address_from_local_dns)
+    host = multidyndnscli.Host.from_config(router, testdata_host_config_target_address_from_local_dns)
     assert host._name == testdata_host_config_target_address_from_local_dns['name']
     assert host._fqdn == testdata_host_config_target_address_from_local_dns['fqdn']
     assert host._current_ipv4 == IPAddress(testdata_ipv4)
@@ -82,6 +82,6 @@ def test_class_host_init_exception_for_resolving_current_ips(mocker):
                 Exception('Test') if name==testdata_host_config_target_address_from_router['fqdn'] else
                     resolved_ipv4 if rdtype==dns.rdatatype.A else resolved_ipv6
         )
-    host = multidyndnscli.Host(router, testdata_host_config_target_address_from_router)
+    host = multidyndnscli.Host.from_config(router, testdata_host_config_target_address_from_router)
     assert host._current_ipv4 is None
     assert len(host._current_ipv6_set) == 0

@@ -29,17 +29,30 @@ class Host:
     _target_ipv4: Optional[IPAddress] = None
     _target_ipv6_set: Set[IPAddress] = set()
 
-    def __init__(self, router: "Router", host_config):
-        self._name = host_config["name"]
-        self._fqdn = host_config["fqdn"]
+    def __init__(self, router: "Router", name: str, fqdn: str, 
+                 public_ipv4_method: Optional[Dict[str, str]],
+                 public_ipv6_method: Optional[Dict[str, str]],
+                 ):
         self._router = router
-        public_ip_methods = host_config["public_ip_methods"]
-        if "ipv4" in public_ip_methods:
+        self._name = name
+        self._fqdn = fqdn
+        if public_ipv4_method is not None:
             self._get_current_ipv4()
-            self._get_target_ipv4(public_ip_methods["ipv4"])
-        if "ipv6" in public_ip_methods:
+            self._get_target_ipv4(public_ipv4_method)
+        if public_ipv6_method is not None:
             self._get_current_ipv6()
-            self._get_target_ipv6(public_ip_methods["ipv6"])
+            if len(self._current_ipv6_set) > 0:
+                self._get_target_ipv6(public_ipv6_method)
+    
+    @staticmethod
+    def from_config(router: "Router", host_config)->'Host':
+        public_ip_methods = host_config["public_ip_methods"]
+        return Host(router, 
+            host_config['name'],
+            host_config['fqdn'],
+            public_ip_methods.get('ipv4', None),
+            public_ip_methods.get('ipv6', None)
+        )
 
     def _get_current_ipv4(self):
         # Get current address
@@ -81,7 +94,8 @@ class Host:
     def _get_target_ipv6(self, method: str):
         addresses = set()
         if method == "router":
-            addresses.add(IPAddress(self._router.ipv6))
+            if self._router.ipv6 is not None:
+                addresses.add(IPAddress(self._router.ipv6))
         elif method == "local_dns":
             try:
                 result = dns.resolver.resolve(self._name, rdtype=dns.rdatatype.AAAA)
@@ -141,24 +155,44 @@ class Domain:
     _key_last_update: Final[str] = "last_updated"
     _host_list: List[Host] = []
 
-    def __init__(
-        self,
-        updater: "Updater",
-        router,
-        dns_providers: Dict[str, "DNSProvider"],
-        domain_config,
+    def __init__(self,
+        updater: 'Updater',
+        router: 'Router',
+        domain_name: str,
+        dns_provider: 'DNSProvider',
+        delay: int=0
     ):
         self._updater = updater
         self._router = router
-        self._domain_name = domain_config["name"]
-        self._dns_provider = dns_providers[domain_config["dns-provider"]]
-        self._delay = domain_config.get("delay", 0)
+        self._domain_name = domain_name
+        self._dns_provider = dns_provider
+        self._delay = delay
+        # Initialize values from cache if any
+        self._read_from_cache()
+    
+    @staticmethod
+    def from_config(
+        updater: "Updater",
+        router,
+        dns_providers: Dict[str, "DNSProvider"],
+        domain_config)->'Domain':
+        dns_provider = dns_providers[domain_config["dns-provider"]]
+        domain = Domain(updater, 
+            router, 
+            domain_config["name"],
+            dns_provider,
+            domain_config.get("delay", 0)
+        )
         hosts_config = domain_config["hosts"]
         for host_config in hosts_config:
-            host = Host(router, host_config)
-            self._host_list.append(host)
-        self._read_from_cache()
+            host = Host.from_config(router, host_config)
+            domain.add_host(host)
+        return domain
 
+
+    def add_host(self, host: Host):
+        self._host_list.append(host)
+    
     def _read_from_cache(self):
         domain_cache = self._updater.get_cache_domain(self._domain_name)
         if self._key_last_update in domain_cache:
@@ -236,7 +270,33 @@ class Domain:
 
 
 class Router:
+    _ipv4: Optional[IPAddress] = None
+    _ipv6: Optional[IPAddress] = None
+    _wan_interface_ipv4: Optional[str] = None
+    _wan_interface_ipv6: Optional[str] = None
+
+    def __init__(self, router_ipv4_config, router_ipv6_config):
+        try:
+            self._ipv4 = self._get_public_ipv4(router_ipv4_config)
+        except RouterNotReachableException as exc:
+            raise exc
+        #logging.info(f"Router has external IPv4: {self._ipv4}")
+        try:
+            self._ipv6 = self._get_public_ipv6(router_ipv6_config)
+        except RouterNotReachableException as exc:
+            raise exc
+        #logging.info(f"Router has external IPv6: {self._ipv6}")
+
+    @staticmethod
+    def from_config(router_config):
+        router_ipv4_config = router_config.get('ipv4', None)
+        router_ipv6_config = router_config.get('ipv6', None)
+        return Router(router_ipv4_config, router_ipv6_config)
+
+
     def _get_public_ipv4(self, ipv4_config) -> netaddr.IPAddress:
+        if ipv4_config is None:
+            return None
         if ipv4_config["method"] == "web":
             url = ipv4_config["url"]
             response = requests.get(url)
@@ -271,6 +331,8 @@ class Router:
         return None
 
     def _get_public_ipv6(self, ipv6_config) -> Optional[str]:
+        if ipv6_config is None:
+            return None
         if ipv6_config["method"] == "web":
             url = ipv6_config["url"]
             response = requests.get(url)
@@ -288,36 +350,13 @@ class Router:
             return None if len(ipv6_list) == 0 else ipv6_list[0]
         return None
 
-    def __init__(self, config):
-        router_config = config["router"]
-        router_ipv4_config = router_config["ipv4"]
-        router_ipv6_config = router_config["ipv6"]
-        self._use_ipv4 = router_ipv4_config.get("enabled", False)
-        self._use_ipv6 = router_ipv6_config.get("enabled", False)
-        self._ipv4 = None
-        self._ipv6 = None
-        self._wan_interface_ipv4 = None
-        self._wan_interface_ipv6 = None
-        if self._use_ipv4:
-            try:
-                self._ipv4 = self._get_public_ipv4(router_config["ipv4"])
-            except RouterNotReachableException as exc:
-                raise exc
-            logging.info(f"Router has external IPv4: {self._ipv4}")
-        if self._use_ipv6:
-            try:
-                self._ipv6 = self._get_public_ipv6(router_config["ipv6"])
-            except RouterNotReachableException as exc:
-                raise exc
-            logging.info(f"Router has external IPv6: {self._ipv6}")
-
     @property
     def ipv4(self):
         return self._ipv4
 
     @property
     def use_ipv4(self):
-        return self._use_ipv4
+        return self._ipv4 is not None
 
     @property
     def ipv6(self):
@@ -325,7 +364,7 @@ class Router:
 
     @property
     def use_ipv6(self):
-        return self._use_ipv6
+        return self._ipv6 is not None
 
 
 class DNSProvider(ABC):
@@ -406,10 +445,10 @@ class Updater:
                 provider_type = provider["type"].lower()
                 if provider_type == "netcup":
                     dns_providers[name] = Netcup(provider)
-            router = Router(self._config)
-            domain_config_list = self._config["domains"]
+            router = Router.from_config(self._config['router'])
+            domain_config_list = self._config['domains']
             for domain_config_dict in domain_config_list:
-                domain = Domain(self, router, dns_providers, domain_config_dict)
+                domain = Domain.from_config(self, router, dns_providers, domain_config_dict)
                 domain.update(dry_run)
         except RouterNotReachableException as e:
             logging.error(e)
