@@ -30,8 +30,8 @@ class Host:
     _target_ipv6_set: Set[IPAddress] = set()
 
     def __init__(self, router: "Router", name: str, fqdn: str, 
-                 public_ipv4_method: Optional[Dict[str, str]],
-                 public_ipv6_method: Optional[Dict[str, str]],
+                 public_ipv4_method: Optional[str],
+                 public_ipv6_method: Optional[str],
                  ):
         self._router = router
         self._name = name

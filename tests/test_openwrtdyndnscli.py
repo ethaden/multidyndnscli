@@ -79,9 +79,49 @@ def test_class_host_init_exception_for_resolving_current_ips(mocker):
     resolved_ipv6.rrset[0].address= testdata_ipv6
     dns_resolver_mock = mocker.patch('dns.resolver.resolve', side_effect=
             lambda name, rdtype: 
-                Exception('Test') if name==testdata_host_config_target_address_from_router['fqdn'] else
+                Exception('Test') if name==testdata_host_config_target_address_from_local_dns['fqdn'] else
                     resolved_ipv4 if rdtype==dns.rdatatype.A else resolved_ipv6
         )
-    host = multidyndnscli.Host.from_config(router, testdata_host_config_target_address_from_router)
-    assert host._current_ipv4 is None
+    host = multidyndnscli.Host.from_config(router, testdata_host_config_target_address_from_local_dns)
+    assert host._current_ipv4 == None
     assert len(host._current_ipv6_set) == 0
+
+def test_class_host_init_exception_for_resolving_target_ips(mocker):
+    router = mocker.stub()
+    router.ipv4 = testdata_ipv4
+    router.ipv6 = testdata_ipv6
+    resolved_ipv4 = mocker.stub()
+    resolved_ipv4.rrset = [mocker.stub()]
+    resolved_ipv4.rrset[0].address= testdata_ipv4
+    resolved_ipv6 = mocker.stub()
+    resolved_ipv6.rrset = [mocker.stub()]
+    resolved_ipv6.rrset[0].address= testdata_ipv6
+    dns_resolver_mock = mocker.patch('dns.resolver.resolve', side_effect=
+            lambda name, rdtype: 
+                Exception('Test') if name==testdata_host_config_target_address_from_local_dns['name'] else
+                    resolved_ipv4 if rdtype==dns.rdatatype.A else resolved_ipv6
+        )
+    with pytest.raises(Exception):
+        host = multidyndnscli.Host.from_config(router, testdata_host_config_target_address_from_local_dns)
+
+def test_class_host_init_empty_target_ipv6_rrset(mocker):
+    router = mocker.stub()
+    router.ipv4 = testdata_ipv4
+    router.ipv6 = testdata_ipv6
+    resolved_ipv4 = mocker.stub()
+    resolved_ipv4.rrset = [mocker.stub()]
+    resolved_ipv4.rrset[0].address= testdata_ipv4
+    resolved_ipv6 = mocker.stub()
+    resolved_ipv6.rrset = [mocker.stub()]
+    resolved_ipv6.rrset[0].address= testdata_ipv6
+    empty_ipv6_rrset = mocker.stub()
+    empty_ipv6_rrset.rrset = None
+    dns_resolver_mock = mocker.patch('dns.resolver.resolve', side_effect=
+            lambda name, rdtype: 
+                empty_ipv6_rrset if name==testdata_host_config_target_address_from_local_dns['name'] 
+                and rdtype==dns.rdatatype.AAAA else
+                    resolved_ipv4 if rdtype==dns.rdatatype.A else resolved_ipv6
+        )
+    host = multidyndnscli.Host.from_config(router, testdata_host_config_target_address_from_local_dns)
+    assert len(host._target_ipv6_set) == 0
+
