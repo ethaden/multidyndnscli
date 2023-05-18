@@ -24,10 +24,10 @@ class RouterNotReachableException(Exception):
 class Host:
     _name: str
     _router: "Router"
-    _current_ipv4: Optional[IPAddress] = None
-    _current_ipv6_set: Set[IPAddress] = set()
-    _target_ipv4: Optional[IPAddress] = None
-    _target_ipv6_set: Set[IPAddress] = set()
+    _fqdn_ipv4: Optional[IPAddress] = None   # The IPv4 the FQDN is currently pointing to (if any)
+    _fqdn_ipv6_set: Set[IPAddress] = set()   # The set of IPv6 the FQDN is currently pointing to (if any)
+    _host_ipv4: Optional[IPAddress] = None    # The IPv4 the host is currently using (if any)
+    _host_ipv6_set: Set[IPAddress] = set()    # The set of IPv6 the host is currently using (if any)
 
     def __init__(self, router: "Router", name: str, fqdn: str, 
                  public_ipv4_method: Optional[str],
@@ -41,7 +41,7 @@ class Host:
             self._get_target_ipv4(public_ipv4_method)
         if public_ipv6_method is not None:
             self._get_current_ipv6()
-            if len(self._current_ipv6_set) > 0:
+            if len(self._fqdn_ipv6_set) > 0:
                 self._get_target_ipv6(public_ipv6_method)
     
     @staticmethod
@@ -59,9 +59,9 @@ class Host:
         try:
             result = dns.resolver.resolve(self._fqdn, rdtype=dns.rdatatype.A)
             if len(result.rrset) > 0:
-                self._current_ipv4 = IPAddress(result.rrset[0].address)
+                self._fqdn_ipv4 = IPAddress(result.rrset[0].address)
         except Exception:
-            self._current_ipv4 = None
+            self._fqdn_ipv4 = None
 
     def _get_current_ipv6(self):
         # Get current address
@@ -72,9 +72,9 @@ class Host:
                 address = IPAddress(rrset_address.address)
                 if util.is_public_ipv6(address):
                     addresses.add(address)
-            self._current_ipv6_set = addresses
+            self._fqdn_ipv6_set = addresses
         except Exception:
-            self._current_ipv6_set = set()
+            self._fqdn_ipv6_set = set()
 
     def _get_target_ipv4(self, method: str):
         address = None
@@ -89,7 +89,7 @@ class Host:
                 raise Exception(f"Local hostname not found: {self._name}")
 
         if address is not None:
-            self._target_ipv4 = IPAddress(address)
+            self._host_ipv4 = IPAddress(address)
 
     def _get_target_ipv6(self, method: str):
         addresses = set()
@@ -108,30 +108,30 @@ class Host:
             except Exception:
                 raise Exception(f"Local hostname not found: {self._name}")
         if len(addresses) > 0:
-            self._target_ipv6_set = addresses
+            self._host_ipv6_set = addresses
 
     def needs_update(self) -> bool:
         update = False
-        if self._target_ipv4 is not None:
-            if self._current_ipv4 is None:
-                update = True
-            elif self._current_ipv4 != self._target_ipv4:
-                update = True
-        if len(self._target_ipv6_set) > 0:
+        if self._host_ipv4 is not None:
+            if self._fqdn_ipv4 is None:
+                return True
+            elif self._fqdn_ipv4 != self._host_ipv4:
+                return True
+        if len(self._host_ipv6_set) > 0:
             # Find disjoint set. An update is only required if none of the current
             # addresses is in the set of target addresses
-            common_addresses = self._current_ipv6_set & self._target_ipv6_set
+            common_addresses = self._fqdn_ipv6_set & self._host_ipv6_set
             if len(common_addresses) == 0:
-                update = True
-        return update
+                return True
+        return False
 
     def get_updated_ipv4_record(self):
-        return self._target_ipv4
+        return self._host_ipv4
 
     def get_updated_ipv6_record(self):
-        if self._target_ipv6_set is None or len(self._target_ipv6_set) == 0:
+        if self._host_ipv6_set is None or len(self._host_ipv6_set) == 0:
             return None
-        return list(self._target_ipv6_set)[0]
+        return list(self._host_ipv6_set)[0]
 
     @property
     def name(self):
