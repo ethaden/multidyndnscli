@@ -24,8 +24,8 @@ class RouterNotReachableException(Exception):
 class Host:
     _name: str
     _router: "Router"
-    _fqdn_ipv4: Optional[IPAddress] = None   # The IPv4 the FQDN is currently pointing to (if any)
-    _fqdn_ipv6_set: Set[IPAddress] = set()   # The set of IPv6 the FQDN is currently pointing to (if any)
+    _current_fqdn_dns_ipv4: Optional[IPAddress] = None   # The IPv4 the FQDN is currently pointing to (if any)
+    _current_fqdn_dns_ipv6_set: Set[IPAddress] = set()   # The set of IPv6 the FQDN is currently pointing to (if any)
     _host_ipv4: Optional[IPAddress] = None    # The IPv4 the host is currently using (if any)
     _host_ipv6_set: Set[IPAddress] = set()    # The set of IPv6 the host is currently using (if any)
 
@@ -37,12 +37,12 @@ class Host:
         self._name = name
         self._fqdn = fqdn
         if public_ipv4_method is not None:
-            self._get_current_ipv4()
-            self._get_target_ipv4(public_ipv4_method)
+            self._get_current_fqdn_dns_ipv4()
+            self._get_host_ipv4(public_ipv4_method)
         if public_ipv6_method is not None:
-            self._get_current_ipv6()
-            if len(self._fqdn_ipv6_set) > 0:
-                self._get_target_ipv6(public_ipv6_method)
+            self._get_host_ipv6_set(public_ipv6_method)
+            if len(self._host_ipv6_set) > 0:
+                self._get_current_fqdn_dns_ipv6_set()
     
     @staticmethod
     def from_config(router: "Router", host_config)->'Host':
@@ -54,16 +54,16 @@ class Host:
             public_ip_methods.get('ipv6', None)
         )
 
-    def _get_current_ipv4(self):
+    def _get_current_fqdn_dns_ipv4(self):
         # Get current address
         try:
             result = dns.resolver.resolve(self._fqdn, rdtype=dns.rdatatype.A)
             if len(result.rrset) > 0:
-                self._fqdn_ipv4 = IPAddress(result.rrset[0].address)
+                self._current_fqdn_dns_ipv4 = IPAddress(result.rrset[0].address)
         except Exception:
-            self._fqdn_ipv4 = None
+            self._current_fqdn_dns_ipv4 = None
 
-    def _get_current_ipv6(self):
+    def _get_current_fqdn_dns_ipv6_set(self):
         # Get current address
         addresses = set()
         try:
@@ -72,11 +72,11 @@ class Host:
                 address = IPAddress(rrset_address.address)
                 if util.is_public_ipv6(address):
                     addresses.add(address)
-            self._fqdn_ipv6_set = addresses
+            self._current_fqdn_dns_ipv6_set = addresses
         except Exception:
-            self._fqdn_ipv6_set = set()
+            self._current_fqdn_dns_ipv6_set = set()
 
-    def _get_target_ipv4(self, method: str):
+    def _get_host_ipv4(self, method: str):
         address = None
         if method == "router":
             address = self._router.ipv4
@@ -91,7 +91,7 @@ class Host:
         if address is not None:
             self._host_ipv4 = IPAddress(address)
 
-    def _get_target_ipv6(self, method: str):
+    def _get_host_ipv6_set(self, method: str):
         addresses = set()
         if method == "router":
             if self._router.ipv6 is not None:
@@ -113,22 +113,24 @@ class Host:
     def needs_update(self) -> bool:
         update = False
         if self._host_ipv4 is not None:
-            if self._fqdn_ipv4 is None:
+            if self._current_fqdn_dns_ipv4 is None:
                 return True
-            elif self._fqdn_ipv4 != self._host_ipv4:
+            elif self._current_fqdn_dns_ipv4 != self._host_ipv4:
                 return True
         if len(self._host_ipv6_set) > 0:
             # Find disjoint set. An update is only required if none of the current
             # addresses is in the set of target addresses
-            common_addresses = self._fqdn_ipv6_set & self._host_ipv6_set
+            common_addresses = self._current_fqdn_dns_ipv6_set & self._host_ipv6_set
             if len(common_addresses) == 0:
                 return True
         return False
 
-    def get_updated_ipv4_record(self):
+    @property
+    def host_ipv4(self):
         return self._host_ipv4
 
-    def get_updated_ipv6_record(self):
+    @property
+    def host_ipv6(self):
         if self._host_ipv6_set is None or len(self._host_ipv6_set) == 0:
             return None
         return list(self._host_ipv6_set)[0]
@@ -215,10 +217,9 @@ class Domain:
             if host.needs_update():
                 needs_update = True
                 dns_prefix = host.fqdn.removesuffix(self._domain_name).removesuffix(".")
-                ipv4 = host.get_updated_ipv4_record()
-                if ipv4 is not None:
+                if host.host_ipv4 is not None:
                     record = DNSRecord(
-                        hostname=dns_prefix, type="A", destination=str(ipv4)
+                        hostname=dns_prefix, type="A", destination=str(host.host_ipv4)
                     )
                     records_ipv4.append(record)
                 ipv6 = host.get_updated_ipv6_record()
