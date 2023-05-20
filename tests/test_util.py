@@ -101,3 +101,8 @@ def test_get_ipv6_addresses_linux_public_only(addresses, expected, mocker):
     mocker.patch('netifaces.ifaddresses', return_value=addresses)
     addrs = util.get_ipv6_addresses_linux('eth0', True)
     assert addrs == expected
+
+def test_get_ipv6_addresses_linux_no_ipv6_networking(mocker):
+    mocker.patch('netifaces.ifaddresses', return_value={})
+    addrs = util.get_ipv6_addresses_linux('eth0', False)
+    assert addrs == []
