@@ -527,8 +527,9 @@ def test_class_host_host_ipv4(mocker):
 
 def test_domain_init_from_config(mocker):
     updater = MagicMock(spec=multidyndnscli.Updater)
+    datetime_now = datetime.datetime.now()
     updater.get_cache_domain = Mock(
-        return_value={multidyndnscli.Domain._key_last_update: datetime.datetime.now()}
+        return_value={multidyndnscli.Domain._key_last_update: datetime_now}
     )
     router = MagicMock(spec=multidyndnscli.Router)
     dns_provider = MagicMock(spec=multidyndnscli.DNSProvider)
@@ -551,6 +552,7 @@ def test_domain_init_from_config(mocker):
     assert len(domain._host_list) == 1
     assert domain._host_list[0].fqdn == testdata_domain_config['hosts'][0]['fqdn']
     assert domain._host_list[0].name == testdata_domain_config['hosts'][0]['name']
+    assert domain._last_update == datetime_now
 
 
 def test_domain_init(mocker):
@@ -571,3 +573,35 @@ def test_domain_init(mocker):
     assert domain._delay == delay
     print(domain._host_list)
     assert len(domain._host_list) == 0
+
+def test_domain_add_host(mocker):
+    updater = MagicMock(spec=multidyndnscli.Updater)
+    updater.get_cache_domain = Mock(return_value={})
+    router = MagicMock(spec=multidyndnscli.Router)
+    dns_provider = MagicMock(spec=multidyndnscli.DNSProvider)
+    delay = 23
+    domain = multidyndnscli.Domain(
+        updater, router, testdata_domain_name, dns_provider, delay
+    )
+    host_mock = Mock()
+    domain.add_host(host_mock)
+    assert len(domain._host_list) == 1
+    assert domain._host_list[0] == host_mock
+
+def test_domain_update_delay(mocker):
+    updater_mock = MagicMock(spec=multidyndnscli.Updater)
+    updater_mock.get_cache_domain = Mock(return_value={})
+    router_mock = MagicMock(spec=multidyndnscli.Router)
+    dns_provider_mock = MagicMock(spec=multidyndnscli.DNSProvider)
+    delay = 10000
+    domain = multidyndnscli.Domain(
+        updater_mock, router_mock, testdata_domain_name, dns_provider_mock, delay
+    )
+    host_mock = Mock()
+    host_mock.needs_update = Mock(return_value=True)
+    host_mock.fqdn = f'test.{testdata_domain_name}'
+    host_mock.host_ipv4 = IPAddress(testdata_ipv4)
+    host_mock.get_updated_ipv6_record = Mock(return_value=None)
+    domain.add_host(host_mock)
+    #dns_provider_mock.update_domain()
+    dns_provider_mock.update_domain.assert_not_called()
