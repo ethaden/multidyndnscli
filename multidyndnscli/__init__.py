@@ -243,7 +243,7 @@ class Domain:
                         hostname=dns_prefix, type='A', destination=str(host.host_ipv4)
                     )
                     records_ipv4.append(record)
-                ipv6 = host.get_updated_ipv6_record()
+                ipv6 = host.host_ipv6
                 if ipv6 is not None:
                     record = DNSRecord(
                         hostname=dns_prefix, type='AAAA', destination=str(ipv6)
