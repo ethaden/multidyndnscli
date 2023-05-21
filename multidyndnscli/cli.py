@@ -6,7 +6,7 @@ import multidyndnscli
 import logging
 
 
-def run(args:Optional[List[str]]=None)->int:
+def run(args: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(exit_on_error=False)
     parser.add_argument("config_file")
     parser.add_argument("--verbose", "-v", action="count", default=0)
@@ -36,4 +36,4 @@ def run(args:Optional[List[str]]=None)->int:
 
 
 if __name__ == "__main__":
-    sys.exit(run())         # pragma: no cover
+    sys.exit(run())  # pragma: no cover

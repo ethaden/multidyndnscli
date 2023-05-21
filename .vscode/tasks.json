@@ -21,7 +21,8 @@
         {
             "label": "black",
             "type": "shell",
-            "command": "poetry run black ."
+            "command": "poetry run black .",
+            "args": ["--skip-string-normalization"]
         },
         {
             "label": "pylint",

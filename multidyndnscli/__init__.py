@@ -24,15 +24,25 @@ class RouterNotReachableException(Exception):
 class Host:
     _name: str
     _router: 'Router'
-    _current_fqdn_dns_ipv4: Optional[IPAddress]  # The IPv4 the FQDN is currently pointing to (if any)
-    _current_fqdn_dns_ipv6_set: Set[IPAddress]   # The set of IPv6 the FQDN is currently pointing to (if any)
-    _host_ipv4: Optional[IPAddress]   # The IPv4 the host is currently using (if any)
-    _host_ipv6_set: Set[IPAddress]    # The set of IPv6 the host is currently using (if any)
+    _current_fqdn_dns_ipv4: Optional[
+        IPAddress
+    ]  # The IPv4 the FQDN is currently pointing to (if any)
+    _current_fqdn_dns_ipv6_set: Set[
+        IPAddress
+    ]  # The set of IPv6 the FQDN is currently pointing to (if any)
+    _host_ipv4: Optional[IPAddress]  # The IPv4 the host is currently using (if any)
+    _host_ipv6_set: Set[
+        IPAddress
+    ]  # The set of IPv6 the host is currently using (if any)
 
-    def __init__(self, router: 'Router', name: str, fqdn: str, 
-                 public_ipv4_method: Optional[str],
-                 public_ipv6_method: Optional[str],
-                 ):
+    def __init__(
+        self,
+        router: 'Router',
+        name: str,
+        fqdn: str,
+        public_ipv4_method: Optional[str],
+        public_ipv6_method: Optional[str],
+    ):
         self._router = router
         self._name = name
         self._fqdn = fqdn
@@ -47,15 +57,16 @@ class Host:
             self._get_host_ipv6_set(public_ipv6_method)
             if len(self._host_ipv6_set) > 0:
                 self._get_current_fqdn_dns_ipv6_set()
-    
+
     @staticmethod
-    def from_config(router: 'Router', host_config)->'Host':
+    def from_config(router: 'Router', host_config) -> 'Host':
         public_ip_methods = host_config['public_ip_methods']
-        return Host(router, 
+        return Host(
+            router,
             host_config['name'],
             host_config['fqdn'],
             public_ip_methods.get('ipv4', None),
-            public_ip_methods.get('ipv6', None)
+            public_ip_methods.get('ipv6', None),
         )
 
     def _get_current_fqdn_dns_ipv4(self):
@@ -161,12 +172,13 @@ class Domain:
     _key_last_update: Final[str] = 'last_updated'
     _host_list: List[Host]
 
-    def __init__(self,
+    def __init__(
+        self,
         updater: 'Updater',
         router: 'Router',
         domain_name: str,
         dns_provider: 'DNSProvider',
-        delay: int=0
+        delay: int = 0,
     ):
         self._updater = updater
         self._router = router
@@ -179,19 +191,21 @@ class Domain:
         self._last_update = None
         # Initialize values from cache if any
         self._read_from_cache()
-    
+
     @staticmethod
     def from_config(
-            updater: 'Updater',
-            router: 'Router',
-            dns_providers: Dict[str, 'DNSProvider'],
-            domain_config)->'Domain':
+        updater: 'Updater',
+        router: 'Router',
+        dns_providers: Dict[str, 'DNSProvider'],
+        domain_config,
+    ) -> 'Domain':
         dns_provider = dns_providers[domain_config['dns-provider']]
-        domain = Domain(updater, 
-            router, 
+        domain = Domain(
+            updater,
+            router,
             domain_config['name'],
             dns_provider,
-            domain_config.get('delay', 0)
+            domain_config.get('delay', 0),
         )
         hosts_config = domain_config['hosts']
         for host_config in hosts_config:
@@ -199,10 +213,9 @@ class Domain:
             domain.add_host(host)
         return domain
 
-
     def add_host(self, host: Host):
         self._host_list.append(host)
-    
+
     def _read_from_cache(self):
         domain_cache = self._updater.get_cache_domain(self._domain_name)
         if self._key_last_update in domain_cache:
@@ -289,19 +302,18 @@ class Router:
             self._ipv4 = self._get_public_ipv4(router_ipv4_config)
         except RouterNotReachableException as exc:
             raise exc
-        #logging.info(f'Router has external IPv4: {self._ipv4}')
+        # logging.info(f'Router has external IPv4: {self._ipv4}')
         try:
             self._ipv6 = self._get_public_ipv6(router_ipv6_config)
         except RouterNotReachableException as exc:
             raise exc
-        #logging.info(f'Router has external IPv6: {self._ipv6}')
+        # logging.info(f'Router has external IPv6: {self._ipv6}')
 
     @staticmethod
     def from_config(router_config):
         router_ipv4_config = router_config.get('ipv4', None)
         router_ipv6_config = router_config.get('ipv6', None)
         return Router(router_ipv4_config, router_ipv6_config)
-
 
     def _get_public_ipv4(self, ipv4_config) -> netaddr.IPAddress:
         if ipv4_config is None:
@@ -457,7 +469,9 @@ class Updater:
             router = Router.from_config(self._config['router'])
             domain_config_list = self._config['domains']
             for domain_config_dict in domain_config_list:
-                domain = Domain.from_config(self, router, dns_providers, domain_config_dict)
+                domain = Domain.from_config(
+                    self, router, dns_providers, domain_config_dict
+                )
                 domain.update(dry_run)
         except RouterNotReachableException as e:
             logging.error(e)
