@@ -62,6 +62,48 @@ testdata_update_records_combined = testdata_update_record_ipv4 + \
 testdata_update_records_combined_with_ids = testdata_update_record_ipv4_with_id + \
   testdata_update_record_ipv6_with_id
 
+testdata_router_method_web = {
+    'ipv4': {
+        'enabled': True,
+        'method': 'web',
+        'url': 'http://mock-me.invalid'
+    },
+    'ipv6': {
+        'enabled': True,
+        'method': 'wan',
+        'wan_interface': 'eth9'
+    }
+}
+
+testdata_router_method_wan = {
+    'ipv4': {
+        'enabled': True,
+        'method': 'wan',
+        'wan_interface': 'eth9',
+    },
+    'ipv6': {
+        'enabled': True,
+        'method': 'wan',
+        'wan_interface': 'eth9'
+    }
+}
+
+testdata_router_method_fritz_box = {
+    'ipv4': {
+        'enabled': True,
+        'method': "fritzbox",
+        'fritzbox': {
+            'address': '192.168.0.1',
+            'tls': False
+        }
+    },
+    'ipv6': {
+        'enabled': True,
+        'method': 'wan',
+        'wan_interface': 'eth9'
+    }
+}
+
 
 def get_mock_ip_helper(mocker):
   resolved_ipv4 = mocker.stub()
@@ -639,16 +681,20 @@ def test_domain_update_delay(mocker):
   dns_provider_mock.update_domain.assert_not_called()
 
 # This methods checks that the list of DNSrecords is equal, including their IDs!
+
+
 class DNSRecordIdMatcher:
-     def __init__(self, expected_records: List[DNSRecord]):
-         self.expected_records = expected_records
-     def __eq__(self, records: List[DNSRecord]):
-        if self.expected_records != records:
-            return False
-        for my_rec, other_rec in zip(self.expected_records, records):
-          if not my_rec.id == other_rec.id:
-            return False
-        return True
+  def __init__(self, expected_records: List[DNSRecord]):
+    self.expected_records = expected_records
+
+  def __eq__(self, records: List[DNSRecord]):
+    if self.expected_records != records:
+      return False
+    for my_rec, other_rec in zip(self.expected_records, records):
+      if not my_rec.id == other_rec.id:
+        return False
+    return True
+
 
 def test_domain_update_ipv4_without_record_id(mocker):
   updater_mock = MagicMock(spec=multidyndnscli.Updater)
@@ -725,6 +771,8 @@ def test_domain_update_ipv6_without_record_id(mocker):
     ANY, testdata_update_record_ipv6)
 
 # Check that existing DNS records are found and properly updated using their ID instead of being replaced
+
+
 def test_domain_update_ipv6_with_record_id(mocker):
   updater_mock = MagicMock(spec=multidyndnscli.Updater)
   updater_mock.get_cache_domain = Mock(return_value={})
@@ -777,6 +825,8 @@ def test_domain_update_ipv4_ipv6_without_ids(mocker):
     ANY, testdata_update_records_combined)
 
 # Check that existing DNS records are found and properly updated using their ID instead of being replaced
+
+
 def test_domain_update_ipv4_ipv6_with_ids(mocker):
   updater_mock = MagicMock(spec=multidyndnscli.Updater)
   updater_mock.get_cache_domain = Mock(return_value={})
@@ -802,6 +852,7 @@ def test_domain_update_ipv4_ipv6_with_ids(mocker):
   dns_provider_mock.update_domain.assert_called_once_with(
     ANY, DNSRecordIdMatcher(testdata_update_records_combined_with_ids))
 
+
 def test_domain_update_dry_run(mocker):
   updater_mock = MagicMock(spec=multidyndnscli.Updater)
   updater_mock.get_cache_domain = Mock(return_value={})
@@ -825,3 +876,13 @@ def test_domain_update_dry_run(mocker):
   domain.add_host(host_mock)
   domain.update(dry_run=True)
   dns_provider_mock.update_domain.assert_not_called()
+
+
+def test_router_init_called_from_config(mocker):
+    init_mock = Mock(return_value=None)
+    mocker.patch.object(multidyndnscli.Router, '__init__', init_mock)
+    router = multidyndnscli.Router.from_config(testdata_router_method_web)
+    init_mock.assert_called_once_with(testdata_router_method_web['ipv4'], testdata_router_method_web['ipv6'])
+
+def test_router_init(mocker):
+  pass

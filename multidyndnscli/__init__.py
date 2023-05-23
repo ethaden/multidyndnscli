@@ -292,17 +292,21 @@ class Domain:
 
 
 class Router:
-    _ipv4: Optional[IPAddress] = None
-    _ipv6: Optional[IPAddress] = None
-    _wan_interface_ipv4: Optional[str] = None
-    _wan_interface_ipv6: Optional[str] = None
+    _ipv4: Optional[IPAddress]
+    _ipv6: Optional[IPAddress]
+    _wan_interface_ipv4: Optional[str]
+    _wan_interface_ipv6: Optional[str]
 
     def __init__(self, router_ipv4_config, router_ipv6_config):
+        self._ipv4 = None
+        self._wan_interface_ipv4 = None
         try:
             self._ipv4 = self._get_public_ipv4(router_ipv4_config)
         except RouterNotReachableException as exc:
             raise exc
         # logging.info(f'Router has external IPv4: {self._ipv4}')
+        self._ipv6 = None
+        self._wan_interface_ipv6 = None
         try:
             self._ipv6 = self._get_public_ipv6(router_ipv6_config)
         except RouterNotReachableException as exc:
