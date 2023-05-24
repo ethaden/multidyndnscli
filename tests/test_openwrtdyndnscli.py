@@ -1,11 +1,13 @@
 import datetime
 from typing import List
-from unittest.mock import MagicMock, Mock, ANY
+from unittest.mock import MagicMock, Mock, ANY, PropertyMock
 import dns
 from netaddr import IPAddress
 import pytest
 import multidyndnscli
 from nc_dnsapi import DNSRecord
+import fritzconnection
+import fritzconnection.lib.fritzstatus
 
 testdata_host_config_target_address_from_router = {
     'name': 'test-name',
@@ -70,8 +72,8 @@ testdata_router_method_web = {
     },
     'ipv6': {
         'enabled': True,
-        'method': 'wan',
-        'wan_interface': 'eth9'
+        'method': 'web',
+        'url': 'http://mock-me-v6.invalid'
     }
 }
 
@@ -879,10 +881,116 @@ def test_domain_update_dry_run(mocker):
 
 
 def test_router_init_called_from_config(mocker):
-    init_mock = Mock(return_value=None)
-    mocker.patch.object(multidyndnscli.Router, '__init__', init_mock)
-    router = multidyndnscli.Router.from_config(testdata_router_method_web)
-    init_mock.assert_called_once_with(testdata_router_method_web['ipv4'], testdata_router_method_web['ipv6'])
+  init_mock = Mock(return_value=None)
+  mocker.patch.object(multidyndnscli.Router, '__init__', init_mock)
+  router = multidyndnscli.Router.from_config(testdata_router_method_web)
+  init_mock.assert_called_once_with(
+    testdata_router_method_web['ipv4'], testdata_router_method_web['ipv6'])
 
-def test_router_init(mocker):
-  pass
+
+def test_router_init_neither_ipv4_nor_ipv6(mocker):
+  router = multidyndnscli.Router(None, None)
+  assert router.ipv4 == None
+  assert router.ipv6 == None
+  assert not router.use_ipv4
+  assert not router.use_ipv6
+
+
+def test_router_init_ipv4_exception(mocker):
+  mocker.patch('requests.get', return_value=None)
+  with pytest.raises(Exception):
+      router = multidyndnscli.Router(testdata_router_method_web['ipv4'], None)
+
+def test_router_init_ipv6_exception(mocker):
+  mocker.patch('requests.get', return_value=None)
+  with pytest.raises(Exception):
+      router = multidyndnscli.Router(None, testdata_router_method_web['ipv6'])
+
+def test_router_init_ipv4_web_invalid_exception(mocker):
+  requests_response = Mock()
+  requests_response.text = 'invalid-ip-address'
+  mocker.patch('requests.get', return_value=requests_response)
+  with pytest.raises(Exception):
+      router = multidyndnscli.Router(testdata_router_method_web['ipv4'], None)
+
+def test_router_init_ipv6_web_invalid_exception(mocker):
+  requests_response = Mock()
+  requests_response.text = 'invalid-ip-address'
+  mocker.patch('requests.get', return_value=requests_response)
+  with pytest.raises(Exception):
+      router = multidyndnscli.Router(None, testdata_router_method_web['ipv6'])
+
+def test_router_init_ipv4_web(mocker):
+  requests_response = Mock()
+  requests_response.text = testdata_ipv4
+  mocker.patch('requests.get', return_value=requests_response)
+  router = multidyndnscli.Router(testdata_router_method_web['ipv4'], None)
+  assert router.ipv4 == IPAddress(testdata_ipv4)
+  assert router.ipv6 == None
+  assert router.use_ipv4
+  assert not router.use_ipv6
+
+
+def test_router_init_ipv6_web(mocker):
+  requests_response = Mock()
+  requests_response.text = testdata_ipv6
+  mocker.patch('requests.get', return_value=requests_response)
+  router = multidyndnscli.Router(None, testdata_router_method_web['ipv6'])
+  assert router.ipv4 == None
+  assert router.ipv6 == IPAddress(testdata_ipv6)
+  assert not router.use_ipv4
+  assert router.use_ipv6
+
+def test_router_init_both_web(mocker):
+  called_once = False
+  requests_response_ipv4 = Mock()
+  requests_response_ipv4.text = testdata_ipv4
+  requests_response_ipv6 = Mock()
+  requests_response_ipv6.text = testdata_ipv6
+  # Return IPv4 on first call, IPv6 on second
+  mocker.patch('requests.get', side_effect=[requests_response_ipv4, requests_response_ipv6])
+  router = multidyndnscli.Router(testdata_router_method_web['ipv4'], testdata_router_method_web['ipv6'])
+  assert router.ipv4 == IPAddress(testdata_ipv4)
+  assert router.ipv6 == IPAddress(testdata_ipv6)
+  assert router.use_ipv4
+  assert router.use_ipv6
+
+def test_router_init_ipv4_wan_no_ip(mocker):
+  mocker.patch('multidyndnscli.util.get_ipv4_addresses_linux', return_value=[])
+  router = multidyndnscli.Router(testdata_router_method_wan['ipv4'], None)
+  assert router.ipv4 == None
+  assert router.ipv6 == None
+
+def test_router_init_ipv4_wan(mocker):
+  mocker.patch('multidyndnscli.util.get_ipv4_addresses_linux', return_value=[IPAddress(testdata_ipv4)])
+  router = multidyndnscli.Router(testdata_router_method_wan['ipv4'], None)
+  assert router.ipv4 == IPAddress(testdata_ipv4)
+  assert router.ipv6 == None
+
+def test_router_init_ipv6_wan_no_ip(mocker):
+  mocker.patch('multidyndnscli.util.get_ipv6_addresses_linux', return_value=[])
+  router = multidyndnscli.Router(None, testdata_router_method_wan['ipv6'])
+  assert router.ipv4 == None
+  assert router.ipv6 == None
+
+def test_router_init_ipv6_wan(mocker):
+  mocker.patch('multidyndnscli.util.get_ipv6_addresses_linux', return_value=[IPAddress(testdata_ipv6)])
+  router = multidyndnscli.Router(None, testdata_router_method_wan['ipv6'])
+  assert router.ipv4 == None
+  assert router.ipv6 == IPAddress(testdata_ipv6)
+
+""" def test_router_init_ipv4_fritzbox(mocker):
+  def connection_init_mock(address, use_tlx):
+    return None
+  fritz_connection_mocker = Mock(return_value=None)
+  #fritz_status_mocker = Mock(return_value=None)
+  #fritz_status_mocker.external_ip = Mock(return_value=testdata_ipv4)
+  connection_mock = mocker.patch('fritzconnection.FritzConnection')
+  status_mock = mocker.patch('fritzconnection.lib.fritzstatus.FritzStatus')
+  extern_ip_mock = mocker.patch('fritzconnection.lib.fritzstatus.FritzStatus.external_ip', new_callable=PropertyMock)
+  extern_ip_mock.return_value = Mock(return_value=testdata_ipv4)
+  #status_mock.external_ip = testdata_ipv4
+  router = multidyndnscli.Router(testdata_router_method_fritz_box['ipv4'], None)
+  assert router.ipv4 == IPAddress(testdata_ipv4)
+  assert router.ipv6 == None
+ """

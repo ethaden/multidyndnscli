@@ -11,6 +11,12 @@ from nc_dnsapi import Client, DNSRecord  # type: ignore
 from abc import ABC, abstractmethod
 from . import util
 from .schemata import get_config_file_schema
+import fritzconnection # type: ignore
+import fritzconnection.lib.fritzstatus # type: ignore
+import fritzconnection.core.exceptions # type: ignore
+#from fritzconnection import FritzConnection  # type: ignore
+#from fritzconnection.lib.fritzstatus import FritzStatus  # type: ignore
+#from fritzconnection.core.exceptions import FritzConnectionException  # type: ignore
 
 
 class NetworkAddressException(Exception):
@@ -294,23 +300,19 @@ class Domain:
 class Router:
     _ipv4: Optional[IPAddress]
     _ipv6: Optional[IPAddress]
-    _wan_interface_ipv4: Optional[str]
-    _wan_interface_ipv6: Optional[str]
 
     def __init__(self, router_ipv4_config, router_ipv6_config):
         self._ipv4 = None
-        self._wan_interface_ipv4 = None
         try:
             self._ipv4 = self._get_public_ipv4(router_ipv4_config)
-        except RouterNotReachableException as exc:
-            raise exc
+        except Exception as exc:
+            raise Exception('Exception occurred while identifying public IPv4 address of the router') from exc
         # logging.info(f'Router has external IPv4: {self._ipv4}')
         self._ipv6 = None
-        self._wan_interface_ipv6 = None
         try:
             self._ipv6 = self._get_public_ipv6(router_ipv6_config)
-        except RouterNotReachableException as exc:
-            raise exc
+        except Exception as exc:
+            raise Exception('Exception occurred while identifying public IPv6 address of the router') from exc
         # logging.info(f'Router has external IPv6: {self._ipv6}')
 
     @staticmethod
@@ -333,26 +335,22 @@ class Router:
                     f'Unable to determine external IPv4 of router through website {url}'
                 )
         elif ipv4_config['method'] == 'wan':
-            self._wan_interface_ipv4 = ipv4_config['wan_interface']
-            ipv4_list = util.get_ipv4_addresses_linux(self._wan_interface_ipv4)
+            wan_interface_ipv4 = ipv4_config['wan_interface']
+            ipv4_list = util.get_ipv4_addresses_linux(wan_interface_ipv4)
             # Return first address if any
             return None if len(ipv4_list) == 0 else ipv4_list[0]
         elif ipv4_config['method'] == 'fritzbox':
-            from fritzconnection import FritzConnection  # type: ignore
-            from fritzconnection.lib.fritzstatus import FritzStatus  # type: ignore
-            from fritzconnection.core.exceptions import FritzConnectionException  # type: ignore
-
             fritzbox_config = ipv4_config['fritzbox']
             fritz_ip = fritzbox_config.get('address')
             fritz_tls = fritzbox_config.get('tls', False)
             try:
-                fc = FritzConnection(address=fritz_ip, use_tls=fritz_tls)
-                status = FritzStatus(fc)
-            except FritzConnectionException as exc:
+                fc = fritzconnection.FritzConnection(address=fritz_ip, use_tls=fritz_tls)
+                status = fritzconnection.lib.fritzstatus.FritzStatus(fc)
+            except fritzconnection.core.exceptions.FritzConnectionException as exc:
                 raise RouterNotReachableException(
                     'Unable to connect to Fritz!Box'
                 ) from exc
-            return status.external_ip
+            return util.get_valid_ip(status.external_ip)
         return None
 
     def _get_public_ipv6(self, ipv6_config) -> Optional[str]:
@@ -369,8 +367,8 @@ class Router:
                     f'Unable to determine external IPv6 of router through website {url}'
                 )
         elif ipv6_config['method'] == 'wan':
-            self._wan_interface_ipv6 = ipv6_config['wan_interface']
-            ipv6_list = util.get_ipv6_addresses_linux(self._wan_interface_ipv6)
+            wan_interface_ipv6 = ipv6_config['wan_interface']
+            ipv6_list = util.get_ipv6_addresses_linux(wan_interface_ipv6)
             # Return first address if any
             return None if len(ipv6_list) == 0 else ipv6_list[0]
         return None
