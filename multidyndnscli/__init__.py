@@ -14,9 +14,6 @@ from .schemata import get_config_file_schema
 import fritzconnection # type: ignore
 import fritzconnection.lib.fritzstatus # type: ignore
 import fritzconnection.core.exceptions # type: ignore
-#from fritzconnection import FritzConnection  # type: ignore
-#from fritzconnection.lib.fritzstatus import FritzStatus  # type: ignore
-#from fritzconnection.core.exceptions import FritzConnectionException  # type: ignore
 
 
 class NetworkAddressException(Exception):
@@ -348,10 +345,10 @@ class Router:
                 status = fritzconnection.lib.fritzstatus.FritzStatus(fc)
             except fritzconnection.core.exceptions.FritzConnectionException as exc:
                 raise RouterNotReachableException(
-                    'Unable to connect to Fritz!Box'
+                    'Unable to connect to Fritz!Box while querying external IPv4'
                 ) from exc
             return util.get_valid_ip(status.external_ip)
-        return None
+        raise Exception('Did not find a supported method for getting the public Ipv4!')
 
     def _get_public_ipv6(self, ipv6_config) -> Optional[str]:
         if ipv6_config is None:
@@ -371,7 +368,19 @@ class Router:
             ipv6_list = util.get_ipv6_addresses_linux(wan_interface_ipv6)
             # Return first address if any
             return None if len(ipv6_list) == 0 else ipv6_list[0]
-        return None
+        elif ipv6_config['method'] == 'fritzbox':
+            fritzbox_config = ipv6_config['fritzbox']
+            fritz_ip = fritzbox_config.get('address')
+            fritz_tls = fritzbox_config.get('tls', False)
+            try:
+                fc = fritzconnection.FritzConnection(address=fritz_ip, use_tls=fritz_tls)
+                status = fritzconnection.lib.fritzstatus.FritzStatus(fc)
+            except fritzconnection.core.exceptions.FritzConnectionException as exc:
+                raise RouterNotReachableException(
+                    'Unable to connect to Fritz!Box while querying external IPv6'
+                ) from exc
+            return util.get_valid_ip(status.external_ipv6)
+        raise Exception('Did not find a supported method for getting the public Ipv6!')
 
     @property
     def ipv4(self):
@@ -395,18 +404,44 @@ class DNSProvider(ABC):
 
     @abstractmethod
     def fetch_domain(self, domain: Domain) -> List[DNSRecord]:
-        pass
+        """Abstract method for fetching domain data from the DNS provider
+
+        Parameters
+        ----------
+        domain : Domain
+            The domain object to fetch data from.
+
+        Returns
+        -------
+        List[DNSRecord]
+            A list of DNS records fetched from the DNS provider which could be updated.
+        """        
 
     @abstractmethod
     def update_domain(self, domain: Domain, records: List[DNSRecord]):
-        pass
+        """Abstract method for updating the provided list of records in the provided domain 
+
+        Parameters
+        ----------
+        domain : Domain
+            The domain to update.
+        records : List[DNSRecord]
+            A list of DNS records to set in DNS of the provided domain
+        """
 
 
 class Netcup(DNSProvider):
-    def __init__(self, config):
-        self._userid = int(config['userid'])
-        self._apikey = config['apikey']
-        self._apipass = config['apipass']
+    def __init__(self, userid, apikey, apipass):
+        self._userid = userid
+        self._apikey = apikey
+        self._apipass = apipass
+
+    @staticmethod
+    def from_config(config: Dict[str, str])->'Netcup':
+        userid = int(config['userid'])
+        apikey = config['apikey']
+        apipass = config['apipass']
+        return Netcup(userid, apikey, apipass)
 
     def fetch_domain(self, domain: Domain) -> List[DNSRecord]:
         with Client(self._userid, self._apikey, self._apipass) as api:
@@ -467,7 +502,7 @@ class Updater:
                 name = provider['name']
                 provider_type = provider['type'].lower()
                 if provider_type == 'netcup':
-                    dns_providers[name] = Netcup(provider)
+                    dns_providers[name] = Netcup.from_config(provider)
             router = Router.from_config(self._config['router'])
             domain_config_list = self._config['domains']
             for domain_config_dict in domain_config_list:
