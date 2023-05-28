@@ -135,15 +135,23 @@ def resolve_mock_helper(
 ):
     if req_name == host_name:
         if rdtype == dns.rdatatype.A:
+            if isinstance (host_ipv4, Exception):
+                raise host_ipv4
             return host_ipv4
         else:
+            if isinstance (host_ipv6_set, Exception):
+                raise host_ipv6_set
             return host_ipv6_set
     elif req_name == fqdn:
         if rdtype == dns.rdatatype.A:
+            if isinstance (fqdn_dns_ipv4, Exception):
+                raise fqdn_dns_ipv4
             return fqdn_dns_ipv4
         else:
+            if isinstance (fqdn_dns_ipv6_set, Exception):
+                raise fqdn_dns_ipv6_set
             return fqdn_dns_ipv6_set
-    raise Exception(f'Unable to serve request to resolve name {req_name}')
+    raise ValueError(f'Unable to serve request to resolve name {req_name}')
 
 
 def test_class_host_from_config(mocker):
@@ -297,8 +305,8 @@ def test_class_host_init_exception_for_resolving_current_ips(mocker):
             testdata_host_config_target_address_from_local_dns['fqdn'],
             resolved_ipv4,
             resolved_ipv6,
-            Exception('Test'),
-            Exception('Test'),
+            ValueError('Test'),
+            ValueError('Test'),
         ),
     )
     host = multidyndnscli.Host(
@@ -329,7 +337,7 @@ def test_class_host_init_exception_for_resolving_host_ipv4(mocker):
             rdtype,
             testdata_host_config_target_address_from_local_dns['name'],
             testdata_host_config_target_address_from_local_dns['fqdn'],
-            Exception('Test'),
+            ValueError('Test'),
             resolved_ipv6,
             resolved_ipv4,
             resolved_ipv6,
@@ -367,7 +375,7 @@ def test_class_host_init_exception_for_resolving_host_ipv6(mocker):
             testdata_host_config_target_address_from_local_dns['name'],
             testdata_host_config_target_address_from_local_dns['fqdn'],
             resolved_ipv4,
-            Exception('Test'),
+            ValueError('Test'),
             resolved_ipv4,
             resolved_ipv6,
         ),
@@ -605,7 +613,7 @@ def test_domain_init_from_config(mocker):
     updater_mock = MagicMock(spec=multidyndnscli.Updater)
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
-        return_value={multidyndnscli.Domain._key_last_update: datetime_now}
+        return_value={multidyndnscli.KEY_LAST_UPDATE: datetime_now}
     )
     router_mock = MagicMock(spec=multidyndnscli.Router)
     dns_provider_mock = MagicMock(spec=multidyndnscli.DNSProvider)
@@ -674,7 +682,7 @@ def test_domain_update_delay(mocker):
     delay = 10000
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
-        return_value={multidyndnscli.Domain._key_last_update: datetime_now}
+        return_value={multidyndnscli.KEY_LAST_UPDATE: datetime_now}
     )
     domain = multidyndnscli.Domain(
         updater_mock, router_mock, testdata_domain_name, dns_provider_mock, delay
@@ -713,7 +721,7 @@ def test_domain_update_ipv4_without_record_id(mocker):
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
-        return_value={multidyndnscli.Domain._key_last_update: datetime_now}
+        return_value={multidyndnscli.KEY_LAST_UPDATE: datetime_now}
     )
     domain = multidyndnscli.Domain(
         updater_mock, router_mock, testdata_domain_name, dns_provider_mock, delay
@@ -742,7 +750,7 @@ def test_domain_update_ipv4_with_record_id(mocker):
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
-        return_value={multidyndnscli.Domain._key_last_update: datetime_now}
+        return_value={multidyndnscli.KEY_LAST_UPDATE: datetime_now}
     )
     domain = multidyndnscli.Domain(
         updater_mock, router_mock, testdata_domain_name, dns_provider_mock, delay
@@ -767,7 +775,7 @@ def test_domain_update_ipv6_without_record_id(mocker):
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
-        return_value={multidyndnscli.Domain._key_last_update: datetime_now}
+        return_value={multidyndnscli.KEY_LAST_UPDATE: datetime_now}
     )
     domain = multidyndnscli.Domain(
         updater_mock, router_mock, testdata_domain_name, dns_provider_mock, delay
@@ -798,7 +806,7 @@ def test_domain_update_ipv6_with_record_id(mocker):
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
-        return_value={multidyndnscli.Domain._key_last_update: datetime_now}
+        return_value={multidyndnscli.KEY_LAST_UPDATE: datetime_now}
     )
     domain = multidyndnscli.Domain(
         updater_mock, router_mock, testdata_domain_name, dns_provider_mock, delay
@@ -824,7 +832,7 @@ def test_domain_update_ipv4_ipv6_without_ids(mocker):
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
-        return_value={multidyndnscli.Domain._key_last_update: datetime_now}
+        return_value={multidyndnscli.KEY_LAST_UPDATE: datetime_now}
     )
     domain = multidyndnscli.Domain(
         updater_mock, router_mock, testdata_domain_name, dns_provider_mock, delay
@@ -855,7 +863,7 @@ def test_domain_update_ipv4_ipv6_with_ids(mocker):
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
-        return_value={multidyndnscli.Domain._key_last_update: datetime_now}
+        return_value={multidyndnscli.KEY_LAST_UPDATE: datetime_now}
     )
     domain = multidyndnscli.Domain(
         updater_mock, router_mock, testdata_domain_name, dns_provider_mock, delay
@@ -883,7 +891,7 @@ def test_domain_update_dry_run(mocker):
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
-        return_value={multidyndnscli.Domain._key_last_update: datetime_now}
+        return_value={multidyndnscli.KEY_LAST_UPDATE: datetime_now}
     )
     domain = multidyndnscli.Domain(
         updater_mock, router_mock, testdata_domain_name, dns_provider_mock, delay

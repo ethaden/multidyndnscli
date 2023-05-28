@@ -7,7 +7,7 @@
     //"build": { "dockerfile": "Dockerfile" },
     "customizations": {
         "vscode": {
-          "extensions": ["ms-python.python", "ryanluker.vscode-coverage-gutters", "github.vscode-github-actions"]
+          "extensions": ["ms-python.python", "ryanluker.vscode-coverage-gutters", "github.vscode-github-actions", "njpwerner.autodocstring"]
         }
       },
     "features": {

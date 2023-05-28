@@ -41,6 +41,20 @@ pyenv versions
 ### Installing `poetry`
 This project use based on `poetry`. You can install `poetry` by following the instructions on the poetry website https://python-poetry.org/.
 
+### Install all packages with poetry
+
+For development including tools for generating documentation, use:
+
+```
+poetry install -E docs
+```
+
+For installing only the packages required to run the tool, use:
+
+```
+poetry install --without dev
+```
+
 ### Installing pre-commit
 Run the following to enable python pre-commit:
 ```
@@ -64,13 +78,28 @@ poetry run pytest
 ```
 
 ### Running code formatter
+
 ```
-poetry run black .
+poetry run black --skip-string-normalization .
 ```
+
+Alternatively, run formatter with tox:
+
+```
+tox -e format
+```
+
 ### Run linter
 ```
 poetry run pylint multidyndnscli
 ```
+
+Alternatively, run linter with tox:
+
+```
+tox -e linter
+```
+
 
 ### Running code analysis with mypy
 ```
