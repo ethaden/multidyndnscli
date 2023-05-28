@@ -15,6 +15,7 @@ import fritzconnection  # type: ignore
 import fritzconnection.lib.fritzstatus  # type: ignore
 import fritzconnection.core.exceptions  # type: ignore
 
+CACHE_FILE_NAME = 'multidyndns.cache'
 
 class NetworkAddressException(Exception):
     pass
@@ -475,9 +476,10 @@ class Updater:
     _domains: List[Domain]
 
     def __init__(self, cache_dir: Path = None):
-        self._cache_dir = None
+        self._cache_dir = cache_dir
         self._dns_providers = {}
         self._domains = []
+        self._cache = {}
 
     @staticmethod
     def from_config(config) -> 'Updater':
@@ -523,6 +525,10 @@ class Updater:
         self._domains.append(domain)
 
     @property
+    def domains(self):
+        return self._domains
+
+    @property
     def cache_dir(self):
         return self._cache_dir
 
@@ -530,29 +536,27 @@ class Updater:
     def cache_dir(self, cache_dir: Path):
         self._cache_dir = cache_dir
 
-    @property
-    def cache_dir(self):
-        return self._cache_dir
-
-    def read_cache(self, cache_file: Path):
-        self._cache_file = cache_file
-        if cache_file is not None and cache_file.exists():
+    def read_cache(self):
+        if self._cache_dir is None:
+            return
+        self._cache_file = self._cache_dir / Path(CACHE_FILE_NAME)
+        if self._cache_file is not None and self._cache_file.exists():
             with open(self._cache_file, 'r') as f:
                 self._cache = yaml.safe_load(f)
-                if self._cache is None:
+                if self._cache is None or self._cache == '':
                     self._cache = {}
 
-    def _write_cache(self):
+    def write_cache(self):
         if self._cache_file is not None:
             with open(self._cache_file, 'w') as f:
                 yaml.dump(self._cache, f)
 
-    def get_cache_domain(self, domain: str) -> Dict:
-        return self._cache.get(domain, {})
+    def get_cache_domain(self, domain_name: str) -> Dict:
+        return self._cache.get(domain_name, {})
 
     def update_cache_domain(self, domain: str, domain_cache):
         self._cache[domain] = domain_cache
-        self._write_cache()
+        self.write_cache()
 
     def update(self, dry_run: bool = False) -> int:
         for domain in self._domains:
