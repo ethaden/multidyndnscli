@@ -447,7 +447,6 @@ class Netcup(DNSProvider):
         with Client(self._userid, self._apikey, self._apipass) as api:
             # fetch records
             return api.dns_records(domain.domain_name)
-        return []
 
     def update_domain(self, domain: Domain, records: List[DNSRecord]):
         with Client(self._userid, self._apikey, self._apipass) as api:
@@ -462,21 +461,74 @@ class Netcup(DNSProvider):
 
 class Updater:
     _config: Dict[str, Any]
-    _cache_file: Optional[Path] = None
+    _cache_file: Optional[Path]
     _cache: Dict[str, Any]
+    _dns_providers: Dict[str, DNSProvider]
+    _domains: List[Domain]
 
-    def __init__(self, config):
-        self._config = config
-        if 'common' in self._config:
-            if 'cache_dir' in self._config['common']:
-                cache_dir_str = self._config['common']['cache_dir']
-                cache_dir = Path(cache_dir_str)
-                if cache_dir.exists() or cache_dir.is_dir():
-                    self._cache_file = cache_dir / 'cache.json'
-                    self._read_cache()
+    def __init__(self, cache_dir: Path=None):
+        self._cache_dir = None
+        self._dns_providers = {}
+        self._domains = []
 
-    def _read_cache(self):
-        if self._cache_file is not None and self._cache_file.exists():
+    @staticmethod
+    def from_config(config)->'Updater':
+        cache_dir = None
+        common_config = config.get('common', None)
+        if common_config is not None:
+                cache_dir_str = common_config.get('cache_dir', None)
+                if cache_dir_str is not None:
+                    cache_dir_candidate = Path(cache_dir_str)
+                    if cache_dir_candidate.exists() or cache_dir_candidate.is_dir():
+                        cache_dir = cache_dir_candidate
+        updater = Updater(cache_dir)
+        updater.read_cache()
+
+        try:
+            dns_provider_list = config['dns-providers']
+            for provider in dns_provider_list:
+                name = provider['name']
+                provider_type = provider['type'].lower()
+                if provider_type == 'netcup':
+                    updater.add_dns_provider(name, Netcup.from_config(provider))
+            # Initialize router
+            router = Router.from_config(config['router'])
+            # Initialize domains
+            for domain_config_dict in config['domains']:
+                domain = Domain.from_config(
+                    updater, router, updater.dns_providers, domain_config_dict
+                )
+                updater.add_domain(domain)
+        except RouterNotReachableException as exc:
+            logging.error(exc)
+            raise Exception('Unable to initialize Updater') from exc
+        return updater
+    
+    def add_dns_provider(self, name: str, dns_provider: DNSProvider):
+        self._dns_providers[name] = dns_provider
+
+    @property
+    def dns_providers(self):
+        return self._dns_providers
+    
+    def add_domain(self, domain: Domain):
+        self._domains.append(domain)
+    
+    @property
+    def cache_dir(self):
+        return self._cache_dir
+    
+    @cache_dir.setter
+    def cache_dir(self, cache_dir: Path):
+        self._cache_dir = cache_dir
+    
+    @property
+    def cache_dir(self):
+        return self._cache_dir
+
+    def read_cache(self, cache_file: Path):
+        self._cache_file = cache_file
+        if cache_file is not None and cache_file.exists():
             with open(self._cache_file, 'r') as f:
                 self._cache = yaml.safe_load(f)
                 if self._cache is None:
@@ -495,22 +547,6 @@ class Updater:
         self._write_cache()
 
     def update(self, dry_run: bool = False) -> int:
-        try:
-            dns_provider_list = self._config['dns-providers']
-            dns_providers: Dict[str, DNSProvider] = {}
-            for provider in dns_provider_list:
-                name = provider['name']
-                provider_type = provider['type'].lower()
-                if provider_type == 'netcup':
-                    dns_providers[name] = Netcup.from_config(provider)
-            router = Router.from_config(self._config['router'])
-            domain_config_list = self._config['domains']
-            for domain_config_dict in domain_config_list:
-                domain = Domain.from_config(
-                    self, router, dns_providers, domain_config_dict
-                )
-                domain.update(dry_run)
-        except RouterNotReachableException as e:
-            logging.error(e)
-            return 1
+        for domain in self._domains:
+            domain.update(dry_run)
         return 0

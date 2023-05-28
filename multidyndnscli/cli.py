@@ -26,7 +26,7 @@ def run(args: Optional[List[str]] = None) -> int:
             config_file_schema = multidyndnscli.schemata.get_config_file_schema()
             try:
                 config_file_schema.validate(config)
-                updater = multidyndnscli.Updater(config)
+                updater = multidyndnscli.Updater.from_config(config)
                 return updater.update(dry_run)
             except Exception as exc:
                 logging.critical(f"An exception occurred: {exc}.\nExiting...")
