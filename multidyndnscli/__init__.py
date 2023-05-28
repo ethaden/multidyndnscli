@@ -17,9 +17,6 @@ import fritzconnection.core.exceptions  # type: ignore
 
 CACHE_FILE_NAME = 'multidyndns.cache'
 
-class NetworkAddressException(Exception):
-    pass
-
 
 class RouterNotReachableException(Exception):
     pass

@@ -106,27 +106,12 @@ testdata_dnsprovider_netcup = {
 
 # Incomplete test data used with mocks
 testdata_updater_config_mock = {
-    'common': {
-        'cache_dir': './test/cache_dir'
-    },
-    'dns-providers': [
-        { 'name': 'dns-provider-name',
-          'type': 'netcup'
-        }
-    ],
-    'router': {
-      'ipv4': {
-          'enabled'
-      }
-    },
-    'domains': [
-        { 
-            'name': 'test.invalid',
-            'dns-provider': 'Netcup',
-            'delay': 200
-        }
-    ]
+    'common': {'cache_dir': './test/cache_dir'},
+    'dns-providers': [{'name': 'dns-provider-name', 'type': 'netcup'}],
+    'router': {'ipv4': {'enabled'}},
+    'domains': [{'name': 'test.invalid', 'dns-provider': 'Netcup', 'delay': 200}],
 }
+
 
 def get_mock_ip_helper(mocker):
     resolved_ipv4 = mocker.stub()
@@ -1182,6 +1167,7 @@ def test_dnsprovider_netcup_update(mocker):
         domain.domain_name, testdata_update_records_combined_with_ids
     )
 
+
 def test_updater_constructor():
     # Without cache dir
     updater = multidyndnscli.Updater(None)
@@ -1193,6 +1179,7 @@ def test_updater_constructor():
     assert updater.dns_providers == {}
     assert updater.domains == []
 
+
 def test_updater_from_config_router_not_reachable_exception(mocker):
     # Mock Netcup DNS provider
     netcup_mock = MagicMock(spec=multidyndnscli.Netcup)
@@ -1200,7 +1187,9 @@ def test_updater_from_config_router_not_reachable_exception(mocker):
     mocker.patch('multidyndnscli.Netcup', netcup_mock)
     # Mock Router
     router_mock = Mock()
-    router_mock.from_config = Mock(side_effect=multidyndnscli.RouterNotReachableException())
+    router_mock.from_config = Mock(
+        side_effect=multidyndnscli.RouterNotReachableException()
+    )
     mocker.patch('multidyndnscli.Router', router_mock)
     # Mock Domain
     domain_mock = MagicMock(spec=multidyndnscli.Domain)
@@ -1208,6 +1197,7 @@ def test_updater_from_config_router_not_reachable_exception(mocker):
     mocker.patch('multidyndnscli.Domain', domain_mock)
     with pytest.raises(Exception):
         updater = multidyndnscli.Updater.from_config(testdata_updater_config_mock)
+
 
 def test_updater_from_config_without_cache_file(mocker):
     # Mock Netcup DNS provider
@@ -1223,13 +1213,28 @@ def test_updater_from_config_without_cache_file(mocker):
     domain_mock.from_config = Mock()
     mocker.patch('multidyndnscli.Domain', domain_mock)
     updater = multidyndnscli.Updater.from_config(testdata_updater_config_mock)
-    assert updater.dns_providers == { testdata_updater_config_mock['dns-providers'][0]['name']: netcup_mock.from_config.return_value}
-    netcup_mock.from_config.assert_called_once_with(testdata_updater_config_mock['dns-providers'][0])
-    router_mock.from_config.assert_called_once_with(testdata_updater_config_mock['router'])
-    domain_mock.from_config.assert_called_once_with(updater,
-                                                    router_mock.from_config.return_value,
-                                                    { testdata_updater_config_mock['dns-providers'][0]['name']: netcup_mock.from_config.return_value},
-                                                    testdata_updater_config_mock['domains'][0])
+    assert updater.dns_providers == {
+        testdata_updater_config_mock['dns-providers'][0][
+            'name'
+        ]: netcup_mock.from_config.return_value
+    }
+    netcup_mock.from_config.assert_called_once_with(
+        testdata_updater_config_mock['dns-providers'][0]
+    )
+    router_mock.from_config.assert_called_once_with(
+        testdata_updater_config_mock['router']
+    )
+    domain_mock.from_config.assert_called_once_with(
+        updater,
+        router_mock.from_config.return_value,
+        {
+            testdata_updater_config_mock['dns-providers'][0][
+                'name'
+            ]: netcup_mock.from_config.return_value
+        },
+        testdata_updater_config_mock['domains'][0],
+    )
+
 
 def test_updater_from_config_with_cache_dir_without_cache_file(mocker, tmp_path):
     # Mock Netcup DNS provider
@@ -1246,20 +1251,37 @@ def test_updater_from_config_with_cache_dir_without_cache_file(mocker, tmp_path)
     mocker.patch('multidyndnscli.Domain', domain_mock)
     testdata_updater_config_mock_with_cache_dir = testdata_updater_config_mock.copy()
     testdata_updater_config_mock_with_cache_dir['common']['cache_dir'] = str(tmp_path)
-    updater = multidyndnscli.Updater.from_config(testdata_updater_config_mock_with_cache_dir)
+    updater = multidyndnscli.Updater.from_config(
+        testdata_updater_config_mock_with_cache_dir
+    )
     assert updater.cache_dir == tmp_path
-    assert updater.dns_providers == { testdata_updater_config_mock_with_cache_dir['dns-providers'][0]['name']: netcup_mock.from_config.return_value}
-    netcup_mock.from_config.assert_called_once_with(testdata_updater_config_mock_with_cache_dir['dns-providers'][0])
-    router_mock.from_config.assert_called_once_with(testdata_updater_config_mock_with_cache_dir['router'])
-    domain_mock.from_config.assert_called_once_with(updater,
-                                                    router_mock.from_config.return_value,
-                                                    { testdata_updater_config_mock_with_cache_dir['dns-providers'][0]['name']: netcup_mock.from_config.return_value},
-                                                    testdata_updater_config_mock_with_cache_dir['domains'][0])
+    assert updater.dns_providers == {
+        testdata_updater_config_mock_with_cache_dir['dns-providers'][0][
+            'name'
+        ]: netcup_mock.from_config.return_value
+    }
+    netcup_mock.from_config.assert_called_once_with(
+        testdata_updater_config_mock_with_cache_dir['dns-providers'][0]
+    )
+    router_mock.from_config.assert_called_once_with(
+        testdata_updater_config_mock_with_cache_dir['router']
+    )
+    domain_mock.from_config.assert_called_once_with(
+        updater,
+        router_mock.from_config.return_value,
+        {
+            testdata_updater_config_mock_with_cache_dir['dns-providers'][0][
+                'name'
+            ]: netcup_mock.from_config.return_value
+        },
+        testdata_updater_config_mock_with_cache_dir['domains'][0],
+    )
     assert updater._cache == {}
+
 
 def test_updater_from_config_with_cache_dir_with_cache_file(mocker, tmp_path):
     cache_file = tmp_path / Path(multidyndnscli.CACHE_FILE_NAME)
-    test_cache_content = {'domain.invalid': { 'key': 'value' } }
+    test_cache_content = {'domain.invalid': {'key': 'value'}}
     with open(cache_file, 'w') as f:
         yaml.dump(test_cache_content, f)
     # Mock Netcup DNS provider
@@ -1276,35 +1298,65 @@ def test_updater_from_config_with_cache_dir_with_cache_file(mocker, tmp_path):
     mocker.patch('multidyndnscli.Domain', domain_mock)
     testdata_updater_config_mock_with_cache_dir = testdata_updater_config_mock.copy()
     testdata_updater_config_mock_with_cache_dir['common']['cache_dir'] = str(tmp_path)
-    updater = multidyndnscli.Updater.from_config(testdata_updater_config_mock_with_cache_dir)
+    updater = multidyndnscli.Updater.from_config(
+        testdata_updater_config_mock_with_cache_dir
+    )
     assert updater.cache_dir == tmp_path
-    assert updater.dns_providers == { testdata_updater_config_mock_with_cache_dir['dns-providers'][0]['name']: netcup_mock.from_config.return_value}
-    netcup_mock.from_config.assert_called_once_with(testdata_updater_config_mock_with_cache_dir['dns-providers'][0])
-    router_mock.from_config.assert_called_once_with(testdata_updater_config_mock_with_cache_dir['router'])
-    domain_mock.from_config.assert_called_once_with(updater,
-                                                    router_mock.from_config.return_value,
-                                                    { testdata_updater_config_mock_with_cache_dir['dns-providers'][0]['name']: netcup_mock.from_config.return_value},
-                                                    testdata_updater_config_mock_with_cache_dir['domains'][0])
+    assert updater.dns_providers == {
+        testdata_updater_config_mock_with_cache_dir['dns-providers'][0][
+            'name'
+        ]: netcup_mock.from_config.return_value
+    }
+    netcup_mock.from_config.assert_called_once_with(
+        testdata_updater_config_mock_with_cache_dir['dns-providers'][0]
+    )
+    router_mock.from_config.assert_called_once_with(
+        testdata_updater_config_mock_with_cache_dir['router']
+    )
+    domain_mock.from_config.assert_called_once_with(
+        updater,
+        router_mock.from_config.return_value,
+        {
+            testdata_updater_config_mock_with_cache_dir['dns-providers'][0][
+                'name'
+            ]: netcup_mock.from_config.return_value
+        },
+        testdata_updater_config_mock_with_cache_dir['domains'][0],
+    )
     assert updater._cache == test_cache_content
+
 
 def test_updater_write_read_cache(mocker, tmp_path):
     cache_file = tmp_path / Path(multidyndnscli.CACHE_FILE_NAME)
-    test_cache_content = {testdata_domain_name: { 'key': 'value' } }
+    test_cache_content = {testdata_domain_name: {'key': 'value'}}
     with open(cache_file, 'w') as f:
         yaml.dump(test_cache_content, f)
     updater = multidyndnscli.Updater(tmp_path)
     assert updater.cache_dir == tmp_path
     updater.read_cache()
     assert updater._cache == test_cache_content
-    assert updater.get_cache_domain(testdata_domain_name) == test_cache_content[testdata_domain_name]
+    assert (
+        updater.get_cache_domain(testdata_domain_name)
+        == test_cache_content[testdata_domain_name]
+    )
     assert updater.get_cache_domain(testdata_domain_name_other) == {}
     # Change something
-    test_cache_content[testdata_domain_name] = { 'key': 'new_value'}
-    test_cache_content[testdata_domain_name_other] = { 'key': 'other'}
-    updater.update_cache_domain(testdata_domain_name, test_cache_content[testdata_domain_name])
-    updater.update_cache_domain(testdata_domain_name_other, test_cache_content[testdata_domain_name_other])
-    assert updater.get_cache_domain(testdata_domain_name) == test_cache_content[testdata_domain_name]
-    assert updater.get_cache_domain(testdata_domain_name_other) == test_cache_content[testdata_domain_name_other]
+    test_cache_content[testdata_domain_name] = {'key': 'new_value'}
+    test_cache_content[testdata_domain_name_other] = {'key': 'other'}
+    updater.update_cache_domain(
+        testdata_domain_name, test_cache_content[testdata_domain_name]
+    )
+    updater.update_cache_domain(
+        testdata_domain_name_other, test_cache_content[testdata_domain_name_other]
+    )
+    assert (
+        updater.get_cache_domain(testdata_domain_name)
+        == test_cache_content[testdata_domain_name]
+    )
+    assert (
+        updater.get_cache_domain(testdata_domain_name_other)
+        == test_cache_content[testdata_domain_name_other]
+    )
     updater.write_cache()
     with open(cache_file, 'r') as f:
         test_cache_content_from_file = yaml.safe_load(f)
@@ -1321,11 +1373,13 @@ def test_updater_handle_empty_cache_file(mocker, tmp_path):
     updater.read_cache()
     assert updater._cache == {}
 
+
 def test_updater_set_get_cache_dir(tmp_path):
     updater = multidyndnscli.Updater(None)
     assert updater.cache_dir == None
     updater.cache_dir = tmp_path
     assert updater.cache_dir == tmp_path
+
 
 def test_updater_update_dry_run(mocker):
     # Mock Domain
@@ -1337,6 +1391,7 @@ def test_updater_update_dry_run(mocker):
     updater.update(True)
     domain_mock.update.assert_called_once_with(True)
     domain_mock_other.update.assert_called_once_with(True)
+
 
 def test_updater_update_no_dry_run(mocker):
     # Mock Domain
