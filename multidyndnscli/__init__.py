@@ -11,9 +11,9 @@ from nc_dnsapi import Client, DNSRecord  # type: ignore
 from abc import ABC, abstractmethod
 from . import util
 from .schemata import get_config_file_schema
-import fritzconnection # type: ignore
-import fritzconnection.lib.fritzstatus # type: ignore
-import fritzconnection.core.exceptions # type: ignore
+import fritzconnection  # type: ignore
+import fritzconnection.lib.fritzstatus  # type: ignore
+import fritzconnection.core.exceptions  # type: ignore
 
 
 class NetworkAddressException(Exception):
@@ -303,13 +303,17 @@ class Router:
         try:
             self._ipv4 = self._get_public_ipv4(router_ipv4_config)
         except Exception as exc:
-            raise Exception('Exception occurred while identifying public IPv4 address of the router') from exc
+            raise Exception(
+                'Exception occurred while identifying public IPv4 address of the router'
+            ) from exc
         # logging.info(f'Router has external IPv4: {self._ipv4}')
         self._ipv6 = None
         try:
             self._ipv6 = self._get_public_ipv6(router_ipv6_config)
         except Exception as exc:
-            raise Exception('Exception occurred while identifying public IPv6 address of the router') from exc
+            raise Exception(
+                'Exception occurred while identifying public IPv6 address of the router'
+            ) from exc
         # logging.info(f'Router has external IPv6: {self._ipv6}')
 
     @staticmethod
@@ -341,7 +345,9 @@ class Router:
             fritz_ip = fritzbox_config.get('address')
             fritz_tls = fritzbox_config.get('tls', False)
             try:
-                fc = fritzconnection.FritzConnection(address=fritz_ip, use_tls=fritz_tls)
+                fc = fritzconnection.FritzConnection(
+                    address=fritz_ip, use_tls=fritz_tls
+                )
                 status = fritzconnection.lib.fritzstatus.FritzStatus(fc)
             except fritzconnection.core.exceptions.FritzConnectionException as exc:
                 raise RouterNotReachableException(
@@ -373,7 +379,9 @@ class Router:
             fritz_ip = fritzbox_config.get('address')
             fritz_tls = fritzbox_config.get('tls', False)
             try:
-                fc = fritzconnection.FritzConnection(address=fritz_ip, use_tls=fritz_tls)
+                fc = fritzconnection.FritzConnection(
+                    address=fritz_ip, use_tls=fritz_tls
+                )
                 status = fritzconnection.lib.fritzstatus.FritzStatus(fc)
             except fritzconnection.core.exceptions.FritzConnectionException as exc:
                 raise RouterNotReachableException(
@@ -415,11 +423,11 @@ class DNSProvider(ABC):
         -------
         List[DNSRecord]
             A list of DNS records fetched from the DNS provider which could be updated.
-        """        
+        """
 
     @abstractmethod
     def update_domain(self, domain: Domain, records: List[DNSRecord]):
-        """Abstract method for updating the provided list of records in the provided domain 
+        """Abstract method for updating the provided list of records in the provided domain
 
         Parameters
         ----------
@@ -437,7 +445,7 @@ class Netcup(DNSProvider):
         self._apipass = apipass
 
     @staticmethod
-    def from_config(config: Dict[str, str])->'Netcup':
+    def from_config(config: Dict[str, str]) -> 'Netcup':
         userid = int(config['userid'])
         apikey = config['apikey']
         apipass = config['apipass']
@@ -466,21 +474,21 @@ class Updater:
     _dns_providers: Dict[str, DNSProvider]
     _domains: List[Domain]
 
-    def __init__(self, cache_dir: Path=None):
+    def __init__(self, cache_dir: Path = None):
         self._cache_dir = None
         self._dns_providers = {}
         self._domains = []
 
     @staticmethod
-    def from_config(config)->'Updater':
+    def from_config(config) -> 'Updater':
         cache_dir = None
         common_config = config.get('common', None)
         if common_config is not None:
-                cache_dir_str = common_config.get('cache_dir', None)
-                if cache_dir_str is not None:
-                    cache_dir_candidate = Path(cache_dir_str)
-                    if cache_dir_candidate.exists() or cache_dir_candidate.is_dir():
-                        cache_dir = cache_dir_candidate
+            cache_dir_str = common_config.get('cache_dir', None)
+            if cache_dir_str is not None:
+                cache_dir_candidate = Path(cache_dir_str)
+                if cache_dir_candidate.exists() or cache_dir_candidate.is_dir():
+                    cache_dir = cache_dir_candidate
         updater = Updater(cache_dir)
         updater.read_cache()
 
@@ -503,25 +511,25 @@ class Updater:
             logging.error(exc)
             raise Exception('Unable to initialize Updater') from exc
         return updater
-    
+
     def add_dns_provider(self, name: str, dns_provider: DNSProvider):
         self._dns_providers[name] = dns_provider
 
     @property
     def dns_providers(self):
         return self._dns_providers
-    
+
     def add_domain(self, domain: Domain):
         self._domains.append(domain)
-    
+
     @property
     def cache_dir(self):
         return self._cache_dir
-    
+
     @cache_dir.setter
     def cache_dir(self, cache_dir: Path):
         self._cache_dir = cache_dir
-    
+
     @property
     def cache_dir(self):
         return self._cache_dir

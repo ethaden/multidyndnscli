@@ -41,40 +41,30 @@ testdata_domain_config = {
 }
 
 testdata_update_record_ipv4 = [
-    DNSRecord(
-        hostname='test', type='A', destination=testdata_ipv4
-    )]
+    DNSRecord(hostname='test', type='A', destination=testdata_ipv4)
+]
 
 testdata_update_record_ipv4_with_id = [
-    DNSRecord(
-        hostname='test', type='A', destination=testdata_ipv4, id=23
-    )]
+    DNSRecord(hostname='test', type='A', destination=testdata_ipv4, id=23)
+]
 
 testdata_update_record_ipv6 = [
-    DNSRecord(
-        hostname='test', type='AAAA', destination=testdata_ipv6
-    )]
+    DNSRecord(hostname='test', type='AAAA', destination=testdata_ipv6)
+]
 
 testdata_update_record_ipv6_with_id = [
-    DNSRecord(
-        hostname='test', type='AAAA', destination=testdata_ipv6, id=42
-    )]
-testdata_update_records_combined = testdata_update_record_ipv4 + \
-    testdata_update_record_ipv6
-testdata_update_records_combined_with_ids = testdata_update_record_ipv4_with_id + \
-    testdata_update_record_ipv6_with_id
+    DNSRecord(hostname='test', type='AAAA', destination=testdata_ipv6, id=42)
+]
+testdata_update_records_combined = (
+    testdata_update_record_ipv4 + testdata_update_record_ipv6
+)
+testdata_update_records_combined_with_ids = (
+    testdata_update_record_ipv4_with_id + testdata_update_record_ipv6_with_id
+)
 
 testdata_router_method_web = {
-    'ipv4': {
-        'enabled': True,
-        'method': 'web',
-        'url': 'http://mock-me.invalid'
-    },
-    'ipv6': {
-        'enabled': True,
-        'method': 'web',
-        'url': 'http://mock-me-v6.invalid'
-    }
+    'ipv4': {'enabled': True, 'method': 'web', 'url': 'http://mock-me.invalid'},
+    'ipv6': {'enabled': True, 'method': 'web', 'url': 'http://mock-me-v6.invalid'},
 }
 
 testdata_router_method_wan = {
@@ -83,48 +73,32 @@ testdata_router_method_wan = {
         'method': 'wan',
         'wan_interface': 'eth9',
     },
-    'ipv6': {
-        'enabled': True,
-        'method': 'wan',
-        'wan_interface': 'eth9'
-    }
+    'ipv6': {'enabled': True, 'method': 'wan', 'wan_interface': 'eth9'},
 }
 
 testdata_router_method_fritz_box = {
     'ipv4': {
         'enabled': True,
         'method': "fritzbox",
-        'fritzbox': {
-            'address': '192.168.0.1',
-            'tls': False
-        }
+        'fritzbox': {'address': '192.168.0.1', 'tls': False},
     },
     'ipv6': {
         'enabled': True,
         'method': "fritzbox",
-        'fritzbox': {
-            'address': '192.168.0.1',
-            'tls': False
-        }
-    }
+        'fritzbox': {'address': '192.168.0.1', 'tls': False},
+    },
 }
 
 
 testdata_router_method_illegal = {
-    'ipv4': {
-        'enabled': True,
-        'method': "illegal"
-    },
-    'ipv6': {
-        'enabled': True,
-        'method': "illegal"
-    }
+    'ipv4': {'enabled': True, 'method': "illegal"},
+    'ipv6': {'enabled': True, 'method': "illegal"},
 }
 
 testdata_dnsprovider_netcup = {
     'userid': '12345',
     'apikey': 'mykey',
-    'apipass': 'mypass'
+    'apipass': 'mypass',
 }
 
 
@@ -703,6 +677,7 @@ def test_domain_update_delay(mocker):
     domain.update()
     dns_provider_mock.update_domain.assert_not_called()
 
+
 # This methods checks that the list of DNSrecords is equal, including their IDs!
 
 
@@ -740,7 +715,8 @@ def test_domain_update_ipv4_without_record_id(mocker):
     domain.add_host(host_mock)
     domain.update()
     dns_provider_mock.update_domain.assert_called_once_with(
-        ANY, testdata_update_record_ipv4)
+        ANY, testdata_update_record_ipv4
+    )
 
 
 # Check that existing DNS records are found and properly updated using their ID instead of being replaced
@@ -750,7 +726,8 @@ def test_domain_update_ipv4_with_record_id(mocker):
     router_mock = MagicMock(spec=multidyndnscli.Router)
     dns_provider_mock = MagicMock(spec=multidyndnscli.DNSProvider)
     dns_provider_mock.fetch_domain = Mock(
-        return_value=testdata_update_records_combined_with_ids)
+        return_value=testdata_update_records_combined_with_ids
+    )
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
@@ -767,7 +744,8 @@ def test_domain_update_ipv4_with_record_id(mocker):
     domain.add_host(host_mock)
     domain.update()
     dns_provider_mock.update_domain.assert_called_once_with(
-        ANY, DNSRecordIdMatcher(testdata_update_record_ipv4_with_id))
+        ANY, DNSRecordIdMatcher(testdata_update_record_ipv4_with_id)
+    )
 
 
 def test_domain_update_ipv6_without_record_id(mocker):
@@ -791,7 +769,9 @@ def test_domain_update_ipv6_without_record_id(mocker):
     domain.add_host(host_mock)
     domain.update()
     dns_provider_mock.update_domain.assert_called_once_with(
-        ANY, testdata_update_record_ipv6)
+        ANY, testdata_update_record_ipv6
+    )
+
 
 # Check that existing DNS records are found and properly updated using their ID instead of being replaced
 
@@ -802,7 +782,8 @@ def test_domain_update_ipv6_with_record_id(mocker):
     router_mock = MagicMock(spec=multidyndnscli.Router)
     dns_provider_mock = MagicMock(spec=multidyndnscli.DNSProvider)
     dns_provider_mock.fetch_domain = Mock(
-        return_value=testdata_update_records_combined_with_ids)
+        return_value=testdata_update_records_combined_with_ids
+    )
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
@@ -819,7 +800,8 @@ def test_domain_update_ipv6_with_record_id(mocker):
     domain.add_host(host_mock)
     domain.update()
     dns_provider_mock.update_domain.assert_called_once_with(
-        ANY, DNSRecordIdMatcher(testdata_update_record_ipv6_with_id))
+        ANY, DNSRecordIdMatcher(testdata_update_record_ipv6_with_id)
+    )
 
 
 def test_domain_update_ipv4_ipv6_without_ids(mocker):
@@ -827,8 +809,7 @@ def test_domain_update_ipv4_ipv6_without_ids(mocker):
     updater_mock.get_cache_domain = Mock(return_value={})
     router_mock = MagicMock(spec=multidyndnscli.Router)
     dns_provider_mock = MagicMock(spec=multidyndnscli.DNSProvider)
-    dns_provider_mock.fetch_domain = Mock(
-        return_value=testdata_update_records_combined)
+    dns_provider_mock.fetch_domain = Mock(return_value=testdata_update_records_combined)
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
@@ -845,7 +826,9 @@ def test_domain_update_ipv4_ipv6_without_ids(mocker):
     domain.add_host(host_mock)
     domain.update()
     dns_provider_mock.update_domain.assert_called_once_with(
-        ANY, testdata_update_records_combined)
+        ANY, testdata_update_records_combined
+    )
+
 
 # Check that existing DNS records are found and properly updated using their ID instead of being replaced
 
@@ -856,7 +839,8 @@ def test_domain_update_ipv4_ipv6_with_ids(mocker):
     router_mock = MagicMock(spec=multidyndnscli.Router)
     dns_provider_mock = MagicMock(spec=multidyndnscli.DNSProvider)
     dns_provider_mock.fetch_domain = Mock(
-        return_value=testdata_update_records_combined_with_ids)
+        return_value=testdata_update_records_combined_with_ids
+    )
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
@@ -873,7 +857,8 @@ def test_domain_update_ipv4_ipv6_with_ids(mocker):
     domain.add_host(host_mock)
     domain.update()
     dns_provider_mock.update_domain.assert_called_once_with(
-        ANY, DNSRecordIdMatcher(testdata_update_records_combined_with_ids))
+        ANY, DNSRecordIdMatcher(testdata_update_records_combined_with_ids)
+    )
 
 
 def test_domain_update_dry_run(mocker):
@@ -882,7 +867,8 @@ def test_domain_update_dry_run(mocker):
     router_mock = MagicMock(spec=multidyndnscli.Router)
     dns_provider_mock = MagicMock(spec=multidyndnscli.DNSProvider)
     dns_provider_mock.fetch_domain = Mock(
-        return_value=testdata_update_records_combined_with_ids)
+        return_value=testdata_update_records_combined_with_ids
+    )
     delay = 0
     datetime_now = datetime.datetime.now()
     updater_mock.get_cache_domain = Mock(
@@ -906,7 +892,8 @@ def test_router_init_called_from_config(mocker):
     mocker.patch.object(multidyndnscli.Router, '__init__', init_mock)
     router = multidyndnscli.Router.from_config(testdata_router_method_web)
     init_mock.assert_called_once_with(
-        testdata_router_method_web['ipv4'], testdata_router_method_web['ipv6'])
+        testdata_router_method_web['ipv4'], testdata_router_method_web['ipv6']
+    )
 
 
 def test_router_init_neither_ipv4_nor_ipv6(mocker):
@@ -974,10 +961,12 @@ def test_router_init_both_web(mocker):
     requests_response_ipv6 = Mock()
     requests_response_ipv6.text = testdata_ipv6
     # Return IPv4 on first call, IPv6 on second
-    mocker.patch('requests.get', side_effect=[
-                 requests_response_ipv4, requests_response_ipv6])
+    mocker.patch(
+        'requests.get', side_effect=[requests_response_ipv4, requests_response_ipv6]
+    )
     router = multidyndnscli.Router(
-        testdata_router_method_web['ipv4'], testdata_router_method_web['ipv6'])
+        testdata_router_method_web['ipv4'], testdata_router_method_web['ipv6']
+    )
     assert router.ipv4 == IPAddress(testdata_ipv4)
     assert router.ipv6 == IPAddress(testdata_ipv6)
     assert router.use_ipv4
@@ -992,8 +981,10 @@ def test_router_init_ipv4_wan_no_ip(mocker):
 
 
 def test_router_init_ipv4_wan(mocker):
-    mocker.patch('multidyndnscli.util.get_ipv4_addresses_linux',
-                 return_value=[IPAddress(testdata_ipv4)])
+    mocker.patch(
+        'multidyndnscli.util.get_ipv4_addresses_linux',
+        return_value=[IPAddress(testdata_ipv4)],
+    )
     router = multidyndnscli.Router(testdata_router_method_wan['ipv4'], None)
     assert router.ipv4 == IPAddress(testdata_ipv4)
     assert router.ipv6 == None
@@ -1007,15 +998,16 @@ def test_router_init_ipv6_wan_no_ip(mocker):
 
 
 def test_router_init_ipv6_wan(mocker):
-    mocker.patch('multidyndnscli.util.get_ipv6_addresses_linux',
-                 return_value=[IPAddress(testdata_ipv6)])
+    mocker.patch(
+        'multidyndnscli.util.get_ipv6_addresses_linux',
+        return_value=[IPAddress(testdata_ipv6)],
+    )
     router = multidyndnscli.Router(None, testdata_router_method_wan['ipv6'])
     assert router.ipv4 == None
     assert router.ipv6 == IPAddress(testdata_ipv6)
 
 
 class FritzStatusMock:
-
     def __init__(self, ipv4=None, ipv6=None):
         self._ipv4 = ipv4
         self._ipv6 = ipv6
@@ -1031,58 +1023,74 @@ class FritzStatusMock:
 
 def test_router_init_ipv4_fritzbox(mocker):
     with mocker.patch('fritzconnection.FritzConnection', return_value=Mock()):
-        with mocker.patch('fritzconnection.lib.fritzstatus.FritzStatus',
-                          return_value=FritzStatusMock(ipv4=testdata_ipv4)) as status_mock:
+        with mocker.patch(
+            'fritzconnection.lib.fritzstatus.FritzStatus',
+            return_value=FritzStatusMock(ipv4=testdata_ipv4),
+        ) as status_mock:
             router = multidyndnscli.Router(
-                testdata_router_method_fritz_box['ipv4'], None)
+                testdata_router_method_fritz_box['ipv4'], None
+            )
             assert router.ipv4 == IPAddress(testdata_ipv4)
             assert router.ipv6 == None
 
 
 def test_router_init_ipv6_fritzbox(mocker):
     with mocker.patch('fritzconnection.FritzConnection', return_value=Mock()):
-        with mocker.patch('fritzconnection.lib.fritzstatus.FritzStatus',
-                          return_value=FritzStatusMock(ipv6=testdata_ipv6)) as status_mock:
+        with mocker.patch(
+            'fritzconnection.lib.fritzstatus.FritzStatus',
+            return_value=FritzStatusMock(ipv6=testdata_ipv6),
+        ) as status_mock:
             router = multidyndnscli.Router(
-                None, testdata_router_method_fritz_box['ipv6'])
+                None, testdata_router_method_fritz_box['ipv6']
+            )
             assert router.ipv4 == None
             assert router.ipv6 == IPAddress(testdata_ipv6)
 
 
 def test_router_init_ips_both_fritzbox(mocker):
     with mocker.patch('fritzconnection.FritzConnection', return_value=Mock()):
-        with mocker.patch('fritzconnection.lib.fritzstatus.FritzStatus',
-                          return_value=FritzStatusMock(ipv4=testdata_ipv4, ipv6=testdata_ipv6)):
+        with mocker.patch(
+            'fritzconnection.lib.fritzstatus.FritzStatus',
+            return_value=FritzStatusMock(ipv4=testdata_ipv4, ipv6=testdata_ipv6),
+        ):
             router = multidyndnscli.Router(
-                testdata_router_method_fritz_box['ipv4'], testdata_router_method_fritz_box['ipv6'])
+                testdata_router_method_fritz_box['ipv4'],
+                testdata_router_method_fritz_box['ipv6'],
+            )
             assert router.ipv4 == IPAddress(testdata_ipv4)
             assert router.ipv6 == IPAddress(testdata_ipv6)
 
 
 def test_router_init_ipv4_fritzbox_exception(mocker):
-    with mocker.patch('fritzconnection.FritzConnection', side_effect=fritzconnection.core.exceptions.FritzConnectionException()):
+    with mocker.patch(
+        'fritzconnection.FritzConnection',
+        side_effect=fritzconnection.core.exceptions.FritzConnectionException(),
+    ):
         with pytest.raises(Exception):
             router = multidyndnscli.Router(
-                testdata_router_method_fritz_box['ipv4'], None)
+                testdata_router_method_fritz_box['ipv4'], None
+            )
 
 
 def test_router_init_ipv6_fritzbox_exception(mocker):
-    with mocker.patch('fritzconnection.FritzConnection', side_effect=fritzconnection.core.exceptions.FritzConnectionException()):
+    with mocker.patch(
+        'fritzconnection.FritzConnection',
+        side_effect=fritzconnection.core.exceptions.FritzConnectionException(),
+    ):
         with pytest.raises(Exception):
             router = multidyndnscli.Router(
-                None, testdata_router_method_fritz_box['ipv6'])
+                None, testdata_router_method_fritz_box['ipv6']
+            )
 
 
 def test_router_init_ipv4_illegal_method_exception(mocker):
     with pytest.raises(Exception):
-        router = multidyndnscli.Router(
-            testdata_router_method_illegal['ipv4'], None)
+        router = multidyndnscli.Router(testdata_router_method_illegal['ipv4'], None)
 
 
 def test_router_init_ipv6_illegal_method__exception(mocker):
     with pytest.raises(Exception):
-        router = multidyndnscli.Router(
-            None, testdata_router_method_illegal['ipv6'])
+        router = multidyndnscli.Router(None, testdata_router_method_illegal['ipv6'])
 
 
 def test_dnsprovider_netcup_from_config():
@@ -1093,9 +1101,11 @@ def test_dnsprovider_netcup_from_config():
 
 
 def test_dnsprovider_netcup_constructor():
-    netcup = multidyndnscli.Netcup(int(testdata_dnsprovider_netcup['userid']),
-                                   testdata_dnsprovider_netcup['apikey'],
-                                   testdata_dnsprovider_netcup['apipass'])
+    netcup = multidyndnscli.Netcup(
+        int(testdata_dnsprovider_netcup['userid']),
+        testdata_dnsprovider_netcup['apikey'],
+        testdata_dnsprovider_netcup['apipass'],
+    )
     assert netcup._userid == int(testdata_dnsprovider_netcup['userid'])
     assert netcup._apikey == testdata_dnsprovider_netcup['apikey']
     assert netcup._apipass == testdata_dnsprovider_netcup['apipass']
@@ -1103,30 +1113,45 @@ def test_dnsprovider_netcup_constructor():
 
 def test_dnsprovider_netcup_fetch(mocker):
     client_mock = MagicMock(spec=Client)
-    client_mock.return_value.dns_records.return_value = Mock(return_value=['test.domain.invalid'])
+    client_mock.return_value.dns_records.return_value = Mock(
+        return_value=['test.domain.invalid']
+    )
     mocker.patch('multidyndnscli.Client', client_mock)
-    netcup = multidyndnscli.Netcup(int(testdata_dnsprovider_netcup['userid']),
-                                   testdata_dnsprovider_netcup['apikey'],
-                                   testdata_dnsprovider_netcup['apipass'])
+    netcup = multidyndnscli.Netcup(
+        int(testdata_dnsprovider_netcup['userid']),
+        testdata_dnsprovider_netcup['apikey'],
+        testdata_dnsprovider_netcup['apipass'],
+    )
     domain = Mock()
     domain.domain_name = 'test.invalid'
     domains = netcup.fetch_domain(domain)
-    client_mock.assert_called_once_with(int(testdata_dnsprovider_netcup['userid']),
-                                          testdata_dnsprovider_netcup['apikey'],
-                                          testdata_dnsprovider_netcup['apipass'])
-    client_mock.return_value.dns_records.return_value.called_once_with(domain.domain_name)
+    client_mock.assert_called_once_with(
+        int(testdata_dnsprovider_netcup['userid']),
+        testdata_dnsprovider_netcup['apikey'],
+        testdata_dnsprovider_netcup['apipass'],
+    )
+    client_mock.return_value.dns_records.return_value.called_once_with(
+        domain.domain_name
+    )
+
 
 def test_dnsprovider_netcup_update(mocker):
     client_mock = MagicMock(spec=Client)
     client_mock.return_value.update_dns_records.return_value = Mock()
     mocker.patch('multidyndnscli.Client', client_mock)
-    netcup = multidyndnscli.Netcup(int(testdata_dnsprovider_netcup['userid']),
-                                   testdata_dnsprovider_netcup['apikey'],
-                                   testdata_dnsprovider_netcup['apipass'])
+    netcup = multidyndnscli.Netcup(
+        int(testdata_dnsprovider_netcup['userid']),
+        testdata_dnsprovider_netcup['apikey'],
+        testdata_dnsprovider_netcup['apipass'],
+    )
     domain = Mock()
     domain.domain_name = 'test.invalid'
     domains = netcup.update_domain(domain, testdata_update_records_combined_with_ids)
-    client_mock.assert_called_once_with(int(testdata_dnsprovider_netcup['userid']),
-                                          testdata_dnsprovider_netcup['apikey'],
-                                          testdata_dnsprovider_netcup['apipass'])
-    client_mock.return_value.update_dns_records.return_value.called_once_with(domain.domain_name, testdata_update_records_combined_with_ids)
+    client_mock.assert_called_once_with(
+        int(testdata_dnsprovider_netcup['userid']),
+        testdata_dnsprovider_netcup['apikey'],
+        testdata_dnsprovider_netcup['apipass'],
+    )
+    client_mock.return_value.update_dns_records.return_value.called_once_with(
+        domain.domain_name, testdata_update_records_combined_with_ids
+    )
