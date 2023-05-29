@@ -3,6 +3,8 @@ Yet another python module for router-based multi-domain, multi-host dynamic dns 
 with support for IPv4 and IPv6.
 This project currently only support Netcup, but might be extended in the future.
 """
+import logging
+from abc import ABC, abstractmethod
 import datetime
 from pathlib import Path
 from typing import Any, Final, List, Dict, Optional, Set
@@ -11,14 +13,13 @@ import yaml
 import dns.resolver
 from netaddr import IPAddress, AddrFormatError
 import requests
-import logging
 from nc_dnsapi import Client, DNSRecord  # type: ignore
-from abc import ABC, abstractmethod
-from . import util
-from .schemata import get_config_file_schema
 import fritzconnection  # type: ignore
 import fritzconnection.lib.fritzstatus  # type: ignore
 import fritzconnection.core.exceptions  # type: ignore
+# Module imports
+from . import util
+from .schemata import get_config_file_schema
 
 CACHE_FILE_NAME = 'multidyndns.cache'
 """The name used for the updater cache file if a (valid) cache dir has been configured"""
@@ -292,7 +293,7 @@ class Domain:
         :return: An instance of the Domain class
         :rtype: Domain
         """
-        dns_provider = dns_providers[domain_config['dns-provider']]
+        dns_provider = dns_providers[domain_config['dns_provider']]
         domain = Domain(
             updater,
             router,
@@ -427,205 +428,289 @@ class Router:
         :type router_ipv4_config: Dict
         :param router_ipv6_config: The IPv6 configuration of the router
         :type router_ipv6_config: Dict
-        :raises Exception: _description_
-        :raises Exception: _description_
+        :raises RouterNotReachableException: Raised if failed to reach Fritz!Box
+        :raises DNSResolutionException: Raised if failed to resolve an IP address
         """
         self._ipv4 = None
         try:
-            self._ipv4 = self._get_public_ipv4(router_ipv4_config)
-        except Exception as exc:
-            raise Exception(
+            self._ipv4 = self._resolve_public_ipv4(router_ipv4_config)
+            logging.debug('Router has external IPv4 %s', self._ipv4)
+        except DNSResolutionException as exc:
+            raise DNSResolutionException(
                 'Exception occurred while identifying public IPv4 address of the router'
             ) from exc
-        # logging.info(f'Router has external IPv4: {self._ipv4}')
         self._ipv6 = None
         try:
-            self._ipv6 = self._get_public_ipv6(router_ipv6_config)
-        except Exception as exc:
-            raise Exception(
+            self._ipv6 = self._resolve_public_ipv6(router_ipv6_config)
+            logging.debug('Router has external IPv6 %s', self._ipv6)
+        except DNSResolutionException as exc:
+            raise DNSResolutionException(
                 'Exception occurred while identifying public IPv6 address of the router'
             ) from exc
-        # logging.info(f'Router has external IPv6: {self._ipv6}')
 
     @staticmethod
-    def from_config(router_config):
+    def from_config(router_config)->'Router':
+        """Dictionary-based factory for instances of type Router
+
+        :param router_config: A dictionary holding the configuration for the router
+        :type router_config: _type_
+        :return: An instance of type Router
+        :rtype: Router
+        """
         router_ipv4_config = router_config.get('ipv4', None)
         router_ipv6_config = router_config.get('ipv6', None)
         return Router(router_ipv4_config, router_ipv6_config)
 
-    def _get_public_ipv4(self, ipv4_config) -> netaddr.IPAddress:
+    def _resolve_public_ipv4(self, ipv4_config: Dict[str, Any]) -> Optional[netaddr.IPAddress]:
+        """Resolves the public IPv4 of the router with the specified method
+
+        :param ipv4_config: A dictionary holding the configuration of the DNS resolution method
+        :type ipv4_config: Dict[str, Any]
+        :raises DNSResolutionException: Raised if the DNS resolution has failed
+        :raises RouterNotReachableException: Raised if the Fritz!Box could not be reached
+        :raises ValueError: Raised if the specified method for resolving the public IPv4 is invalid
+        :return: The public IPv4 address of the router or None
+        :rtype: netaddr.IPAddress, optional
+        """
         if ipv4_config is None:
             return None
         if ipv4_config['method'] == 'web':
-            url = ipv4_config['url']
-            response = requests.get(url)
+            url = ipv4_config['web_url']
+            timeout = int(ipv4_config.get('web_timeout', 60))
+            response = requests.get(url, timeout=timeout)
             if response:
                 ipv4_candidate = response.text
                 return util.get_valid_ip(ipv4_candidate)
-            else:
-                raise Exception(
-                    f'Unable to determine external IPv4 of router through website {url}'
-                )
-        elif ipv4_config['method'] == 'wan':
+            raise DNSResolutionException(
+                f'Unable to determine external IPv4 of router through website {url}'
+            )
+        if ipv4_config['method'] == 'wan':
             wan_interface_ipv4 = ipv4_config['wan_interface']
             ipv4_list = util.get_ipv4_addresses_linux(wan_interface_ipv4)
             # Return first address if any
             return None if len(ipv4_list) == 0 else ipv4_list[0]
-        elif ipv4_config['method'] == 'fritzbox':
-            fritzbox_config = ipv4_config['fritzbox']
-            fritz_ip = fritzbox_config.get('address')
-            fritz_tls = fritzbox_config.get('tls', False)
+        if ipv4_config['method'] == 'fritzbox':
+            fritz_ip = ipv4_config.get('fritzbox_address')
+            fritz_tls = ipv4_config.get('fritzbox_tls', False)
             try:
-                fc = fritzconnection.FritzConnection(
+                fritzcon = fritzconnection.FritzConnection(
                     address=fritz_ip, use_tls=fritz_tls
                 )
-                status = fritzconnection.lib.fritzstatus.FritzStatus(fc)
+                fritzstatus = fritzconnection.lib.fritzstatus.FritzStatus(fritzcon)
             except fritzconnection.core.exceptions.FritzConnectionException as exc:
                 raise RouterNotReachableException(
                     'Unable to connect to Fritz!Box while querying external IPv4'
                 ) from exc
-            return util.get_valid_ip(status.external_ip)
-        raise Exception('Did not find a supported method for getting the public Ipv4!')
+            return util.get_valid_ip(fritzstatus.external_ip)
+        raise ValueError('Did not find a supported method for getting the public Ipv4!')
 
-    def _get_public_ipv6(self, ipv6_config) -> Optional[str]:
+    def _resolve_public_ipv6(self, ipv6_config: Dict[str, Any]) -> Optional[netaddr.IPAddress]:
+        """Resolves the public IPv6 of the router with the specified method
+
+        :param ipv6_config: A dictionary holding the configuration of the DNS resolution method
+        :type ipv6_config: Dict[str, Any]
+        :raises DNSResolutionException: Raised if the DNS resolution has failed
+        :raises RouterNotReachableException: Raised if the Fritz!Box could not be reached
+        :raises ValueError: Raised if the specified method for resolving the public IPv6 is invalid
+        :return: The public IPv4 address of the router or None
+        :rtype: netaddr.IPAddress, optional
+        """
         if ipv6_config is None:
             return None
         if ipv6_config['method'] == 'web':
-            url = ipv6_config['url']
-            response = requests.get(url)
+            url = ipv6_config['web_url']
+            timeout = int(ipv6_config.get('web_timeout', 60))
+            response = requests.get(url, timeout=timeout)
             if response:
                 ipv6_candidate = response.text
                 return util.get_valid_ip(ipv6_candidate)
-            else:
-                raise Exception(
-                    f'Unable to determine external IPv6 of router through website {url}'
-                )
-        elif ipv6_config['method'] == 'wan':
+            raise DNSResolutionException(
+                f'Unable to determine external IPv6 of router through website {url}'
+            )
+        if ipv6_config['method'] == 'wan':
             wan_interface_ipv6 = ipv6_config['wan_interface']
             ipv6_list = util.get_ipv6_addresses_linux(wan_interface_ipv6)
             # Return first address if any
             return None if len(ipv6_list) == 0 else ipv6_list[0]
-        elif ipv6_config['method'] == 'fritzbox':
-            fritzbox_config = ipv6_config['fritzbox']
-            fritz_ip = fritzbox_config.get('address')
-            fritz_tls = fritzbox_config.get('tls', False)
+        if ipv6_config['method'] == 'fritzbox':
+            fritz_ip = ipv6_config.get('fritzbox_address')
+            fritz_tls = ipv6_config.get('fritzbox_tls', False)
             try:
-                fc = fritzconnection.FritzConnection(
+                fritzcon = fritzconnection.FritzConnection(
                     address=fritz_ip, use_tls=fritz_tls
                 )
-                status = fritzconnection.lib.fritzstatus.FritzStatus(fc)
+                fritzstatus = fritzconnection.lib.fritzstatus.FritzStatus(fritzcon)
             except fritzconnection.core.exceptions.FritzConnectionException as exc:
                 raise RouterNotReachableException(
                     'Unable to connect to Fritz!Box while querying external IPv6'
                 ) from exc
-            return util.get_valid_ip(status.external_ipv6)
-        raise Exception('Did not find a supported method for getting the public Ipv6!')
+            return util.get_valid_ip(fritzstatus.external_ipv6)
+        raise ValueError('Did not find a supported method for getting the public Ipv6!')
 
     @property
-    def ipv4(self):
+    def ipv4(self)->Optional[IPAddress]:
+        """Property holding the router's current public IPv4 address
+
+        :return: The router's IPv4 address if any
+        :rtype: IPAddress, optional
+        """
         return self._ipv4
 
     @property
-    def use_ipv4(self):
+    def use_ipv4(self)->bool:
+        """Indicates whether or not the router has a public IPv4
+
+        :return: True, if the router has a public IPv4
+        :rtype: bool
+        """
         return self._ipv4 is not None
 
     @property
-    def ipv6(self):
+    def ipv6(self)->Optional[IPAddress]:
+        """Property holding the router's current public IPv6 address
+
+        :return: The router's IPv6 address if any
+        :rtype: IPAddress, optional
+        """
         return self._ipv6
 
     @property
-    def use_ipv6(self):
+    def use_ipv6(self)->bool:
+        """Indicates whether or not the router has a public IPv6
+
+        :return: True, if the router has a public IPv6
+        :rtype: bool
+        """
         return self._ipv6 is not None
 
 
 class DNSProvider(ABC):
-    pass
+    """This abstract class represents a DNS provider"""
 
     @abstractmethod
     def fetch_domain(self, domain: Domain) -> List[DNSRecord]:
         """Abstract method for fetching domain data from the DNS provider
 
-        Parameters
-        ----------
-        domain : Domain
-            The domain object to fetch data from.
-
-        Returns
-        -------
-        List[DNSRecord]
-            A list of DNS records fetched from the DNS provider which could be updated.
+        :param domain: The domain object to fetch data from.
+        :type domain: Domain
+        :return: A list of DNS records fetched from the DNS provider which could be updated.
+        "rtype: List[DNSRecord]
         """
 
     @abstractmethod
     def update_domain(self, domain: Domain, records: List[DNSRecord]):
         """Abstract method for updating the provided list of records in the provided domain
 
-        Parameters
-        ----------
-        domain : Domain
-            The domain to update.
-        records : List[DNSRecord]
-            A list of DNS records to set in DNS of the provided domain
+        :param domain: The domain object to update
+        :type domain: Domain
+        :param records: The full list of DNS records of the domain including the updated records
+        :type records: List[DNSRecord]
         """
 
-
 class Netcup(DNSProvider):
-    def __init__(self, userid, apikey, apipass):
+    """This class implements the DNSProvider for Netcup"""
+
+    def __init__(self, userid: int, apikey: str, apipass: str):
+        """Constructor of Netcup class
+
+        :param userid: The Netcup User ID
+        :type userid: int
+        :param apikey: A Netcup API key
+        :type apikey: str
+        :param apipass: The Netcup API password
+        :type apipass: str
+        """
         self._userid = userid
         self._apikey = apikey
         self._apipass = apipass
 
     @staticmethod
     def from_config(config: Dict[str, str]) -> 'Netcup':
+        """Dictionary-based factory for instances of type Netcup
+
+        :param config: A dictionary holding the configuration for Netcup
+        :type router_config: Dict[str, str]
+        :return: An instance of type Netcup
+        :rtype: Netcup
+        """
         userid = int(config['userid'])
         apikey = config['apikey']
         apipass = config['apipass']
         return Netcup(userid, apikey, apipass)
 
     def fetch_domain(self, domain: Domain) -> List[DNSRecord]:
+        """Fetch domain data from Netcup
+
+        :param domain: The domain object to fetch data from.
+        :type domain: Domain
+        :return: A list of DNS records fetched from the DNS provider which could be updated.
+        "rtype: List[DNSRecord]
+        """
         with Client(self._userid, self._apikey, self._apipass) as api:
             # fetch records
             return api.dns_records(domain.domain_name)
 
     def update_domain(self, domain: Domain, records: List[DNSRecord]):
+        """Update the provided list of records in the provided domain at Netcup
+
+        :param domain: The domain object to update
+        :type domain: Domain
+        :param records: The full list of DNS records of the domain including the updated records
+        :type records: List[DNSRecord]
+        """
         with Client(self._userid, self._apikey, self._apipass) as api:
             # Update records
-            logging.info(
-                f'Updating the following DNS records in domain {domain.domain_name}:'
-            )
+            logging.info('Updating the following DNS records in domain "%s"', domain.domain_name)
             for record in records:
                 logging.info(record)
             api.update_dns_records(domain.domain_name, records)
 
 
 class Updater:
+    """This is the main class for coordinating the whole update processes"""
     _config: Dict[str, Any]
+    """A dictionary representing the configuration of the updater"""
     _cache_file: Optional[Path]
+    """The filename of a cache file used to store domain update data"""
     _cache: Dict[str, Any]
+    """The cache used to store domain update data"""
     _dns_providers: Dict[str, DNSProvider]
+    """A dictionary of DNS providers"""
     _domains: List[Domain]
+    """The list of DNS domains"""
 
     def __init__(self, cache_dir: Path = None):
-        self._cache_dir = cache_dir
+        """Constructor of the Updater class
+
+        :param cache_dir: An optional folder for loading/storing the cache file, defaults to None
+        :type cache_dir: Path, optional
+        """
+        self.cache_dir = cache_dir
         self._dns_providers = {}
         self._domains = []
         self._cache = {}
 
     @staticmethod
     def from_config(config) -> 'Updater':
+        """Dictionary-based factory for instances of type Updater
+
+        :param config: A dictionary holding the configuration for the Updater class
+        :type router_config: Dict
+        :raises RouterNotReachableException: Raised if the Fritz!Box could not be reached
+        :return: An instance of type Updater
+        :rtype: Updater
+        """
         cache_dir = None
         common_config = config.get('common', None)
         if common_config is not None:
             cache_dir_str = common_config.get('cache_dir', None)
             if cache_dir_str is not None:
-                cache_dir_candidate = Path(cache_dir_str)
-                if cache_dir_candidate.exists() or cache_dir_candidate.is_dir():
-                    cache_dir = cache_dir_candidate
+                cache_dir = Path(cache_dir_str)
         updater = Updater(cache_dir)
         updater.read_cache()
 
         try:
-            dns_provider_list = config['dns-providers']
+            dns_provider_list = config['dns_providers']
             for provider in dns_provider_list:
                 name = provider['name']
                 provider_type = provider['type'].lower()
@@ -641,54 +726,120 @@ class Updater:
                 updater.add_domain(domain)
         except RouterNotReachableException as exc:
             logging.error(exc)
-            raise Exception('Unable to initialize Updater') from exc
+            raise RouterNotReachableException('Unable to initialize Updater') from exc
         return updater
 
     def add_dns_provider(self, name: str, dns_provider: DNSProvider):
+        """Add a DNS provider by name
+
+        :param name: The name of a DNS provider
+        :type name: str
+        :param dns_provider: A DNS provider object
+        :type dns_provider: DNSProvider
+        """
         self._dns_providers[name] = dns_provider
 
     @property
-    def dns_providers(self):
+    def dns_providers(self)->Dict[str, DNSProvider]:
+        """Property holding the dictionary of names to DNS providers
+
+        :return: The dictionary of DNS providers by name
+        :rtype: Dict[str, DNSProvider]
+        """
         return self._dns_providers
 
     def add_domain(self, domain: Domain):
+        """Add the specified domain to the list of domains
+
+        :param domain: The domain to add
+        :type domain: Domain
+        """
         self._domains.append(domain)
 
     @property
-    def domains(self):
+    def domains(self)->Dict[str, Domain]:
+        """Property holding the dictionary of domains
+
+        :return: The dictionary of domains by name
+        :rtype: Dict[str, Domain]
+        """
         return self._domains
 
     @property
-    def cache_dir(self):
+    def cache_dir(self)->Optional[Path]:
+        """Property holding the cache folder
+
+        :return: The cache folder, or none
+        :rtype: Optional[Path]
+        """
         return self._cache_dir
 
     @cache_dir.setter
-    def cache_dir(self, cache_dir: Path):
+    def cache_dir(self, cache_dir: Optional[Path]):
+        """Setter for the cache dir
+
+        :param cache_dir: An existing folder used as cache dir or None
+        :type cache_dir: Optional[Path]
+        :raises FileNotFoundError: Raise if cache folder does not exist
+        """
         self._cache_dir = cache_dir
+        if cache_dir is not None:
+            if not cache_dir.exists() or not cache_dir.is_dir():
+                raise FileNotFoundError(
+                    f'Cache folder "{str(cache_dir)}" does not exist or is not a folder')
+            self._cache_dir = cache_dir
+            self._cache_file = self._cache_dir / Path(CACHE_FILE_NAME)
+        else:
+            self._cache_dir = None
+            self._cache_file = None
 
     def read_cache(self):
+        """Read the cache file from the cache folder if folder and file exist
+        """
         if self._cache_dir is None:
             return
-        self._cache_file = self._cache_dir / Path(CACHE_FILE_NAME)
         if self._cache_file is not None and self._cache_file.exists():
-            with open(self._cache_file, 'r') as f:
-                self._cache = yaml.safe_load(f)
+            with open(self._cache_file, 'r', encoding="utf-8") as file:
+                self._cache = yaml.safe_load(file)
                 if self._cache is None or self._cache == '':
                     self._cache = {}
 
     def write_cache(self):
+        """Write the cache to the cache folder if the cache dir exists
+        """
         if self._cache_file is not None:
-            with open(self._cache_file, 'w') as f:
-                yaml.dump(self._cache, f)
+            with open(self._cache_file, 'w', encoding="utf-8") as file:
+                yaml.dump(self._cache, file)
 
-    def get_cache_domain(self, domain_name: str) -> Dict:
+    def get_cache_domain(self, domain_name: str) -> Dict[str, Any]:
+        """Get cache data for the specified domain, if any
+
+        :param domain_name: Name of the domain
+        :type domain_name: str
+        :return: Dictionary of cached data, e.g. datetime of last update
+        :rtype: Dict[str, Any]
+        """
         return self._cache.get(domain_name, {})
 
-    def update_cache_domain(self, domain: str, domain_cache):
+    def update_cache_domain(self, domain: str, domain_cache: Dict[str, Any]):
+        """Set cache data for the specified domain
+
+        :param domain: Name of the domain
+        :type domain: str
+        :param domain_cache: Dictionary of data to add to cache
+        :type domain_cache: Dict[str, Any]
+        """
         self._cache[domain] = domain_cache
         self.write_cache()
 
     def update(self, dry_run: bool = False) -> int:
+        """Update all domains
+
+        :param dry_run: Perform a dry-run instead of changing any DNS records, defaults to False
+        :type dry_run: bool, optional
+        :return: Returns 0 if successful, otherwise 1
+        :rtype: int
+        """
         for domain in self._domains:
             domain.update(dry_run)
         return 0

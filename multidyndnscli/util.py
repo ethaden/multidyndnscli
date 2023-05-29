@@ -1,3 +1,4 @@
+"""Utility methods for multidyndnscli"""
 from typing import List
 import netaddr  # type: ignore
 import netifaces  # type: ignore
@@ -15,11 +16,25 @@ ipv6_private_net_fe = netaddr.IPNetwork(
 
 
 def get_valid_ip(address: str) -> netaddr.IPAddress:
+    """Return a valid IP address from the provided string if possible
+
+    :param address: String containing an IP address
+    :type address: str
+    :return: A valid IP address instance, if parsing was successful
+    :rtype: netaddr.IPAddress
+    """
     addr = netaddr.IPAddress(address)
     return addr
 
 
 def is_public_ipv4(address: netaddr.IPAddress) -> bool:
+    """Check whether or not the provided IP address is a public IPv4 address
+
+    :param address: IP address to check
+    :type address: netaddr.IPAddress
+    :return: True if address is a public IPv4 address, otherwise False
+    :rtype: bool
+    """
     if address.version != 4:
         return False
     return not (
@@ -32,10 +47,14 @@ def is_public_ipv4(address: netaddr.IPAddress) -> bool:
 def get_ipv4_addresses_linux(
     interface: str, public_only: bool = True
 ) -> List[netaddr.IPAddress]:
+    """Find all/public IPv4 addresses of the given interfaces on Linux
+    
+    :param interface: The network interface to use
+    :type interface: str
+    :param public_only: If True, gets only public IPv4 addresses. Otherwise: Get all
+    :return: A list of IP addresses
+    :rtype: List[netaddr.IPAddress]
     """
-    Find all IPv6 addresses of the given interfaces.
-    """
-
     addrs = netifaces.ifaddresses(interface)
     address_string_list = [addr['addr'] for addr in addrs[netifaces.AF_INET]]
     address_list = [get_valid_ip(address) for address in address_string_list]
@@ -45,6 +64,13 @@ def get_ipv4_addresses_linux(
 
 
 def is_public_ipv6(address: netaddr.IPAddress) -> bool:
+    """Check whether or not the provided IP address is a public IPv6 address
+
+    :param address: IP address to check
+    :type address: netaddr.IPAddress
+    :return: True if address is a public IPv6 address, otherwise False
+    :rtype: bool
+    """
     if address.version != 6:
         return False
     return not (
@@ -55,10 +81,14 @@ def is_public_ipv6(address: netaddr.IPAddress) -> bool:
 
 
 def get_ipv6_addresses_linux(interface: str, public_only: bool = True) -> List[str]:
+    """Find all/public IPv6 addresses of the given interfaces on Linux
+    
+    :param interface: The network interface to use
+    :type interface: str
+    :param public_only: If True, gets only public IPv6 addresses. Otherwise: Get all
+    :return: A list of IP addresses
+    :rtype: List[netaddr.IPAddress]
     """
-    Find all IPv6 addresses of the given interfaces.
-    """
-
     addrs = netifaces.ifaddresses(interface)
     # Note, that addresses used for autoconfiguration have the format
     # "ipv6_adddr%interface_name"
@@ -71,16 +101,3 @@ def get_ipv6_addresses_linux(interface: str, public_only: bool = True) -> List[s
     if public_only:
         return [addr for addr in addresses_list if is_public_ipv6(addr)]
     return addresses_list
-
-
-# def get_public_ipv6(hostname: str) -> netaddr.IPAddress:
-#     result_list = dns.resolver.query(hostname, "AAAA")
-#     # Remove local ones
-#     for val in result_list:
-#         if (
-#             not val.address.startswith("fd")
-#             and not val.address.startswith("fe")
-#             and not val.address.startswith("fc")
-#         ):
-#             return get_valid_ip(val.address)
-#     return None

@@ -1,6 +1,6 @@
 common:
   cache_dir: "<existing writable folder for caching data>"
-dns-providers:
+dns_providers:
   # List of DNS providers, each having a unique name used below under "domains"
   - name: "Netcup"
     # Type of DNS provider. Currently, only "Netcup" is supported
@@ -12,21 +12,29 @@ router:
   ipv4:
     enabled: true
     #method: "web"
-    #url: "http://myexternalip.com/raw"
+    #web_url: "http://myexternalip.com/raw"
+    # optional: web_timeout
+    #web_timeout: 60
     method: "wan"
     wan_interface: "<put-wan-iface-here>"
     #method: "fritzbox"
-    fritzbox:
-      address: "<fritz-box-ip-address>"
-      tls: false
+    #fritzbox_address: "<fritz-box-ip-address>"
+    #fritzbox_tls: false
   ipv6:
     enabled: true
+    #method: "web"
+    #web_url: "http://myexternalip.com/raw"
+    # optional: web_timeout
+    #web_timeout: 60
     method: "wan"
     wan_interface: "<put-wan-iface-here>"
+    #method: "fritzbox"
+    #fritzbox_address: "<fritz-box-ip-address>"
+    #fritzbox_tls: false
 domains:
   - name: "test.invalid"
     # Name of the dns provider to be used. Configured above
-    dns-provider: "Netcup"
+    dns_provider: "Netcup"
     # The minimal delay in seconds to wait until next updated. Increase if using dnssec (as resigning the updated records takes quite a lot time)
     delay: 300
     # List of hosts
