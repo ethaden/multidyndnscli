@@ -1,7 +1,8 @@
 """
 Yet another python module for router-based multi-domain, multi-host dynamic dns (dyndns), 
 with support for IPv4 and IPv6.
-This project currently only support Netcup, but might be extended in the future.
+This project currently only supports Netcup, but might be extended in the future.
+
 """
 import logging
 from abc import ABC, abstractmethod
@@ -594,7 +595,7 @@ class DNSProvider(ABC):
         :param domain: The domain object to fetch data from.
         :type domain: Domain
         :return: A list of DNS records fetched from the DNS provider which could be updated.
-        "rtype: List[DNSRecord]
+        :rtype: List[DNSRecord]
         """
 
     @abstractmethod
@@ -644,7 +645,7 @@ class Netcup(DNSProvider):
         :param domain: The domain object to fetch data from.
         :type domain: Domain
         :return: A list of DNS records fetched from the DNS provider which could be updated.
-        "rtype: List[DNSRecord]
+        :rtype: List[DNSRecord]
         """
         with Client(self._userid, self._apikey, self._apipass) as api:
             # fetch records

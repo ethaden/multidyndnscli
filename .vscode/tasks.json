@@ -28,6 +28,11 @@
             "label": "pytest",
             "type": "shell",
             "command": "poetry run pytest --cov-report xml:cov.xml --cov-report term-missing --cov=multidyndnscli tests/"
-        }
+        },
+        {
+            "label": "docs",
+            "type": "shell",
+            "command": "poetry run sphinx-build -b html docs/source/  docs/build/html"
+        }        
     ]
 }

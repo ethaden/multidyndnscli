@@ -6,6 +6,8 @@ __pycache__
 .tox
 poetry.lock
 cache
-docs
+docs/build
 gh-pages
 cov.xml
+.mypy_cache
+.pytest_cache
