@@ -1,0 +1,32 @@
+:py:mod:`multidyndnscli.schemata`
+=================================
+
+.. py:module:: multidyndnscli.schemata
+
+.. autoapi-nested-parse::
+
+   Defines the config file schema for multidyndnscli
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   multidyndnscli.schemata.get_config_file_schema
+
+
+
+.. py:function:: get_config_file_schema() -> schema.Schema
+
+   Create the config file schema
+
+   :return: Config file schema
+   :rtype: Schema
+
+

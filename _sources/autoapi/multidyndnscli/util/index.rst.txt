@@ -1,0 +1,117 @@
+:py:mod:`multidyndnscli.util`
+=============================
+
+.. py:module:: multidyndnscli.util
+
+.. autoapi-nested-parse::
+
+   Utility methods for multidyndnscli
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   multidyndnscli.util.get_valid_ip
+   multidyndnscli.util.is_public_ipv4
+   multidyndnscli.util.get_ipv4_addresses_linux
+   multidyndnscli.util.is_public_ipv6
+   multidyndnscli.util.get_ipv6_addresses_linux
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   multidyndnscli.util.ipv4_private_net_192_168
+   multidyndnscli.util.ipv4_private_net_172_16
+   multidyndnscli.util.ipv4_private_net_10
+   multidyndnscli.util.ipv6_private_net_fc
+   multidyndnscli.util.ipv6_private_net_fd
+   multidyndnscli.util.ipv6_private_net_fe
+
+
+.. py:data:: ipv4_private_net_192_168
+
+   
+
+.. py:data:: ipv4_private_net_172_16
+
+   
+
+.. py:data:: ipv4_private_net_10
+
+   
+
+.. py:data:: ipv6_private_net_fc
+
+   
+
+.. py:data:: ipv6_private_net_fd
+
+   
+
+.. py:data:: ipv6_private_net_fe
+
+   
+
+.. py:function:: get_valid_ip(address: str) -> netaddr.IPAddress
+
+   Return a valid IP address from the provided string if possible
+
+   :param address: String containing an IP address
+   :type address: str
+   :return: A valid IP address instance, if parsing was successful
+   :rtype: netaddr.IPAddress
+
+
+.. py:function:: is_public_ipv4(address: netaddr.IPAddress) -> bool
+
+   Check whether or not the provided IP address is a public IPv4 address
+
+   :param address: IP address to check
+   :type address: netaddr.IPAddress
+   :return: True if address is a public IPv4 address, otherwise False
+   :rtype: bool
+
+
+.. py:function:: get_ipv4_addresses_linux(interface: str, public_only: bool = True) -> List[netaddr.IPAddress]
+
+   Find all/public IPv4 addresses of the given interfaces on Linux
+
+   :param interface: The network interface to use
+   :type interface: str
+   :param public_only: If True, gets only public IPv4 addresses. Otherwise: Get all
+   :return: A list of IP addresses
+   :rtype: List[netaddr.IPAddress]
+
+
+.. py:function:: is_public_ipv6(address: netaddr.IPAddress) -> bool
+
+   Check whether or not the provided IP address is a public IPv6 address
+
+   :param address: IP address to check
+   :type address: netaddr.IPAddress
+   :return: True if address is a public IPv6 address, otherwise False
+   :rtype: bool
+
+
+.. py:function:: get_ipv6_addresses_linux(interface: str, public_only: bool = True) -> List[str]
+
+   Find all/public IPv6 addresses of the given interfaces on Linux
+
+   :param interface: The network interface to use
+   :type interface: str
+   :param public_only: If True, gets only public IPv6 addresses. Otherwise: Get all
+   :return: A list of IP addresses
+   :rtype: List[netaddr.IPAddress]
+
+

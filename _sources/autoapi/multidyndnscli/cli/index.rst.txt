@@ -1,0 +1,34 @@
+:py:mod:`multidyndnscli.cli`
+============================
+
+.. py:module:: multidyndnscli.cli
+
+.. autoapi-nested-parse::
+
+   Command-line interface for multidnscli
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   multidyndnscli.cli.run
+
+
+
+.. py:function:: run(args: Optional[List[str]] = None) -> int
+
+   Run the tool
+
+   :param args: list of command line arguments (i.e. args), defaults to None
+   :type args: Optional[List[str]], optional
+   :return: Returns 0 if update was successful, otherwise 1
+   :rtype: int
+
+

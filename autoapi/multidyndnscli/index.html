@@ -1,0 +1,1182 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="multidyndnscli.cli" href="cli/index.html" /><link rel="prev" title="API Reference" href="../index.html" />
+
+    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
+        <title>multidyndnscli - MultiDynDNSCli 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">MultiDynDNSCli 1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">MultiDynDNSCli 1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of multidyndnscli</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="cli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.cli</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="schemata/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.schemata</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.util</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-multidyndnscli">
+<span id="multidyndnscli"></span><h1><a class="reference internal" href="#module-multidyndnscli" title="multidyndnscli"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli</span></code></a><a class="headerlink" href="#module-multidyndnscli" title="Permalink to this heading">#</a></h1>
+<p>Yet another python module for router-based multi-domain, multi-host dynamic dns (dyndns),
+with support for IPv4 and IPv6.
+This project currently only supports Netcup, but might be extended in the future.</p>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.cli</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="schemata/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.schemata</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.util</span></code></a></li>
+</ul>
+</div>
+</section>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Permalink to this heading">#</a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#multidyndnscli.Host" title="multidyndnscli.Host"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Host</span></code></a></p></td>
+<td><p>Represents a host in the local network used as target for an external address</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Domain</span></code></a></p></td>
+<td><p>This class represents an internet domain containing hosts used for dyndns</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Router</span></code></a></p></td>
+<td><p>A class representing a home router</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#multidyndnscli.DNSProvider" title="multidyndnscli.DNSProvider"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNSProvider</span></code></a></p></td>
+<td><p>This abstract class represents a DNS provider</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#multidyndnscli.Netcup" title="multidyndnscli.Netcup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Netcup</span></code></a></p></td>
+<td><p>This class implements the DNSProvider for Netcup</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#multidyndnscli.Updater" title="multidyndnscli.Updater"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Updater</span></code></a></p></td>
+<td><p>This is the main class for coordinating the whole update processes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#multidyndnscli.get_config_file_schema" title="multidyndnscli.get_config_file_schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_config_file_schema</span></code></a>(→ schema.Schema)</p></td>
+<td><p>Create the config file schema</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#multidyndnscli.CACHE_FILE_NAME" title="multidyndnscli.CACHE_FILE_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CACHE_FILE_NAME</span></code></a></p></td>
+<td><p>The name used for the updater cache file if a (valid) cache dir has been configured</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#multidyndnscli.KEY_DOMAINS" title="multidyndnscli.KEY_DOMAINS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KEY_DOMAINS</span></code></a></p></td>
+<td><p>The key used to store domain statuses in the updater cache</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#multidyndnscli.KEY_LAST_UPDATE" title="multidyndnscli.KEY_LAST_UPDATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KEY_LAST_UPDATE</span></code></a></p></td>
+<td><p>The key used to store the datetime of the last update into the updater cache</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="multidyndnscli.get_config_file_schema">
+<span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">get_config_file_schema</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">schema.Schema</span></span></span><a class="headerlink" href="#multidyndnscli.get_config_file_schema" title="Permalink to this definition">#</a></dt>
+<dd><p>Create the config file schema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Config file schema</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Schema</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="multidyndnscli.CACHE_FILE_NAME">
+<span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">CACHE_FILE_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'multidyndns.cache'</span></em><a class="headerlink" href="#multidyndnscli.CACHE_FILE_NAME" title="Permalink to this definition">#</a></dt>
+<dd><p>The name used for the updater cache file if a (valid) cache dir has been configured</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="multidyndnscli.KEY_DOMAINS">
+<span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">KEY_DOMAINS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'domains'</span></em><a class="headerlink" href="#multidyndnscli.KEY_DOMAINS" title="Permalink to this definition">#</a></dt>
+<dd><p>The key used to store domain statuses in the updater cache</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="multidyndnscli.KEY_LAST_UPDATE">
+<span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">KEY_LAST_UPDATE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'last_updated'</span></em><a class="headerlink" href="#multidyndnscli.KEY_LAST_UPDATE" title="Permalink to this definition">#</a></dt>
+<dd><p>The key used to store the datetime of the last update into the updater cache</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="multidyndnscli.RouterNotReachableException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">RouterNotReachableException</span></span><a class="headerlink" href="#multidyndnscli.RouterNotReachableException" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>This exception indicates that the Fritz!Box couldn’t be reached</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="multidyndnscli.DNSResolutionException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">DNSResolutionException</span></span><a class="headerlink" href="#multidyndnscli.DNSResolutionException" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>This exception indicates that an IP address couldn’t not be resolved</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="multidyndnscli.Host">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">Host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">router</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router"><span class="pre">Router</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fqdn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public_ipv4_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public_ipv6_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Host" title="Permalink to this definition">#</a></dt>
+<dd><p>Represents a host in the local network used as target for an external address</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Host.host_ipv4">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">host_ipv4</span></span><a class="headerlink" href="#multidyndnscli.Host.host_ipv4" title="Permalink to this definition">#</a></dt>
+<dd><p>Property holding the resolved public IPv4 for connections from the internet (if any)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Host.host_ipv6">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">host_ipv6</span></span><a class="headerlink" href="#multidyndnscli.Host.host_ipv6" title="Permalink to this definition">#</a></dt>
+<dd><p>Property holding the resolved public IPv6 for connections from the internet (if any)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Host.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#multidyndnscli.Host.name" title="Permalink to this definition">#</a></dt>
+<dd><p>Property holding the name of this host</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Host.fqdn">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fqdn</span></span><a class="headerlink" href="#multidyndnscli.Host.fqdn" title="Permalink to this definition">#</a></dt>
+<dd><p>Property holding the public fully qualified domain name (FQDN) of this host</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Host._name">
+<span class="sig-name descname"><span class="pre">_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#multidyndnscli.Host._name" title="Permalink to this definition">#</a></dt>
+<dd><p>The local hostname of the host</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Host._router">
+<span class="sig-name descname"><span class="pre">_router</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router"><span class="pre">Router</span></a></em><a class="headerlink" href="#multidyndnscli.Host._router" title="Permalink to this definition">#</a></dt>
+<dd><p>A router object, representing the home router</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Host._current_fqdn_dns_ipv4">
+<span class="sig-name descname"><span class="pre">_current_fqdn_dns_ipv4</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">netaddr.IPAddress</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#multidyndnscli.Host._current_fqdn_dns_ipv4" title="Permalink to this definition">#</a></dt>
+<dd><p>The IPv4 the FQDN is currently pointing to (if any)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Host._current_fqdn_dns_ipv6_set">
+<span class="sig-name descname"><span class="pre">_current_fqdn_dns_ipv6_set</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">netaddr.IPAddress</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Host._current_fqdn_dns_ipv6_set" title="Permalink to this definition">#</a></dt>
+<dd><p>The set of IPv6 the FQDN is currently pointing to (if any)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Host._host_ipv4">
+<span class="sig-name descname"><span class="pre">_host_ipv4</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">netaddr.IPAddress</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#multidyndnscli.Host._host_ipv4" title="Permalink to this definition">#</a></dt>
+<dd><p>The IPv4 the host is currently using (if any)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Host._host_ipv6_set">
+<span class="sig-name descname"><span class="pre">_host_ipv6_set</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">netaddr.IPAddress</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Host._host_ipv6_set" title="Permalink to this definition">#</a></dt>
+<dd><p># The set of IPv6 the host is currently using (if any)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Host.from_config">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">router</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router"><span class="pre">Router</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">host_config</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#multidyndnscli.Host" title="multidyndnscli.Host"><span class="pre">Host</span></a></span></span><a class="headerlink" href="#multidyndnscli.Host.from_config" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary-based factory for instances of type Host</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>router</strong> (<a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router"><em>Router</em></a>) – An instance of the Router class, representing the home router</p></li>
+<li><p><strong>host_config</strong> (<em>_type_</em>) – A dictionary holding the configuration of this host</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Host instance if the config dictionary has been parsed successfully</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#multidyndnscli.Host" title="multidyndnscli.Host">Host</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Host._resolve_current_fqdn_ipv4">
+<span class="sig-name descname"><span class="pre">_resolve_current_fqdn_ipv4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Host._resolve_current_fqdn_ipv4" title="Permalink to this definition">#</a></dt>
+<dd><p>Method for resolving the current IPv4 the FQDN is pointing to (if any)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Host._resolve_current_fqdn_ipv6_set">
+<span class="sig-name descname"><span class="pre">_resolve_current_fqdn_ipv6_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Host._resolve_current_fqdn_ipv6_set" title="Permalink to this definition">#</a></dt>
+<dd><p>Method for resolving the current IPv6 the FQDN is pointing to (if any)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Host._resolve_host_ipv4">
+<span class="sig-name descname"><span class="pre">_resolve_host_ipv4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Host._resolve_host_ipv4" title="Permalink to this definition">#</a></dt>
+<dd><p>Method for resolving the public IPv4 used to reach the host from the intranet</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Host._resolve_host_ipv6_set">
+<span class="sig-name descname"><span class="pre">_resolve_host_ipv6_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Host._resolve_host_ipv6_set" title="Permalink to this definition">#</a></dt>
+<dd><p>Method for resolving the set of public IPv6 used to reach the host from the intranet</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Host.needs_update">
+<span class="sig-name descname"><span class="pre">needs_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#multidyndnscli.Host.needs_update" title="Permalink to this definition">#</a></dt>
+<dd><p>Indicates whether or not an update of the FQDN is required for this host</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="multidyndnscli.Domain">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">Domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updater</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Updater" title="multidyndnscli.Updater"><span class="pre">Updater</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">router</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router"><span class="pre">Router</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dns_provider</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.DNSProvider" title="multidyndnscli.DNSProvider"><span class="pre">DNSProvider</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Domain" title="Permalink to this definition">#</a></dt>
+<dd><p>This class represents an internet domain containing hosts used for dyndns</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Domain.domain_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">domain_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#multidyndnscli.Domain.domain_name" title="Permalink to this definition">#</a></dt>
+<dd><p>Property holding the domain name (FQDN)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The domain name (FQDN)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._updater">
+<span class="sig-name descname"><span class="pre">_updater</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#multidyndnscli.Updater" title="multidyndnscli.Updater"><span class="pre">Updater</span></a></em><a class="headerlink" href="#multidyndnscli.Domain._updater" title="Permalink to this definition">#</a></dt>
+<dd><p>An instance of the Updater class</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._delay">
+<span class="sig-name descname"><span class="pre">_delay</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#multidyndnscli.Domain._delay" title="Permalink to this definition">#</a></dt>
+<dd><p>A delay to wait between DNS updates, in seconds</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._target_records_ipv4">
+<span class="sig-name descname"><span class="pre">_target_records_ipv4</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">netaddr.IPAddress</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Domain._target_records_ipv4" title="Permalink to this definition">#</a></dt>
+<dd><p>A dictionary of hostnames mapping to their respective desired public IPv4 address</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._target_records_ipv6">
+<span class="sig-name descname"><span class="pre">_target_records_ipv6</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">netaddr.IPAddress</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Domain._target_records_ipv6" title="Permalink to this definition">#</a></dt>
+<dd><p>A dictionary of hostnames mapping to their respective desired public IPv6 address</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._router">
+<span class="sig-name descname"><span class="pre">_router</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router"><span class="pre">Router</span></a></em><a class="headerlink" href="#multidyndnscli.Domain._router" title="Permalink to this definition">#</a></dt>
+<dd><p>An instance of the Router class, representing the home router</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._domain_name">
+<span class="sig-name descname"><span class="pre">_domain_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#multidyndnscli.Domain._domain_name" title="Permalink to this definition">#</a></dt>
+<dd><p>The domain name of this domain (FQDN)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._dns_provider">
+<span class="sig-name descname"><span class="pre">_dns_provider</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#multidyndnscli.DNSProvider" title="multidyndnscli.DNSProvider"><span class="pre">DNSProvider</span></a></em><a class="headerlink" href="#multidyndnscli.Domain._dns_provider" title="Permalink to this definition">#</a></dt>
+<dd><p>An instance of a DNSProvider, used to update the domain records</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._last_update">
+<span class="sig-name descname"><span class="pre">_last_update</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime.datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#multidyndnscli.Domain._last_update" title="Permalink to this definition">#</a></dt>
+<dd><p>The datetime of the last updated (optionally, if available)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._host_list">
+<span class="sig-name descname"><span class="pre">_host_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#multidyndnscli.Host" title="multidyndnscli.Host"><span class="pre">Host</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Domain._host_list" title="Permalink to this definition">#</a></dt>
+<dd><p>The list of Host instances to do dyndns for in this domain</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._domain_record_dict">
+<span class="sig-name descname"><span class="pre">_domain_record_dict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">nc_dnsapi.DNSRecord</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Domain._domain_record_dict" title="Permalink to this definition">#</a></dt>
+<dd><p>A dictionary for hostnames to record type to IP addresses</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Domain.from_config">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updater</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Updater" title="multidyndnscli.Updater"><span class="pre">Updater</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">router</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router"><span class="pre">Router</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dns_providers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#multidyndnscli.DNSProvider" title="multidyndnscli.DNSProvider"><span class="pre">DNSProvider</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain_config</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></span><a class="headerlink" href="#multidyndnscli.Domain.from_config" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary-based factory for instances of type Domain</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>updater</strong> (<a class="reference internal" href="#multidyndnscli.Updater" title="multidyndnscli.Updater"><em>Updater</em></a>) – An instance of the Updater class</p></li>
+<li><p><strong>router</strong> (<a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router"><em>Router</em></a>) – An instance of the Router class, representing the home router</p></li>
+<li><p><strong>dns_providers</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>&amp;#39;DNSProvider&amp;#39;</em><em>]</em>) – An instance of a DNSProvider, used to update the domain records</p></li>
+<li><p><strong>domain_config</strong> (<em>_type_</em>) – A dictionary holding the configuration for this domain</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of the Domain class</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain">Domain</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Domain.add_host">
+<span class="sig-name descname"><span class="pre">add_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Host" title="multidyndnscli.Host"><span class="pre">Host</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Domain.add_host" title="Permalink to this definition">#</a></dt>
+<dd><p>Add a Host instance to this domain</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>host</strong> (<a class="reference internal" href="#multidyndnscli.Host" title="multidyndnscli.Host"><em>Host</em></a>) – An instance of Host to be added to this domain</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._read_from_cache">
+<span class="sig-name descname"><span class="pre">_read_from_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Domain._read_from_cache" title="Permalink to this definition">#</a></dt>
+<dd><p>Read data from common cache, e.g. datetime of last update for this domain</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Domain.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Domain.update" title="Permalink to this definition">#</a></dt>
+<dd><p>Update this domain</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dry_run</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, do not actually update the domain, defaults to False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._rebuild_domain_records_cache">
+<span class="sig-name descname"><span class="pre">_rebuild_domain_records_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Domain._rebuild_domain_records_cache" title="Permalink to this definition">#</a></dt>
+<dd><p>Rebuild the domain record cache from data fetched from the configure DNS provider</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Domain._find_record_id">
+<span class="sig-name descname"><span class="pre">_find_record_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">nc_dnsapi.DNSRecord</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#multidyndnscli.Domain._find_record_id" title="Permalink to this definition">#</a></dt>
+<dd><p>Find a specific record in the domain record cache if any</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hostname</strong> (<em>_type_</em>) – Hostname to search for</p></li>
+<li><p><strong>record_type</strong> (<em>_type_</em>) – The record type, i.e. A or AAAA record</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The DNS record if any</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DNSRecord or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="multidyndnscli.Router">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">Router</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">router_ipv4_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">router_ipv6_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Router" title="Permalink to this definition">#</a></dt>
+<dd><p>A class representing a home router</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Router.ipv4">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ipv4</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">netaddr.IPAddress</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#multidyndnscli.Router.ipv4" title="Permalink to this definition">#</a></dt>
+<dd><p>Property holding the router’s current public IPv4 address</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The router’s IPv4 address if any</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>IPAddress, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Router.use_ipv4">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">use_ipv4</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#multidyndnscli.Router.use_ipv4" title="Permalink to this definition">#</a></dt>
+<dd><p>Indicates whether or not the router has a public IPv4</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True, if the router has a public IPv4</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Router.ipv6">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ipv6</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">netaddr.IPAddress</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#multidyndnscli.Router.ipv6" title="Permalink to this definition">#</a></dt>
+<dd><p>Property holding the router’s current public IPv6 address</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The router’s IPv6 address if any</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>IPAddress, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Router.use_ipv6">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">use_ipv6</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#multidyndnscli.Router.use_ipv6" title="Permalink to this definition">#</a></dt>
+<dd><p>Indicates whether or not the router has a public IPv6</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True, if the router has a public IPv6</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Router._ipv4">
+<span class="sig-name descname"><span class="pre">_ipv4</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">netaddr.IPAddress</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#multidyndnscli.Router._ipv4" title="Permalink to this definition">#</a></dt>
+<dd><p>The IPv4 address of the router, if any</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Router._ipv6">
+<span class="sig-name descname"><span class="pre">_ipv6</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">netaddr.IPAddress</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#multidyndnscli.Router._ipv6" title="Permalink to this definition">#</a></dt>
+<dd><p>The IPv6 address of the router, if any</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Router.from_config">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">router_config</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router"><span class="pre">Router</span></a></span></span><a class="headerlink" href="#multidyndnscli.Router.from_config" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary-based factory for instances of type Router</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>router_config</strong> (<em>_type_</em>) – A dictionary holding the configuration for the router</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of type Router</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#multidyndnscli.Router" title="multidyndnscli.Router">Router</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Router._resolve_public_ipv4">
+<span class="sig-name descname"><span class="pre">_resolve_public_ipv4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ipv4_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">netaddr.IPAddress</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#multidyndnscli.Router._resolve_public_ipv4" title="Permalink to this definition">#</a></dt>
+<dd><p>Resolves the public IPv4 of the router with the specified method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ipv4_config</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A dictionary holding the configuration of the DNS resolution method</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#multidyndnscli.DNSResolutionException" title="multidyndnscli.DNSResolutionException"><strong>DNSResolutionException</strong></a> – Raised if the DNS resolution has failed</p></li>
+<li><p><a class="reference internal" href="#multidyndnscli.RouterNotReachableException" title="multidyndnscli.RouterNotReachableException"><strong>RouterNotReachableException</strong></a> – Raised if the Fritz!Box could not be reached</p></li>
+<li><p><strong>ValueError</strong> – Raised if the specified method for resolving the public IPv4 is invalid</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The public IPv4 address of the router or None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>netaddr.IPAddress, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Router._resolve_public_ipv6">
+<span class="sig-name descname"><span class="pre">_resolve_public_ipv6</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ipv6_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">netaddr.IPAddress</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#multidyndnscli.Router._resolve_public_ipv6" title="Permalink to this definition">#</a></dt>
+<dd><p>Resolves the public IPv6 of the router with the specified method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ipv6_config</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A dictionary holding the configuration of the DNS resolution method</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#multidyndnscli.DNSResolutionException" title="multidyndnscli.DNSResolutionException"><strong>DNSResolutionException</strong></a> – Raised if the DNS resolution has failed</p></li>
+<li><p><a class="reference internal" href="#multidyndnscli.RouterNotReachableException" title="multidyndnscli.RouterNotReachableException"><strong>RouterNotReachableException</strong></a> – Raised if the Fritz!Box could not be reached</p></li>
+<li><p><strong>ValueError</strong> – Raised if the specified method for resolving the public IPv6 is invalid</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The public IPv4 address of the router or None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>netaddr.IPAddress, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="multidyndnscli.DNSProvider">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">DNSProvider</span></span><a class="headerlink" href="#multidyndnscli.DNSProvider" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>This abstract class represents a DNS provider</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.DNSProvider.fetch_domain">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fetch_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">nc_dnsapi.DNSRecord</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#multidyndnscli.DNSProvider.fetch_domain" title="Permalink to this definition">#</a></dt>
+<dd><p>Abstract method for fetching domain data from the DNS provider</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>domain</strong> (<a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><em>Domain</em></a>) – The domain object to fetch data from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of DNS records fetched from the DNS provider which could be updated.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[DNSRecord]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.DNSProvider.update_domain">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">nc_dnsapi.DNSRecord</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.DNSProvider.update_domain" title="Permalink to this definition">#</a></dt>
+<dd><p>Abstract method for updating the provided list of records in the provided domain</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> (<a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><em>Domain</em></a>) – The domain object to update</p></li>
+<li><p><strong>records</strong> (<em>List</em><em>[</em><em>DNSRecord</em><em>]</em>) – The full list of DNS records of the domain including the updated records</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="multidyndnscli.Netcup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">Netcup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apipass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Netcup" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#multidyndnscli.DNSProvider" title="multidyndnscli.DNSProvider"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNSProvider</span></code></a></p>
+<p>This class implements the DNSProvider for Netcup</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Netcup.from_config">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#multidyndnscli.Netcup" title="multidyndnscli.Netcup"><span class="pre">Netcup</span></a></span></span><a class="headerlink" href="#multidyndnscli.Netcup.from_config" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary-based factory for instances of type Netcup</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – A dictionary holding the configuration for Netcup</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of type Netcup</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#multidyndnscli.Netcup" title="multidyndnscli.Netcup">Netcup</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Netcup.fetch_domain">
+<span class="sig-name descname"><span class="pre">fetch_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">nc_dnsapi.DNSRecord</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#multidyndnscli.Netcup.fetch_domain" title="Permalink to this definition">#</a></dt>
+<dd><p>Fetch domain data from Netcup</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>domain</strong> (<a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><em>Domain</em></a>) – The domain object to fetch data from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of DNS records fetched from the DNS provider which could be updated.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[DNSRecord]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Netcup.update_domain">
+<span class="sig-name descname"><span class="pre">update_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">nc_dnsapi.DNSRecord</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Netcup.update_domain" title="Permalink to this definition">#</a></dt>
+<dd><p>Update the provided list of records in the provided domain at Netcup</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> (<a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><em>Domain</em></a>) – The domain object to update</p></li>
+<li><p><strong>records</strong> (<em>List</em><em>[</em><em>DNSRecord</em><em>]</em>) – The full list of DNS records of the domain including the updated records</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="multidyndnscli.Updater">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">Updater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Updater" title="Permalink to this definition">#</a></dt>
+<dd><p>This is the main class for coordinating the whole update processes</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.dns_providers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dns_providers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#multidyndnscli.DNSProvider" title="multidyndnscli.DNSProvider"><span class="pre">DNSProvider</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Updater.dns_providers" title="Permalink to this definition">#</a></dt>
+<dd><p>Property holding the dictionary of names to DNS providers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The dictionary of DNS providers by name</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, <a class="reference internal" href="#multidyndnscli.DNSProvider" title="multidyndnscli.DNSProvider">DNSProvider</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.domains">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">domains</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Updater.domains" title="Permalink to this definition">#</a></dt>
+<dd><p>Property holding the list of domains</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The list of domains</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain">Domain</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.cache_dir">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cache_dir</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#multidyndnscli.Updater.cache_dir" title="Permalink to this definition">#</a></dt>
+<dd><p>Property holding the cache folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The cache folder, or none</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[Path]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Updater._config">
+<span class="sig-name descname"><span class="pre">_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Updater._config" title="Permalink to this definition">#</a></dt>
+<dd><p>A dictionary representing the configuration of the updater</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Updater._cache_file">
+<span class="sig-name descname"><span class="pre">_cache_file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#multidyndnscli.Updater._cache_file" title="Permalink to this definition">#</a></dt>
+<dd><p>The filename of a cache file used to store domain update data</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Updater._cache">
+<span class="sig-name descname"><span class="pre">_cache</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Updater._cache" title="Permalink to this definition">#</a></dt>
+<dd><p>The cache used to store domain update data</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Updater._dns_providers">
+<span class="sig-name descname"><span class="pre">_dns_providers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#multidyndnscli.DNSProvider" title="multidyndnscli.DNSProvider"><span class="pre">DNSProvider</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Updater._dns_providers" title="Permalink to this definition">#</a></dt>
+<dd><p>A dictionary of DNS providers</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Updater._domains">
+<span class="sig-name descname"><span class="pre">_domains</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Updater._domains" title="Permalink to this definition">#</a></dt>
+<dd><p>The list of DNS domains</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.from_config">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#multidyndnscli.Updater" title="multidyndnscli.Updater"><span class="pre">Updater</span></a></span></span><a class="headerlink" href="#multidyndnscli.Updater.from_config" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary-based factory for instances of type Updater</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – A dictionary holding the configuration for the Updater class</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#multidyndnscli.RouterNotReachableException" title="multidyndnscli.RouterNotReachableException"><strong>RouterNotReachableException</strong></a> – Raised if the Fritz!Box could not be reached</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An instance of type Updater</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#multidyndnscli.Updater" title="multidyndnscli.Updater">Updater</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.add_dns_provider">
+<span class="sig-name descname"><span class="pre">add_dns_provider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dns_provider</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.DNSProvider" title="multidyndnscli.DNSProvider"><span class="pre">DNSProvider</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Updater.add_dns_provider" title="Permalink to this definition">#</a></dt>
+<dd><p>Add a DNS provider by name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of a DNS provider</p></li>
+<li><p><strong>dns_provider</strong> (<a class="reference internal" href="#multidyndnscli.DNSProvider" title="multidyndnscli.DNSProvider"><em>DNSProvider</em></a>) – A DNS provider object</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.add_domain">
+<span class="sig-name descname"><span class="pre">add_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Updater.add_domain" title="Permalink to this definition">#</a></dt>
+<dd><p>Add the specified domain to the list of domains</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>domain</strong> (<a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><em>Domain</em></a>) – The domain to add</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.read_cache">
+<span class="sig-name descname"><span class="pre">read_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Updater.read_cache" title="Permalink to this definition">#</a></dt>
+<dd><p>Read the cache file from the cache folder if folder and file exist</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.write_cache">
+<span class="sig-name descname"><span class="pre">write_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Updater.write_cache" title="Permalink to this definition">#</a></dt>
+<dd><p>Write the cache to the cache folder if the cache dir exists</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.get_cache_domain">
+<span class="sig-name descname"><span class="pre">get_cache_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#multidyndnscli.Updater.get_cache_domain" title="Permalink to this definition">#</a></dt>
+<dd><p>Get cache data for the specified domain, if any</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>domain_name</strong> (<em>str</em>) – Name of the domain</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of cached data, e.g. datetime of last update</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.update_cache_domain">
+<span class="sig-name descname"><span class="pre">update_cache_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain_cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Updater.update_cache_domain" title="Permalink to this definition">#</a></dt>
+<dd><p>Set cache data for the specified domain</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> (<em>str</em>) – Name of the domain</p></li>
+<li><p><strong>domain_cache</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Dictionary of data to add to cache</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Updater.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#multidyndnscli.Updater.update" title="Permalink to this definition">#</a></dt>
+<dd><p>Update all domains</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dry_run</strong> (<em>bool</em><em>, </em><em>optional</em>) – Perform a dry-run instead of changing any DNS records, defaults to False</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns 0 if successful, otherwise 1</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="cli/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.cli</span></code></div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">API Reference</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Eike Thaden
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli</span></code></a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#package-contents">Package Contents</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#attributes">Attributes</a><ul>
+<li><a class="reference internal" href="#multidyndnscli.get_config_file_schema"><code class="docutils literal notranslate"><span class="pre">get_config_file_schema()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.CACHE_FILE_NAME"><code class="docutils literal notranslate"><span class="pre">CACHE_FILE_NAME</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.KEY_DOMAINS"><code class="docutils literal notranslate"><span class="pre">KEY_DOMAINS</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.KEY_LAST_UPDATE"><code class="docutils literal notranslate"><span class="pre">KEY_LAST_UPDATE</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.RouterNotReachableException"><code class="docutils literal notranslate"><span class="pre">RouterNotReachableException</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.DNSResolutionException"><code class="docutils literal notranslate"><span class="pre">DNSResolutionException</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host"><code class="docutils literal notranslate"><span class="pre">Host</span></code></a><ul>
+<li><a class="reference internal" href="#multidyndnscli.Host.host_ipv4"><code class="docutils literal notranslate"><span class="pre">Host.host_ipv4</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host.host_ipv6"><code class="docutils literal notranslate"><span class="pre">Host.host_ipv6</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host.name"><code class="docutils literal notranslate"><span class="pre">Host.name</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host.fqdn"><code class="docutils literal notranslate"><span class="pre">Host.fqdn</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host._name"><code class="docutils literal notranslate"><span class="pre">Host._name</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host._router"><code class="docutils literal notranslate"><span class="pre">Host._router</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host._current_fqdn_dns_ipv4"><code class="docutils literal notranslate"><span class="pre">Host._current_fqdn_dns_ipv4</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host._current_fqdn_dns_ipv6_set"><code class="docutils literal notranslate"><span class="pre">Host._current_fqdn_dns_ipv6_set</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host._host_ipv4"><code class="docutils literal notranslate"><span class="pre">Host._host_ipv4</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host._host_ipv6_set"><code class="docutils literal notranslate"><span class="pre">Host._host_ipv6_set</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host.from_config"><code class="docutils literal notranslate"><span class="pre">Host.from_config()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host._resolve_current_fqdn_ipv4"><code class="docutils literal notranslate"><span class="pre">Host._resolve_current_fqdn_ipv4()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host._resolve_current_fqdn_ipv6_set"><code class="docutils literal notranslate"><span class="pre">Host._resolve_current_fqdn_ipv6_set()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host._resolve_host_ipv4"><code class="docutils literal notranslate"><span class="pre">Host._resolve_host_ipv4()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host._resolve_host_ipv6_set"><code class="docutils literal notranslate"><span class="pre">Host._resolve_host_ipv6_set()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Host.needs_update"><code class="docutils literal notranslate"><span class="pre">Host.needs_update()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multidyndnscli.Domain"><code class="docutils literal notranslate"><span class="pre">Domain</span></code></a><ul>
+<li><a class="reference internal" href="#multidyndnscli.Domain.domain_name"><code class="docutils literal notranslate"><span class="pre">Domain.domain_name</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._updater"><code class="docutils literal notranslate"><span class="pre">Domain._updater</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._delay"><code class="docutils literal notranslate"><span class="pre">Domain._delay</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._target_records_ipv4"><code class="docutils literal notranslate"><span class="pre">Domain._target_records_ipv4</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._target_records_ipv6"><code class="docutils literal notranslate"><span class="pre">Domain._target_records_ipv6</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._router"><code class="docutils literal notranslate"><span class="pre">Domain._router</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._domain_name"><code class="docutils literal notranslate"><span class="pre">Domain._domain_name</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._dns_provider"><code class="docutils literal notranslate"><span class="pre">Domain._dns_provider</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._last_update"><code class="docutils literal notranslate"><span class="pre">Domain._last_update</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._host_list"><code class="docutils literal notranslate"><span class="pre">Domain._host_list</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._domain_record_dict"><code class="docutils literal notranslate"><span class="pre">Domain._domain_record_dict</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain.from_config"><code class="docutils literal notranslate"><span class="pre">Domain.from_config()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain.add_host"><code class="docutils literal notranslate"><span class="pre">Domain.add_host()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._read_from_cache"><code class="docutils literal notranslate"><span class="pre">Domain._read_from_cache()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain.update"><code class="docutils literal notranslate"><span class="pre">Domain.update()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._rebuild_domain_records_cache"><code class="docutils literal notranslate"><span class="pre">Domain._rebuild_domain_records_cache()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Domain._find_record_id"><code class="docutils literal notranslate"><span class="pre">Domain._find_record_id()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multidyndnscli.Router"><code class="docutils literal notranslate"><span class="pre">Router</span></code></a><ul>
+<li><a class="reference internal" href="#multidyndnscli.Router.ipv4"><code class="docutils literal notranslate"><span class="pre">Router.ipv4</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Router.use_ipv4"><code class="docutils literal notranslate"><span class="pre">Router.use_ipv4</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Router.ipv6"><code class="docutils literal notranslate"><span class="pre">Router.ipv6</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Router.use_ipv6"><code class="docutils literal notranslate"><span class="pre">Router.use_ipv6</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Router._ipv4"><code class="docutils literal notranslate"><span class="pre">Router._ipv4</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Router._ipv6"><code class="docutils literal notranslate"><span class="pre">Router._ipv6</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Router.from_config"><code class="docutils literal notranslate"><span class="pre">Router.from_config()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Router._resolve_public_ipv4"><code class="docutils literal notranslate"><span class="pre">Router._resolve_public_ipv4()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Router._resolve_public_ipv6"><code class="docutils literal notranslate"><span class="pre">Router._resolve_public_ipv6()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multidyndnscli.DNSProvider"><code class="docutils literal notranslate"><span class="pre">DNSProvider</span></code></a><ul>
+<li><a class="reference internal" href="#multidyndnscli.DNSProvider.fetch_domain"><code class="docutils literal notranslate"><span class="pre">DNSProvider.fetch_domain()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.DNSProvider.update_domain"><code class="docutils literal notranslate"><span class="pre">DNSProvider.update_domain()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multidyndnscli.Netcup"><code class="docutils literal notranslate"><span class="pre">Netcup</span></code></a><ul>
+<li><a class="reference internal" href="#multidyndnscli.Netcup.from_config"><code class="docutils literal notranslate"><span class="pre">Netcup.from_config()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Netcup.fetch_domain"><code class="docutils literal notranslate"><span class="pre">Netcup.fetch_domain()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Netcup.update_domain"><code class="docutils literal notranslate"><span class="pre">Netcup.update_domain()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multidyndnscli.Updater"><code class="docutils literal notranslate"><span class="pre">Updater</span></code></a><ul>
+<li><a class="reference internal" href="#multidyndnscli.Updater.dns_providers"><code class="docutils literal notranslate"><span class="pre">Updater.dns_providers</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater.domains"><code class="docutils literal notranslate"><span class="pre">Updater.domains</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater.cache_dir"><code class="docutils literal notranslate"><span class="pre">Updater.cache_dir</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater._config"><code class="docutils literal notranslate"><span class="pre">Updater._config</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater._cache_file"><code class="docutils literal notranslate"><span class="pre">Updater._cache_file</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater._cache"><code class="docutils literal notranslate"><span class="pre">Updater._cache</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater._dns_providers"><code class="docutils literal notranslate"><span class="pre">Updater._dns_providers</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater._domains"><code class="docutils literal notranslate"><span class="pre">Updater._domains</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater.from_config"><code class="docutils literal notranslate"><span class="pre">Updater.from_config()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater.add_dns_provider"><code class="docutils literal notranslate"><span class="pre">Updater.add_dns_provider()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater.add_domain"><code class="docutils literal notranslate"><span class="pre">Updater.add_domain()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater.read_cache"><code class="docutils literal notranslate"><span class="pre">Updater.read_cache()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater.write_cache"><code class="docutils literal notranslate"><span class="pre">Updater.write_cache()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater.get_cache_domain"><code class="docutils literal notranslate"><span class="pre">Updater.get_cache_domain()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater.update_cache_domain"><code class="docutils literal notranslate"><span class="pre">Updater.update_cache_domain()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Updater.update"><code class="docutils literal notranslate"><span class="pre">Updater.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    </body>
+</html>

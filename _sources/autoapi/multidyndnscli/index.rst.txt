@@ -1,0 +1,633 @@
+:py:mod:`multidyndnscli`
+========================
+
+.. py:module:: multidyndnscli
+
+.. autoapi-nested-parse::
+
+   Yet another python module for router-based multi-domain, multi-host dynamic dns (dyndns), 
+   with support for IPv4 and IPv6.
+   This project currently only supports Netcup, but might be extended in the future.
+
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   cli/index.rst
+   schemata/index.rst
+   util/index.rst
+
+
+Package Contents
+----------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   multidyndnscli.Host
+   multidyndnscli.Domain
+   multidyndnscli.Router
+   multidyndnscli.DNSProvider
+   multidyndnscli.Netcup
+   multidyndnscli.Updater
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   multidyndnscli.get_config_file_schema
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   multidyndnscli.CACHE_FILE_NAME
+   multidyndnscli.KEY_DOMAINS
+   multidyndnscli.KEY_LAST_UPDATE
+
+
+.. py:function:: get_config_file_schema() -> schema.Schema
+
+   Create the config file schema
+
+   :return: Config file schema
+   :rtype: Schema
+
+
+.. py:data:: CACHE_FILE_NAME
+   :value: 'multidyndns.cache'
+
+   The name used for the updater cache file if a (valid) cache dir has been configured
+
+
+.. py:data:: KEY_DOMAINS
+   :type: Final[str]
+   :value: 'domains'
+
+   The key used to store domain statuses in the updater cache
+
+
+.. py:data:: KEY_LAST_UPDATE
+   :type: Final[str]
+   :value: 'last_updated'
+
+   The key used to store the datetime of the last update into the updater cache
+
+
+.. py:exception:: RouterNotReachableException
+
+   Bases: :py:obj:`Exception`
+
+   This exception indicates that the Fritz!Box couldn't be reached
+
+
+.. py:exception:: DNSResolutionException
+
+   Bases: :py:obj:`Exception`
+
+   This exception indicates that an IP address couldn't not be resolved
+
+
+.. py:class:: Host(router: Router, name: str, fqdn: str, public_ipv4_method: Optional[str], public_ipv6_method: Optional[str])
+
+   Represents a host in the local network used as target for an external address
+
+   .. py:property:: host_ipv4
+
+      Property holding the resolved public IPv4 for connections from the internet (if any)
+              
+
+
+   .. py:property:: host_ipv6
+
+      Property holding the resolved public IPv6 for connections from the internet (if any)
+              
+
+
+   .. py:property:: name
+
+      Property holding the name of this host
+              
+
+
+   .. py:property:: fqdn
+
+      Property holding the public fully qualified domain name (FQDN) of this host
+              
+
+
+   .. py:attribute:: _name
+      :type: str
+
+      The local hostname of the host
+
+
+   .. py:attribute:: _router
+      :type: Router
+
+      A router object, representing the home router
+
+
+   .. py:attribute:: _current_fqdn_dns_ipv4
+      :type: Optional[netaddr.IPAddress]
+
+      The IPv4 the FQDN is currently pointing to (if any)
+
+
+   .. py:attribute:: _current_fqdn_dns_ipv6_set
+      :type: Set[netaddr.IPAddress]
+
+      The set of IPv6 the FQDN is currently pointing to (if any)
+
+
+   .. py:attribute:: _host_ipv4
+      :type: Optional[netaddr.IPAddress]
+
+      The IPv4 the host is currently using (if any)
+
+
+   .. py:attribute:: _host_ipv6_set
+      :type: Set[netaddr.IPAddress]
+
+      # The set of IPv6 the host is currently using (if any)
+
+
+   .. py:method:: from_config(router: Router, host_config) -> Host
+      :staticmethod:
+
+      Dictionary-based factory for instances of type Host
+
+      :param router: An instance of the Router class, representing the home router
+      :type router: Router
+      :param host_config: A dictionary holding the configuration of this host
+      :type host_config: _type_
+      :return: A Host instance if the config dictionary has been parsed successfully
+      :rtype: Host
+
+
+   .. py:method:: _resolve_current_fqdn_ipv4()
+
+      Method for resolving the current IPv4 the FQDN is pointing to (if any)
+              
+
+
+   .. py:method:: _resolve_current_fqdn_ipv6_set()
+
+      Method for resolving the current IPv6 the FQDN is pointing to (if any)
+              
+
+
+   .. py:method:: _resolve_host_ipv4(method: str)
+
+      Method for resolving the public IPv4 used to reach the host from the intranet
+              
+
+
+   .. py:method:: _resolve_host_ipv6_set(method: str)
+
+      Method for resolving the set of public IPv6 used to reach the host from the intranet
+              
+
+
+   .. py:method:: needs_update() -> bool
+
+      Indicates whether or not an update of the FQDN is required for this host
+              
+
+
+
+.. py:class:: Domain(updater: Updater, router: Router, domain_name: str, dns_provider: DNSProvider, delay: int = 0)
+
+   This class represents an internet domain containing hosts used for dyndns
+       
+
+   .. py:property:: domain_name
+      :type: str
+
+      Property holding the domain name (FQDN)
+
+      :return: The domain name (FQDN)
+      :rtype: str
+
+
+   .. py:attribute:: _updater
+      :type: Updater
+
+      An instance of the Updater class
+
+
+   .. py:attribute:: _delay
+      :type: int
+
+      A delay to wait between DNS updates, in seconds
+
+
+   .. py:attribute:: _target_records_ipv4
+      :type: Dict[str, netaddr.IPAddress]
+
+      A dictionary of hostnames mapping to their respective desired public IPv4 address
+
+
+   .. py:attribute:: _target_records_ipv6
+      :type: Dict[str, netaddr.IPAddress]
+
+      A dictionary of hostnames mapping to their respective desired public IPv6 address
+
+
+   .. py:attribute:: _router
+      :type: Router
+
+      An instance of the Router class, representing the home router
+
+
+   .. py:attribute:: _domain_name
+      :type: str
+
+      The domain name of this domain (FQDN)
+
+
+   .. py:attribute:: _dns_provider
+      :type: DNSProvider
+
+      An instance of a DNSProvider, used to update the domain records
+
+
+   .. py:attribute:: _last_update
+      :type: Optional[datetime.datetime]
+
+      The datetime of the last updated (optionally, if available)
+
+
+   .. py:attribute:: _host_list
+      :type: List[Host]
+
+      The list of Host instances to do dyndns for in this domain
+
+
+   .. py:attribute:: _domain_record_dict
+      :type: Dict[str, Dict[str, nc_dnsapi.DNSRecord]]
+
+      A dictionary for hostnames to record type to IP addresses
+
+
+   .. py:method:: from_config(updater: Updater, router: Router, dns_providers: Dict[str, DNSProvider], domain_config) -> Domain
+      :staticmethod:
+
+      Dictionary-based factory for instances of type Domain
+
+      :param updater: An instance of the Updater class
+      :type updater: Updater
+      :param router: An instance of the Router class, representing the home router
+      :type router: Router
+      :param dns_providers: An instance of a DNSProvider, used to update the domain records
+      :type dns_providers: Dict[str, &#39;DNSProvider&#39;]
+      :param domain_config: A dictionary holding the configuration for this domain
+      :type domain_config: _type_
+      :return: An instance of the Domain class
+      :rtype: Domain
+
+
+   .. py:method:: add_host(host: Host)
+
+      Add a Host instance to this domain
+
+      :param host: An instance of Host to be added to this domain
+      :type host: Host
+
+
+   .. py:method:: _read_from_cache()
+
+      Read data from common cache, e.g. datetime of last update for this domain
+              
+
+
+   .. py:method:: update(dry_run: bool = False)
+
+      Update this domain
+
+      :param dry_run: If true, do not actually update the domain, defaults to False
+      :type dry_run: bool, optional
+
+
+   .. py:method:: _rebuild_domain_records_cache()
+
+      Rebuild the domain record cache from data fetched from the configure DNS provider
+              
+
+
+   .. py:method:: _find_record_id(hostname, record_type) -> Optional[nc_dnsapi.DNSRecord]
+
+      Find a specific record in the domain record cache if any
+
+      :param hostname: Hostname to search for
+      :type hostname: _type_
+      :param record_type: The record type, i.e. A or AAAA record
+      :type record_type: _type_
+      :return: The DNS record if any
+      :rtype: DNSRecord or None
+
+
+
+.. py:class:: Router(router_ipv4_config, router_ipv6_config)
+
+   A class representing a home router
+
+   .. py:property:: ipv4
+      :type: Optional[netaddr.IPAddress]
+
+      Property holding the router's current public IPv4 address
+
+      :return: The router's IPv4 address if any
+      :rtype: IPAddress, optional
+
+
+   .. py:property:: use_ipv4
+      :type: bool
+
+      Indicates whether or not the router has a public IPv4
+
+      :return: True, if the router has a public IPv4
+      :rtype: bool
+
+
+   .. py:property:: ipv6
+      :type: Optional[netaddr.IPAddress]
+
+      Property holding the router's current public IPv6 address
+
+      :return: The router's IPv6 address if any
+      :rtype: IPAddress, optional
+
+
+   .. py:property:: use_ipv6
+      :type: bool
+
+      Indicates whether or not the router has a public IPv6
+
+      :return: True, if the router has a public IPv6
+      :rtype: bool
+
+
+   .. py:attribute:: _ipv4
+      :type: Optional[netaddr.IPAddress]
+
+      The IPv4 address of the router, if any
+
+
+   .. py:attribute:: _ipv6
+      :type: Optional[netaddr.IPAddress]
+
+      The IPv6 address of the router, if any
+
+
+   .. py:method:: from_config(router_config) -> Router
+      :staticmethod:
+
+      Dictionary-based factory for instances of type Router
+
+      :param router_config: A dictionary holding the configuration for the router
+      :type router_config: _type_
+      :return: An instance of type Router
+      :rtype: Router
+
+
+   .. py:method:: _resolve_public_ipv4(ipv4_config: Dict[str, Any]) -> Optional[netaddr.IPAddress]
+
+      Resolves the public IPv4 of the router with the specified method
+
+      :param ipv4_config: A dictionary holding the configuration of the DNS resolution method
+      :type ipv4_config: Dict[str, Any]
+      :raises DNSResolutionException: Raised if the DNS resolution has failed
+      :raises RouterNotReachableException: Raised if the Fritz!Box could not be reached
+      :raises ValueError: Raised if the specified method for resolving the public IPv4 is invalid
+      :return: The public IPv4 address of the router or None
+      :rtype: netaddr.IPAddress, optional
+
+
+   .. py:method:: _resolve_public_ipv6(ipv6_config: Dict[str, Any]) -> Optional[netaddr.IPAddress]
+
+      Resolves the public IPv6 of the router with the specified method
+
+      :param ipv6_config: A dictionary holding the configuration of the DNS resolution method
+      :type ipv6_config: Dict[str, Any]
+      :raises DNSResolutionException: Raised if the DNS resolution has failed
+      :raises RouterNotReachableException: Raised if the Fritz!Box could not be reached
+      :raises ValueError: Raised if the specified method for resolving the public IPv6 is invalid
+      :return: The public IPv4 address of the router or None
+      :rtype: netaddr.IPAddress, optional
+
+
+
+.. py:class:: DNSProvider
+
+   Bases: :py:obj:`abc.ABC`
+
+   This abstract class represents a DNS provider
+
+   .. py:method:: fetch_domain(domain: Domain) -> List[nc_dnsapi.DNSRecord]
+      :abstractmethod:
+
+      Abstract method for fetching domain data from the DNS provider
+
+      :param domain: The domain object to fetch data from.
+      :type domain: Domain
+      :return: A list of DNS records fetched from the DNS provider which could be updated.
+      :rtype: List[DNSRecord]
+
+
+   .. py:method:: update_domain(domain: Domain, records: List[nc_dnsapi.DNSRecord])
+      :abstractmethod:
+
+      Abstract method for updating the provided list of records in the provided domain
+
+      :param domain: The domain object to update
+      :type domain: Domain
+      :param records: The full list of DNS records of the domain including the updated records
+      :type records: List[DNSRecord]
+
+
+
+.. py:class:: Netcup(userid: int, apikey: str, apipass: str)
+
+   Bases: :py:obj:`DNSProvider`
+
+   This class implements the DNSProvider for Netcup
+
+   .. py:method:: from_config(config: Dict[str, str]) -> Netcup
+      :staticmethod:
+
+      Dictionary-based factory for instances of type Netcup
+
+      :param config: A dictionary holding the configuration for Netcup
+      :type router_config: Dict[str, str]
+      :return: An instance of type Netcup
+      :rtype: Netcup
+
+
+   .. py:method:: fetch_domain(domain: Domain) -> List[nc_dnsapi.DNSRecord]
+
+      Fetch domain data from Netcup
+
+      :param domain: The domain object to fetch data from.
+      :type domain: Domain
+      :return: A list of DNS records fetched from the DNS provider which could be updated.
+      :rtype: List[DNSRecord]
+
+
+   .. py:method:: update_domain(domain: Domain, records: List[nc_dnsapi.DNSRecord])
+
+      Update the provided list of records in the provided domain at Netcup
+
+      :param domain: The domain object to update
+      :type domain: Domain
+      :param records: The full list of DNS records of the domain including the updated records
+      :type records: List[DNSRecord]
+
+
+
+.. py:class:: Updater(cache_dir: Optional[pathlib.Path] = None)
+
+   This is the main class for coordinating the whole update processes
+
+   .. py:property:: dns_providers
+      :type: Dict[str, DNSProvider]
+
+      Property holding the dictionary of names to DNS providers
+
+      :return: The dictionary of DNS providers by name
+      :rtype: Dict[str, DNSProvider]
+
+
+   .. py:property:: domains
+      :type: List[Domain]
+
+      Property holding the list of domains
+
+      :return: The list of domains
+      :rtype: List[Domain]
+
+
+   .. py:property:: cache_dir
+      :type: Optional[pathlib.Path]
+
+      Property holding the cache folder
+
+      :return: The cache folder, or none
+      :rtype: Optional[Path]
+
+
+   .. py:attribute:: _config
+      :type: Dict[str, Any]
+
+      A dictionary representing the configuration of the updater
+
+
+   .. py:attribute:: _cache_file
+      :type: Optional[pathlib.Path]
+
+      The filename of a cache file used to store domain update data
+
+
+   .. py:attribute:: _cache
+      :type: Dict[str, Any]
+
+      The cache used to store domain update data
+
+
+   .. py:attribute:: _dns_providers
+      :type: Dict[str, DNSProvider]
+
+      A dictionary of DNS providers
+
+
+   .. py:attribute:: _domains
+      :type: List[Domain]
+
+      The list of DNS domains
+
+
+   .. py:method:: from_config(config) -> Updater
+      :staticmethod:
+
+      Dictionary-based factory for instances of type Updater
+
+      :param config: A dictionary holding the configuration for the Updater class
+      :type router_config: Dict
+      :raises RouterNotReachableException: Raised if the Fritz!Box could not be reached
+      :return: An instance of type Updater
+      :rtype: Updater
+
+
+   .. py:method:: add_dns_provider(name: str, dns_provider: DNSProvider)
+
+      Add a DNS provider by name
+
+      :param name: The name of a DNS provider
+      :type name: str
+      :param dns_provider: A DNS provider object
+      :type dns_provider: DNSProvider
+
+
+   .. py:method:: add_domain(domain: Domain)
+
+      Add the specified domain to the list of domains
+
+      :param domain: The domain to add
+      :type domain: Domain
+
+
+   .. py:method:: read_cache()
+
+      Read the cache file from the cache folder if folder and file exist
+              
+
+
+   .. py:method:: write_cache()
+
+      Write the cache to the cache folder if the cache dir exists
+              
+
+
+   .. py:method:: get_cache_domain(domain_name: str) -> Dict[str, Any]
+
+      Get cache data for the specified domain, if any
+
+      :param domain_name: Name of the domain
+      :type domain_name: str
+      :return: Dictionary of cached data, e.g. datetime of last update
+      :rtype: Dict[str, Any]
+
+
+   .. py:method:: update_cache_domain(domain: str, domain_cache: Dict[str, Any])
+
+      Set cache data for the specified domain
+
+      :param domain: Name of the domain
+      :type domain: str
+      :param domain_cache: Dictionary of data to add to cache
+      :type domain_cache: Dict[str, Any]
+
+
+   .. py:method:: update(dry_run: bool = False) -> int
+
+      Update all domains
+
+      :param dry_run: Perform a dry-run instead of changing any DNS records, defaults to False
+      :type dry_run: bool, optional
+      :return: Returns 0 if successful, otherwise 1
+      :rtype: int
+
+
+
