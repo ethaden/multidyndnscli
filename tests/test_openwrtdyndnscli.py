@@ -1047,65 +1047,63 @@ class FritzStatusMock:
 
 
 def test_router_init_ipv4_fritzbox(mocker):
-    with mocker.patch('fritzconnection.FritzConnection', return_value=Mock()):
-        with mocker.patch(
-            'fritzconnection.lib.fritzstatus.FritzStatus',
-            return_value=FritzStatusMock(ipv4=testdata_ipv4),
-        ) as status_mock:
-            router = multidyndnscli.Router(
-                testdata_router_method_fritz_box['ipv4'], None
-            )
-            assert router.ipv4 == IPAddress(testdata_ipv4)
-            assert router.ipv6 == None
+    mocker.patch('fritzconnection.FritzConnection', return_value=Mock())
+    mocker.patch(
+        'fritzconnection.lib.fritzstatus.FritzStatus',
+        return_value=FritzStatusMock(ipv4=testdata_ipv4),
+    )
+    router = multidyndnscli.Router(
+        testdata_router_method_fritz_box['ipv4'], None
+    )
+    assert router.ipv4 == IPAddress(testdata_ipv4)
+    assert router.ipv6 == None
 
 
 def test_router_init_ipv6_fritzbox(mocker):
-    with mocker.patch('fritzconnection.FritzConnection', return_value=Mock()):
-        with mocker.patch(
-            'fritzconnection.lib.fritzstatus.FritzStatus',
-            return_value=FritzStatusMock(ipv6=testdata_ipv6),
-        ) as status_mock:
-            router = multidyndnscli.Router(
-                None, testdata_router_method_fritz_box['ipv6']
-            )
-            assert router.ipv4 == None
-            assert router.ipv6 == IPAddress(testdata_ipv6)
+    mocker.patch('fritzconnection.FritzConnection', return_value=Mock())
+    mocker.patch(
+        'fritzconnection.lib.fritzstatus.FritzStatus',
+        return_value=FritzStatusMock(ipv6=testdata_ipv6),
+    )
+    router = multidyndnscli.Router(
+        None, testdata_router_method_fritz_box['ipv6']
+    )
+    assert router.ipv4 == None
+    assert router.ipv6 == IPAddress(testdata_ipv6)
 
 
 def test_router_init_ips_both_fritzbox(mocker):
-    with mocker.patch('fritzconnection.FritzConnection', return_value=Mock()):
-        with mocker.patch(
-            'fritzconnection.lib.fritzstatus.FritzStatus',
-            return_value=FritzStatusMock(ipv4=testdata_ipv4, ipv6=testdata_ipv6),
-        ):
-            router = multidyndnscli.Router(
-                testdata_router_method_fritz_box['ipv4'],
-                testdata_router_method_fritz_box['ipv6'],
-            )
-            assert router.ipv4 == IPAddress(testdata_ipv4)
-            assert router.ipv6 == IPAddress(testdata_ipv6)
+    mocker.patch('fritzconnection.FritzConnection', return_value=Mock())
+    mocker.patch(
+        'fritzconnection.lib.fritzstatus.FritzStatus',
+        return_value=FritzStatusMock(ipv4=testdata_ipv4, ipv6=testdata_ipv6)
+    )
+    router = multidyndnscli.Router(
+        testdata_router_method_fritz_box['ipv4'],
+        testdata_router_method_fritz_box['ipv6'],
+    )
+    assert router.ipv4 == IPAddress(testdata_ipv4)
+    assert router.ipv6 == IPAddress(testdata_ipv6)
 
 
 def test_router_init_ipv4_fritzbox_exception(mocker):
-    with mocker.patch(
+    mocker.patch(
         'fritzconnection.FritzConnection',
-        side_effect=fritzconnection.core.exceptions.FritzConnectionException(),
-    ):
-        with pytest.raises(Exception):
-            router = multidyndnscli.Router(
-                testdata_router_method_fritz_box['ipv4'], None
-            )
+        side_effect=fritzconnection.core.exceptions.FritzConnectionException())
+    with pytest.raises(Exception):
+        router = multidyndnscli.Router(
+            testdata_router_method_fritz_box['ipv4'], None
+        )
 
 
 def test_router_init_ipv6_fritzbox_exception(mocker):
-    with mocker.patch(
+    mocker.patch(
         'fritzconnection.FritzConnection',
-        side_effect=fritzconnection.core.exceptions.FritzConnectionException(),
-    ):
-        with pytest.raises(Exception):
-            router = multidyndnscli.Router(
-                None, testdata_router_method_fritz_box['ipv6']
-            )
+        side_effect=fritzconnection.core.exceptions.FritzConnectionException())
+    with pytest.raises(Exception):
+        router = multidyndnscli.Router(
+            None, testdata_router_method_fritz_box['ipv6']
+        )
 
 
 def test_router_init_ipv4_illegal_method_exception(mocker):
