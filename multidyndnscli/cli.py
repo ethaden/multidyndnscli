@@ -2,7 +2,7 @@
 import logging
 import sys
 import argparse
-from typing import List, Optional, Sequence
+from typing import List, Optional
 import yaml
 import multidyndnscli
 
