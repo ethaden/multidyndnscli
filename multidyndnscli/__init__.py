@@ -236,7 +236,7 @@ class Domain:
     """The datetime of the last updated (optionally, if available)"""
     _host_list: List[Host]
     """The list of Host instances to do dyndns for in this domain"""
-    _domain_record_dict: Dict[str, Dict[str, Dict[str, DNSRecord]]]
+    _domain_record_dict: Dict[str, Dict[str, DNSRecord]]
     """A dictionary for hostnames to record type to IP addresses"""
 
     def __init__(
@@ -679,7 +679,7 @@ class Updater:
     _domains: List[Domain]
     """The list of DNS domains"""
 
-    def __init__(self, cache_dir: Path = None):
+    def __init__(self, cache_dir: Optional[Path] = None):
         """Constructor of the Updater class
 
         :param cache_dir: An optional folder for loading/storing the cache file, defaults to None
@@ -757,11 +757,11 @@ class Updater:
         self._domains.append(domain)
 
     @property
-    def domains(self)->Dict[str, Domain]:
-        """Property holding the dictionary of domains
+    def domains(self)->List[Domain]:
+        """Property holding the list of domains
 
-        :return: The dictionary of domains by name
-        :rtype: Dict[str, Domain]
+        :return: The list of domains
+        :rtype: List[Domain]
         """
         return self._domains
 

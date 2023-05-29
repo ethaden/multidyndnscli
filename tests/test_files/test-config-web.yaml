@@ -1,0 +1,49 @@
+common:
+  cache_dir: "<existing writable folder for caching data>"
+dns_providers:
+  # List of DNS providers, each having a unique name used below under "domains"
+  - name: "Netcup"
+    # Type of DNS provider. Currently, only "Netcup" is supported
+    type: "Netcup"
+    userid: "<netcup-userid>"
+    apikey: "<netcup-apikey>"
+    apipass: "<netcup-apipass>"
+router:
+  ipv4:
+    enabled: true
+    method: "web"
+    web_url: "http://myexternalip.com/raw"
+    web_timeout: 60
+    #method: "wan"
+    #wan_interface: "<put-wan-iface-here>"
+    #method: "fritzbox"
+    #fritzbox_address: "<fritz-box-ip-address>"
+    #fritzbox_tls: false
+  ipv6:
+    enabled: true
+    method: "web"
+    web_url: "http://myexternalip.com/raw"
+    web_timeout: 60
+    #method: "wan"
+    #wan_interface: "<put-wan-iface-here>"
+    #method: "fritzbox"
+    #fritzbox_address: "<fritz-box-ip-address>"
+    #fritzbox_tls: false
+domains:
+  - name: "test.invalid"
+    # Name of the dns provider to be used. Configured above
+    dns_provider: "Netcup"
+    # The minimal delay in seconds to wait until next updated. Increase if using dnssec (as resigning the updated records takes quite a lot time)
+    delay: 300
+    # List of hosts
+    hosts:
+      - name: "openwrt.lan"
+        fqdn: "openwrt.home.test.invalid"
+        public_ip_methods:
+          ipv4: "router"
+          ipv6: "router"
+      - name: "server.lan"
+        fqdn: "server.home.test.invalid"
+        public_ip_methods:
+          ipv4: "router"
+          ipv6: "local_dns"

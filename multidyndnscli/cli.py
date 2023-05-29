@@ -2,10 +2,9 @@
 import logging
 import sys
 import argparse
-from typing import List, Optional
+from typing import List, Optional, Sequence
 import yaml
 import multidyndnscli
-
 
 def run(args: Optional[List[str]] = None) -> int:
     """Run the tool
@@ -15,19 +14,19 @@ def run(args: Optional[List[str]] = None) -> int:
     :return: Returns 0 if update was successful, otherwise 1
     :rtype: int
     """
-    parser = argparse.ArgumentParser(exit_on_error=False)
+    parser = argparse.ArgumentParser(exit_on_error=False) # type: ignore
     parser.add_argument("config_file")
     parser.add_argument("--verbose", "-v", action="count", default=0)
     parser.add_argument("--dry-run", "-n", action="store_true")
     try:
-        args = parser.parse_args(args=args)
-        config_file = args.config_file
-        dry_run = args.dry_run
+        parsed_args = parser.parse_args(args=args)
+        config_file = parsed_args.config_file
+        dry_run = parsed_args.dry_run
         log_format = "%(asctime)s - %(levelname)s: %(message)s"
         logging.basicConfig(format=log_format)
-        if args.verbose >= 2:
+        if parsed_args.verbose >= 2:
             logging.getLogger().setLevel(logging.DEBUG)
-        elif args.verbose >= 1:
+        elif parsed_args.verbose >= 1:
             logging.getLogger().setLevel(logging.INFO)
         with open(config_file, "r", encoding='utf-8') as file:
             config = yaml.safe_load(file)
