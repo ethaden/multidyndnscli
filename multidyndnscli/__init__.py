@@ -343,7 +343,7 @@ class Domain:
         for host in self._host_list:
             if host.needs_update():
                 needs_update = True
-                dns_prefix = host.fqdn.removesuffix(self._domain_name).removesuffix('.')
+                dns_prefix = host.fqdn.rstrip(self._domain_name).rstrip('.')
                 if host.host_ipv4 is not None:
                     record = DNSRecord(
                         hostname=dns_prefix, type='A', destination=str(host.host_ipv4)

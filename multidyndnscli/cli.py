@@ -14,7 +14,10 @@ def run(args: Optional[List[str]] = None) -> int:
     :return: Returns 0 if update was successful, otherwise 1
     :rtype: int
     """
-    parser = argparse.ArgumentParser(exit_on_error=False) # type: ignore
+    if sys.version_info >= (3, 9):
+        parser = argparse.ArgumentParser(exit_on_error=False) # type: ignore
+    else:
+        parser = argparse.ArgumentParser() # type: ignore
     parser.add_argument("config_file")
     parser.add_argument("--verbose", "-v", action="count", default=0)
     parser.add_argument("--dry-run", "-n", action="store_true")
