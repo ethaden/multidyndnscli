@@ -11,3 +11,4 @@ gh-pages
 cov.xml
 .mypy_cache
 .pytest_cache
+junit

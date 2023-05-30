@@ -1,4 +1,4 @@
-name: CI
+name: Test
 on: [push, pull_request]
 
 jobs:
@@ -18,4 +18,4 @@ jobs:
       - name: Install poetry
         run: pip3 install poetry && poetry install --with=dev
       - name: Run tests
-        run: poetry run pytest
+        run: poetry run pytest --doctest-modules --junitxml=junit/test-results.xml --cov-report xml:cov.xml --cov-report term-missing --cov=multidyndnscli tests/
