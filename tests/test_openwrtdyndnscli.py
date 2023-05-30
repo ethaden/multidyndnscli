@@ -94,6 +94,20 @@ testdata_router_method_fritz_box = {
     },
 }
 
+testdata_router_method_web_only_ipv4 = {
+    'ipv4': {'enabled': True, 'method': 'web', 'web_url': 'http://mock-me.invalid'},
+    'ipv6': {'enabled': False, 'method': 'web', 'web_url': 'http://mock-me-v6.invalid'},
+}
+
+testdata_router_method_web_only_ipv6 = {
+    'ipv4': {'enabled': False, 'method': 'web', 'web_url': 'http://mock-me.invalid'},
+    'ipv6': {'enabled': True, 'method': 'web', 'web_url': 'http://mock-me-v6.invalid'},
+}
+
+testdata_router_method_web_neither_ipv4_nor_ipv6 = {
+    'ipv4': {'enabled': False, 'method': 'web', 'web_url': 'http://mock-me.invalid'},
+    'ipv6': {'enabled': False, 'method': 'web', 'web_url': 'http://mock-me-v6.invalid'},
+}
 
 testdata_router_method_illegal = {
     'ipv4': {'enabled': True, 'method': "illegal"},
@@ -920,6 +934,27 @@ def test_router_init_called_from_config(mocker):
         testdata_router_method_web['ipv4'], testdata_router_method_web['ipv6']
     )
 
+def test_router_init_called_from_config_only_ipv4(mocker):
+    init_mock = Mock(return_value=None)
+    mocker.patch.object(multidyndnscli.Router, '__init__', init_mock)
+    router = multidyndnscli.Router.from_config(testdata_router_method_web_only_ipv4)
+    init_mock.assert_called_once_with(
+        testdata_router_method_web_only_ipv4['ipv4'], None
+    )
+
+def test_router_init_called_from_config_only_ipv6(mocker):
+    init_mock = Mock(return_value=None)
+    mocker.patch.object(multidyndnscli.Router, '__init__', init_mock)
+    router = multidyndnscli.Router.from_config(testdata_router_method_web_only_ipv6)
+    init_mock.assert_called_once_with(
+        None, testdata_router_method_web_only_ipv6['ipv6']
+    )
+
+def test_router_init_called_from_config_neitheripv4_nor_ipv6(mocker):
+    init_mock = Mock(return_value=None)
+    mocker.patch.object(multidyndnscli.Router, '__init__', init_mock)
+    with pytest.raises(ValueError):
+        router = multidyndnscli.Router.from_config(testdata_router_method_web_neither_ipv4_nor_ipv6)
 
 def test_router_init_neither_ipv4_nor_ipv6(mocker):
     router = multidyndnscli.Router(None, None)

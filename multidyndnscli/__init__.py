@@ -459,7 +459,13 @@ class Router:
         :rtype: Router
         """
         router_ipv4_config = router_config.get('ipv4', None)
+        if not bool(router_ipv4_config.get('enabled', 'false')):
+            router_ipv4_config = None
         router_ipv6_config = router_config.get('ipv6', None)
+        if not bool(router_ipv6_config.get('enabled', 'false')):
+            router_ipv6_config = None
+        if router_ipv4_config is None and router_ipv6_config is None:
+            raise ValueError('Neither IPv4 nor IPv6 is configured for the router!')
         return Router(router_ipv4_config, router_ipv6_config)
 
     def _resolve_public_ipv4(self, ipv4_config: Dict[str, Any]) -> Optional[netaddr.IPAddress]:

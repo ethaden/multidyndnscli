@@ -15,9 +15,9 @@ def run(args: Optional[List[str]] = None) -> int:
     :rtype: int
     """
     if sys.version_info >= (3, 9):
-        parser = argparse.ArgumentParser(exit_on_error=False) # type: ignore
+        parser = argparse.ArgumentParser(exit_on_error=False) # type: ignore  # pragma: no cover
     else:
-        parser = argparse.ArgumentParser() # type: ignore
+        parser = argparse.ArgumentParser() # type: ignore  # pragma: no cover
     parser.add_argument("config_file")
     parser.add_argument("--verbose", "-v", action="count", default=0)
     parser.add_argument("--dry-run", "-n", action="store_true")
