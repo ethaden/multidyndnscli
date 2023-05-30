@@ -1,4 +1,4 @@
-= DynDNS Command Line Tool image:https://github.com/ethaden/multidyndnscli/actions/workflows/build-test-package.yml/badge.svg[link="https://github.com/ethaden/multidyndnscli/actions/workflows/test.yml"]
+= DynDNS Command Line Tool image:https://github.com/ethaden/multidyndnscli/actions/workflows/test.yml/badge.svg[link="https://github.com/ethaden/multidyndnscli/actions/workflows/test.yml"]
 
 == Installation
 ```bash
