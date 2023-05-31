@@ -6,7 +6,6 @@ import dns
 from netaddr import IPAddress
 import pytest
 import multidyndnscli
-from nc_dnsapi import DNSRecord, Client
 import fritzconnection
 import fritzconnection.lib.fritzstatus
 import yaml
@@ -44,19 +43,19 @@ testdata_domain_config = {
 }
 
 testdata_update_record_ipv4 = [
-    DNSRecord(hostname='test', type='A', destination=testdata_ipv4)
+    multidyndnscli.DNSRecord(hostname='test', type='A', destination=testdata_ipv4)
 ]
 
 testdata_update_record_ipv4_with_id = [
-    DNSRecord(hostname='test', type='A', destination=testdata_ipv4, id=23)
+    multidyndnscli.DNSRecord(hostname='test', type='A', destination=testdata_ipv4, id=23)
 ]
 
 testdata_update_record_ipv6 = [
-    DNSRecord(hostname='test', type='AAAA', destination=testdata_ipv6)
+    multidyndnscli.DNSRecord(hostname='test', type='AAAA', destination=testdata_ipv6)
 ]
 
 testdata_update_record_ipv6_with_id = [
-    DNSRecord(hostname='test', type='AAAA', destination=testdata_ipv6, id=42)
+    multidyndnscli.DNSRecord(hostname='test', type='AAAA', destination=testdata_ipv6, id=42)
 ]
 testdata_update_records_combined = (
     testdata_update_record_ipv4 + testdata_update_record_ipv6
@@ -721,10 +720,10 @@ def test_domain_update_delay(mocker):
 
 
 class DNSRecordIdMatcher:
-    def __init__(self, expected_records: List[DNSRecord]):
+    def __init__(self, expected_records: List[multidyndnscli.DNSRecord]):
         self.expected_records = expected_records
 
-    def __eq__(self, records: List[DNSRecord]):
+    def __eq__(self, records: List[multidyndnscli.DNSRecord]):
         if self.expected_records != records:
             return False
         for my_rec, other_rec in zip(self.expected_records, records):
@@ -1170,7 +1169,7 @@ def test_dnsprovider_netcup_constructor():
 
 
 def test_dnsprovider_netcup_fetch(mocker):
-    client_mock = MagicMock(spec=Client)
+    client_mock = MagicMock(spec=multidyndnscli.Client)
     client_mock.return_value.dns_records.return_value = Mock(
         return_value=['test.domain.invalid']
     )
@@ -1194,7 +1193,7 @@ def test_dnsprovider_netcup_fetch(mocker):
 
 
 def test_dnsprovider_netcup_update(mocker):
-    client_mock = MagicMock(spec=Client)
+    client_mock = MagicMock(spec=multidyndnscli.Client)
     client_mock.return_value.update_dns_records.return_value = Mock()
     mocker.patch('multidyndnscli.Client', client_mock)
     netcup = multidyndnscli.Netcup(

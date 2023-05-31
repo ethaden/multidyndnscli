@@ -1,0 +1,2 @@
+[run]
+omit = multidyndnscli/nc_dnsapi.py

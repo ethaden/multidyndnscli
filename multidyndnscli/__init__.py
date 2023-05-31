@@ -14,13 +14,13 @@ import yaml
 import dns.resolver
 from netaddr import IPAddress, AddrFormatError
 import requests
-from nc_dnsapi import Client, DNSRecord  # type: ignore
 import fritzconnection  # type: ignore
 import fritzconnection.lib.fritzstatus  # type: ignore
 import fritzconnection.core.exceptions  # type: ignore
 # Module imports
 from . import util
 from .schemata import get_config_file_schema
+from .nc_dnsapi import Client, DNSRecord  # type: ignore
 
 CACHE_FILE_NAME = 'multidyndns.cache'
 """The name used for the updater cache file if a (valid) cache dir has been configured"""

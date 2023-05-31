@@ -10,7 +10,6 @@ documentation = "https://ethaden.github.io/multidyndnscli/"
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0.0"
-nc-dnsapi = {git = "https://github.com/nbuchwitz/nc_dnsapi.git", rev = "v0.1.6"}
 dnspython = "^2.3.0"
 pyyaml = "^6.0"
 netaddr = "^0.8.0"
