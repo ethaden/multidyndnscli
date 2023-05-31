@@ -161,6 +161,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of multidyndnscli</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="cli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.cli</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nc_dnsapi/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.nc_dnsapi</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="schemata/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.schemata</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.util</span></code></a></li>
 </ul>
@@ -211,6 +212,7 @@ This project currently only supports Netcup, but might be extended in the future
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="cli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.cli</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nc_dnsapi/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.nc_dnsapi</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="schemata/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.schemata</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli.util</span></code></a></li>
 </ul>
@@ -223,6 +225,12 @@ This project currently only supports Netcup, but might be extended in the future
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#multidyndnscli.Client" title="multidyndnscli.Client"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Client</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#multidyndnscli.DNSRecord" title="multidyndnscli.DNSRecord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNSRecord</span></code></a></p></td>
+<td><p></p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#multidyndnscli.Host" title="multidyndnscli.Host"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Host</span></code></a></p></td>
 <td><p>Represents a host in the local network used as target for an external address</p></td>
 </tr>
@@ -286,6 +294,125 @@ This project currently only supports Netcup, but might be extended in the future
 <dd class="field-even"><p>Schema</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="multidyndnscli.Client">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">customer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Client.__endpoint">
+<span class="sig-name descname"><span class="pre">__endpoint</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://ccp.netcup.net/run/webservice/servers/endpoint.php?JSON'</span></em><a class="headerlink" href="#multidyndnscli.Client.__endpoint" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.Client.__api_session_id">
+<span class="sig-name descname"><span class="pre">__api_session_id</span></span><a class="headerlink" href="#multidyndnscli.Client.__api_session_id" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.request">
+<span class="sig-name descname"><span class="pre">request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.request" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.logout">
+<span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.logout" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.login">
+<span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.login" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.add_dns_record">
+<span class="sig-name descname"><span class="pre">add_dns_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.add_dns_record" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.update_dns_record">
+<span class="sig-name descname"><span class="pre">update_dns_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.update_dns_record" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.update_dns_records">
+<span class="sig-name descname"><span class="pre">update_dns_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.update_dns_records" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.dns_record_exists">
+<span class="sig-name descname"><span class="pre">dns_record_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.dns_record_exists" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.dns_record">
+<span class="sig-name descname"><span class="pre">dns_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.dns_record" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.delete_dns_record">
+<span class="sig-name descname"><span class="pre">delete_dns_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_unknown</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.delete_dns_record" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.delete_dns_records">
+<span class="sig-name descname"><span class="pre">delete_dns_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.delete_dns_records" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.dns_records">
+<span class="sig-name descname"><span class="pre">dns_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.dns_records" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.update_dns_zone">
+<span class="sig-name descname"><span class="pre">update_dns_zone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.update_dns_zone" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.dns_zone">
+<span class="sig-name descname"><span class="pre">dns_zone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.dns_zone" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.__enter__">
+<span class="sig-name descname"><span class="pre">__enter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.__enter__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.Client.__exit__">
+<span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traceback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Client.__exit__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="multidyndnscli.DNSRecord">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">multidyndnscli.</span></span><span class="sig-name descname"><span class="pre">DNSRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.DNSRecord" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.DNSRecord.__valid_types">
+<span class="sig-name descname"><span class="pre">__valid_types</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['A',</span> <span class="pre">'AAAA',</span> <span class="pre">'MX',</span> <span class="pre">'CNAME',</span> <span class="pre">'CAA',</span> <span class="pre">'SRV',</span> <span class="pre">'TXT',</span> <span class="pre">'TLSA',</span> <span class="pre">'NS',</span> <span class="pre">'DS',</span> <span class="pre">'OPENPGPKEY',</span> <span class="pre">'SMIMEA',</span> <span class="pre">'SSHFP']</span></em><a class="headerlink" href="#multidyndnscli.DNSRecord.__valid_types" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multidyndnscli.DNSRecord.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><a class="headerlink" href="#multidyndnscli.DNSRecord.__repr__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.DNSRecord.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.DNSRecord.__str__" title="Permalink to this definition">#</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="multidyndnscli.DNSRecord.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.DNSRecord.__eq__" title="Permalink to this definition">#</a></dt>
+<dd><p>Return self==value.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py data">
@@ -510,7 +637,7 @@ This project currently only supports Netcup, but might be extended in the future
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="multidyndnscli.Domain._domain_record_dict">
-<span class="sig-name descname"><span class="pre">_domain_record_dict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">nc_dnsapi.DNSRecord</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Domain._domain_record_dict" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_domain_record_dict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="nc_dnsapi/index.html#multidyndnscli.nc_dnsapi.DNSRecord" title="multidyndnscli.nc_dnsapi.DNSRecord"><span class="pre">nc_dnsapi.DNSRecord</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#multidyndnscli.Domain._domain_record_dict" title="Permalink to this definition">#</a></dt>
 <dd><p>A dictionary for hostnames to record type to IP addresses</p>
 </dd></dl>
 
@@ -572,7 +699,7 @@ This project currently only supports Netcup, but might be extended in the future
 
 <dl class="py method">
 <dt class="sig sig-object py" id="multidyndnscli.Domain._find_record_id">
-<span class="sig-name descname"><span class="pre">_find_record_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">nc_dnsapi.DNSRecord</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#multidyndnscli.Domain._find_record_id" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_find_record_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="nc_dnsapi/index.html#multidyndnscli.nc_dnsapi.DNSRecord" title="multidyndnscli.nc_dnsapi.DNSRecord"><span class="pre">nc_dnsapi.DNSRecord</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#multidyndnscli.Domain._find_record_id" title="Permalink to this definition">#</a></dt>
 <dd><p>Find a specific record in the domain record cache if any</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -585,7 +712,7 @@ This project currently only supports Netcup, but might be extended in the future
 <dd class="field-even"><p>The DNS record if any</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>DNSRecord or None</p>
+<dd class="field-odd"><p><a class="reference internal" href="#multidyndnscli.DNSRecord" title="multidyndnscli.DNSRecord">DNSRecord</a> or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -738,7 +865,7 @@ This project currently only supports Netcup, but might be extended in the future
 <p>This abstract class represents a DNS provider</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="multidyndnscli.DNSProvider.fetch_domain">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fetch_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">nc_dnsapi.DNSRecord</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#multidyndnscli.DNSProvider.fetch_domain" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fetch_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="nc_dnsapi/index.html#multidyndnscli.nc_dnsapi.DNSRecord" title="multidyndnscli.nc_dnsapi.DNSRecord"><span class="pre">nc_dnsapi.DNSRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#multidyndnscli.DNSProvider.fetch_domain" title="Permalink to this definition">#</a></dt>
 <dd><p>Abstract method for fetching domain data from the DNS provider</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -748,20 +875,20 @@ This project currently only supports Netcup, but might be extended in the future
 <dd class="field-even"><p>A list of DNS records fetched from the DNS provider which could be updated.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[DNSRecord]</p>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#multidyndnscli.DNSRecord" title="multidyndnscli.DNSRecord">DNSRecord</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="multidyndnscli.DNSProvider.update_domain">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">nc_dnsapi.DNSRecord</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.DNSProvider.update_domain" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="nc_dnsapi/index.html#multidyndnscli.nc_dnsapi.DNSRecord" title="multidyndnscli.nc_dnsapi.DNSRecord"><span class="pre">nc_dnsapi.DNSRecord</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.DNSProvider.update_domain" title="Permalink to this definition">#</a></dt>
 <dd><p>Abstract method for updating the provided list of records in the provided domain</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>domain</strong> (<a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><em>Domain</em></a>) – The domain object to update</p></li>
-<li><p><strong>records</strong> (<em>List</em><em>[</em><em>DNSRecord</em><em>]</em>) – The full list of DNS records of the domain including the updated records</p></li>
+<li><p><strong>records</strong> (<em>List</em><em>[</em><a class="reference internal" href="#multidyndnscli.DNSRecord" title="multidyndnscli.DNSRecord"><em>DNSRecord</em></a><em>]</em>) – The full list of DNS records of the domain including the updated records</p></li>
 </ul>
 </dd>
 </dl>
@@ -793,7 +920,7 @@ This project currently only supports Netcup, but might be extended in the future
 
 <dl class="py method">
 <dt class="sig sig-object py" id="multidyndnscli.Netcup.fetch_domain">
-<span class="sig-name descname"><span class="pre">fetch_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">nc_dnsapi.DNSRecord</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#multidyndnscli.Netcup.fetch_domain" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fetch_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="nc_dnsapi/index.html#multidyndnscli.nc_dnsapi.DNSRecord" title="multidyndnscli.nc_dnsapi.DNSRecord"><span class="pre">nc_dnsapi.DNSRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#multidyndnscli.Netcup.fetch_domain" title="Permalink to this definition">#</a></dt>
 <dd><p>Fetch domain data from Netcup</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -803,20 +930,20 @@ This project currently only supports Netcup, but might be extended in the future
 <dd class="field-even"><p>A list of DNS records fetched from the DNS provider which could be updated.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[DNSRecord]</p>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#multidyndnscli.DNSRecord" title="multidyndnscli.DNSRecord">DNSRecord</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="multidyndnscli.Netcup.update_domain">
-<span class="sig-name descname"><span class="pre">update_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">nc_dnsapi.DNSRecord</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Netcup.update_domain" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">update_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><span class="pre">Domain</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="nc_dnsapi/index.html#multidyndnscli.nc_dnsapi.DNSRecord" title="multidyndnscli.nc_dnsapi.DNSRecord"><span class="pre">nc_dnsapi.DNSRecord</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#multidyndnscli.Netcup.update_domain" title="Permalink to this definition">#</a></dt>
 <dd><p>Update the provided list of records in the provided domain at Netcup</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>domain</strong> (<a class="reference internal" href="#multidyndnscli.Domain" title="multidyndnscli.Domain"><em>Domain</em></a>) – The domain object to update</p></li>
-<li><p><strong>records</strong> (<em>List</em><em>[</em><em>DNSRecord</em><em>]</em>) – The full list of DNS records of the domain including the updated records</p></li>
+<li><p><strong>records</strong> (<em>List</em><em>[</em><a class="reference internal" href="#multidyndnscli.DNSRecord" title="multidyndnscli.DNSRecord"><em>DNSRecord</em></a><em>]</em>) – The full list of DNS records of the domain including the updated records</p></li>
 </ul>
 </dd>
 </dl>
@@ -1073,6 +1200,33 @@ This project currently only supports Netcup, but might be extended in the future
 <li><a class="reference internal" href="#functions">Functions</a></li>
 <li><a class="reference internal" href="#attributes">Attributes</a><ul>
 <li><a class="reference internal" href="#multidyndnscli.get_config_file_schema"><code class="docutils literal notranslate"><span class="pre">get_config_file_schema()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client"><code class="docutils literal notranslate"><span class="pre">Client</span></code></a><ul>
+<li><a class="reference internal" href="#multidyndnscli.Client.__endpoint"><code class="docutils literal notranslate"><span class="pre">Client.__endpoint</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.__api_session_id"><code class="docutils literal notranslate"><span class="pre">Client.__api_session_id</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.request"><code class="docutils literal notranslate"><span class="pre">Client.request()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.logout"><code class="docutils literal notranslate"><span class="pre">Client.logout()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.login"><code class="docutils literal notranslate"><span class="pre">Client.login()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.add_dns_record"><code class="docutils literal notranslate"><span class="pre">Client.add_dns_record()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.update_dns_record"><code class="docutils literal notranslate"><span class="pre">Client.update_dns_record()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.update_dns_records"><code class="docutils literal notranslate"><span class="pre">Client.update_dns_records()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.dns_record_exists"><code class="docutils literal notranslate"><span class="pre">Client.dns_record_exists()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.dns_record"><code class="docutils literal notranslate"><span class="pre">Client.dns_record()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.delete_dns_record"><code class="docutils literal notranslate"><span class="pre">Client.delete_dns_record()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.delete_dns_records"><code class="docutils literal notranslate"><span class="pre">Client.delete_dns_records()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.dns_records"><code class="docutils literal notranslate"><span class="pre">Client.dns_records()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.update_dns_zone"><code class="docutils literal notranslate"><span class="pre">Client.update_dns_zone()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.dns_zone"><code class="docutils literal notranslate"><span class="pre">Client.dns_zone()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.__enter__"><code class="docutils literal notranslate"><span class="pre">Client.__enter__()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.Client.__exit__"><code class="docutils literal notranslate"><span class="pre">Client.__exit__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multidyndnscli.DNSRecord"><code class="docutils literal notranslate"><span class="pre">DNSRecord</span></code></a><ul>
+<li><a class="reference internal" href="#multidyndnscli.DNSRecord.__valid_types"><code class="docutils literal notranslate"><span class="pre">DNSRecord.__valid_types</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.DNSRecord.__repr__"><code class="docutils literal notranslate"><span class="pre">DNSRecord.__repr__</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.DNSRecord.__str__"><code class="docutils literal notranslate"><span class="pre">DNSRecord.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#multidyndnscli.DNSRecord.__eq__"><code class="docutils literal notranslate"><span class="pre">DNSRecord.__eq__()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#multidyndnscli.CACHE_FILE_NAME"><code class="docutils literal notranslate"><span class="pre">CACHE_FILE_NAME</span></code></a></li>
 <li><a class="reference internal" href="#multidyndnscli.KEY_DOMAINS"><code class="docutils literal notranslate"><span class="pre">KEY_DOMAINS</span></code></a></li>
 <li><a class="reference internal" href="#multidyndnscli.KEY_LAST_UPDATE"><code class="docutils literal notranslate"><span class="pre">KEY_LAST_UPDATE</span></code></a></li>

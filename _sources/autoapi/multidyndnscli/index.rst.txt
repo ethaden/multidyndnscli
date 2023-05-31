@@ -18,6 +18,7 @@ Submodules
    :maxdepth: 1
 
    cli/index.rst
+   nc_dnsapi/index.rst
    schemata/index.rst
    util/index.rst
 
@@ -30,6 +31,8 @@ Classes
 
 .. autoapisummary::
 
+   multidyndnscli.Client
+   multidyndnscli.DNSRecord
    multidyndnscli.Host
    multidyndnscli.Domain
    multidyndnscli.Router
@@ -64,6 +67,89 @@ Attributes
 
    :return: Config file schema
    :rtype: Schema
+
+
+.. py:class:: Client(customer, api_key, api_password, timeout=5)
+
+   Bases: :py:obj:`object`
+
+   .. py:attribute:: __endpoint
+      :value: 'https://ccp.netcup.net/run/webservice/servers/endpoint.php?JSON'
+
+      
+
+   .. py:attribute:: __api_session_id
+
+      
+
+   .. py:method:: request(action, **kwargs)
+
+
+   .. py:method:: logout()
+
+
+   .. py:method:: login()
+
+
+   .. py:method:: add_dns_record(domain, record)
+
+
+   .. py:method:: update_dns_record(domain, record)
+
+
+   .. py:method:: update_dns_records(domain, records)
+
+
+   .. py:method:: dns_record_exists(domain, record)
+
+
+   .. py:method:: dns_record(domain, record)
+
+
+   .. py:method:: delete_dns_record(domain, record, ignore_unknown=True)
+
+
+   .. py:method:: delete_dns_records(domain, records)
+
+
+   .. py:method:: dns_records(domain)
+
+
+   .. py:method:: update_dns_zone(domain, zone)
+
+
+   .. py:method:: dns_zone(domain)
+
+
+   .. py:method:: __enter__()
+
+
+   .. py:method:: __exit__(exc_type, exc_value, traceback)
+
+
+
+.. py:class:: DNSRecord(hostname, type, destination, **kwargs)
+
+   Bases: :py:obj:`object`
+
+   .. py:attribute:: __valid_types
+      :value: ['A', 'AAAA', 'MX', 'CNAME', 'CAA', 'SRV', 'TXT', 'TLSA', 'NS', 'DS', 'OPENPGPKEY', 'SMIMEA', 'SSHFP']
+
+      
+
+   .. py:attribute:: __repr__
+
+      
+
+   .. py:method:: __str__()
+
+      Return str(self).
+
+
+   .. py:method:: __eq__(other)
+
+      Return self==value.
+
 
 
 .. py:data:: CACHE_FILE_NAME
