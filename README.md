@@ -1,6 +1,7 @@
 # DynDNS Command Line Tool [![Test](https://github.com/ethaden/multidyndnscli/actions/workflows/test.yml/badge.svg)](https://github.com/ethaden/multidyndnscli/actions/workflows/test.yml])
 
 ## Installation
+Install the package from Pypi (https://pypi.org/project/multidyndnscli):
 ```bash
 pip install multidyndnscli
 ```
@@ -14,7 +15,7 @@ opkg install python3 python3-yaml python3-dns python3-netaddr python3-netifaces
 
 ## Usage
 
-See documentation here:
+See documentation here: https://ethaden.github.io/multidyndnscli/
 
 ## Development
 
