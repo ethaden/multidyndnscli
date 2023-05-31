@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "DynDNS Command-line Client"
 authors = ["Eike Thaden <eike.thaden@gmail.com>"]
 license = "GPLv3"
-readme = "README.adoc"
+readme = "README.md"
+homepage = "https://pypi.org/project/multidyndnscli/"
 repository = "https://github.com/ethaden/multidyndnscli/"
 documentation = "https://ethaden.github.io/multidyndnscli/"
 
