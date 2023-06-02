@@ -4,7 +4,7 @@
 # You can set these variables from the command line, and also
 # from the environment for the first two.
 POETRY		  = poetry
-POETRYINSTALL = $(POETRY) install -E docs
+POETRYINSTALL = $(POETRY) install
 POETRY_VIRTUALENVS.IN-PROJECT	= 1
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= $(POETRY) run sphinx-build

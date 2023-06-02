@@ -24,7 +24,7 @@ jobs:
     - name: Install poetry
       run: pip3 install poetry
     - name: Install packages
-      run: poetry install -E docs
+      run: poetry install
     - name: Build documentation
       run: |
         mkdir gh-pages
