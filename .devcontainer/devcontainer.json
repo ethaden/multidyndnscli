@@ -7,7 +7,16 @@
     //"build": { "dockerfile": "Dockerfile" },
     "customizations": {
         "vscode": {
-          "extensions": ["ms-python.python", "ryanluker.vscode-coverage-gutters", "github.vscode-github-actions", "njpwerner.autodocstring", "asciidoctor.asciidoctor-vscode", "redhat.vscode-yaml", "VisualStudioExptTeam.vscodeintellicode"]
+          "extensions": [
+            "ms-python.python", 
+            "ryanluker.vscode-coverage-gutters", 
+            "github.vscode-github-actions", 
+            "njpwerner.autodocstring", 
+            "asciidoctor.asciidoctor-vscode", 
+            "redhat.vscode-yaml", 
+            "VisualStudioExptTeam.vscodeintellicode",
+            "GitHub.vscode-pull-request-github"
+        ]
         }
       },
     "features": {
