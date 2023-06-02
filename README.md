@@ -1,7 +1,7 @@
 # DynDNS Command Line Tool
 <p align="left">
 <a href="https://github.com/ethaden/multidyndnscli/actions/workflows/test.yml/"><img alt="Test Status" src="https://github.com/ethaden/multidyndnscli/actions/workflows/test.yml/badge.svg"></a>
-<a href="ttps://github.com/ethaden/multidyndnscli/actions/workflows/docs.yml/"><img alt="Docs Status" src="https://github.com/ethaden/multidyndnscli/actions/workflows/docs.yml/badge.svg"></a>
+<a href="https://github.com/ethaden/multidyndnscli/actions/workflows/docs.yml/"><img alt="Docs Status" src="https://github.com/ethaden/multidyndnscli/actions/workflows/docs.yml/badge.svg"></a>
 <a href="https://github.com/ethaden/multidyndnscli/blob/main/LICENSE"><img alt="License: GPL v3" src="https://img.shields.io/badge/License-GPLv3-blue.svg"></a>
 <a href="https://img.shields.io/pypi/v/multidyndnscli"><img alt="Pypi Version" src="https://img.shields.io/pypi/v/multidyndnscli"></a>
 <a href="https://img.shields.io/pypi/pyversions/multidyndnscli"><img alt="Python Versions" src="https://img.shields.io/pypi/pyversions/multidyndnscli"></a>
@@ -180,3 +180,13 @@ Build the docs in folder `docs`:
 ```
 poetry run sphinx-build -b html docs/source/  docs/build/html
 ```
+
+# Contributors
+
+See [Contributors](CONTRIBUTORS.md)
+
+# License
+
+Copyright Eike Thaden, 2023.
+
+Distributed under the terms of the GPL v3 license, multidyndnscli is free and open source software.

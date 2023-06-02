@@ -1,3 +1,6 @@
+# Licensed under the GPL v3: https://www.gnu.org/licenses/gpl-3.0
+# Copyright (c) Nicolai Buchwitz (nbuchwitz), Thomas G. (coldfix), ? (tuxmaster5000), ? (jp-coding)
+
 """Netcup DNS API v0.1.6
 
 Because version 0.1.6 has never been released on pypi, 
