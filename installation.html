@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="installation.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Usage" href="usage.html" /><link rel="prev" title="Welcome to MultiDynDNSCli’s documentation!" href="index.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>MultiDynDNSCli 1.0 documentation</title>
+        <title>Installation - MultiDynDNSCli 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">MultiDynDNSCli 1.0 documentation</div></a>
+      <a href="index.html"><div class="brand">MultiDynDNSCli 1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -144,7 +144,7 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
   <span class="sidebar-brand-text">MultiDynDNSCli 1.0 documentation</span>
@@ -156,8 +156,8 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/multidyndnscli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of multidyndnscli</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -203,25 +203,15 @@
           </label>
         </div>
         <article role="main">
-          <section id="welcome-to-multidyndnscli-s-documentation">
-<h1>Welcome to MultiDynDNSCli’s documentation!<a class="headerlink" href="#welcome-to-multidyndnscli-s-documentation" title="Permalink to this heading">#</a></h1>
-<p>This is yet another python module for router-based multi-domain, multi-host dynamic dns (dyndns), with support for IPv4 and IPv6.
-This project currently only supports Netcup, but might be extended in the future.</p>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#configuration">Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#running-the-tool-periodically">Running the Tool periodically</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autoapi/multidyndnscli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli</span></code></a></li>
-</ul>
-</li>
-</ul>
-</div>
+          <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h1>
+<p>Install the package from Pypi (<a class="reference external" href="https://pypi.org/project/multidyndnscli">https://pypi.org/project/multidyndnscli</a>) by running <cite>pip install multidyndnscli</cite>. It requires Python 3.8+.</p>
+<p>## Installation on OpenWRT
+First, install the required packages on OpenWRT:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">opkg</span> <span class="pre">install</span> <span class="pre">python3</span> <span class="pre">python3-yaml</span> <span class="pre">python3-dns</span> <span class="pre">python3-netaddr</span> <span class="pre">python3-netifaces</span>
+<span class="pre">`</span></code></p>
+<p>Then install the Pypi packages as described above.</p>
 </section>
 
         </article>
@@ -229,16 +219,26 @@ This project currently only supports Netcup, but might be extended in the future
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="installation.html">
+          <a class="next-page" href="usage.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Installation</div>
+                <div class="title">Usage</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Home</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">

@@ -13,6 +13,7 @@ This project currently only supports Netcup, but might be extended in the future
    :maxdepth: 2
    :caption: Contents:
 
+   installation
    usage
    autoapi/index
 

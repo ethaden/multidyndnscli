@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="autoapi/index.html" /><link rel="prev" title="Welcome to MultiDynDNSCli’s documentation!" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="autoapi/index.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
         <title>Usage - MultiDynDNSCli 1.0 documentation</title>
@@ -157,6 +157,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Usage</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/multidyndnscli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multidyndnscli</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of multidyndnscli</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -204,12 +205,138 @@
         <article role="main">
           <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h1>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h2>
-<p>You can either install this project via pypi</p>
-</section>
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">#</a></h2>
+<p>A full config file example is shown below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">common</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Cache dir for storing data</span>
+<span class="w">  </span><span class="nt">cache_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;existing</span><span class="nv"> </span><span class="s">writable</span><span class="nv"> </span><span class="s">folder</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">caching</span><span class="nv"> </span><span class="s">data&gt;&quot;</span>
+<span class="nt">dns_providers</span><span class="p">:</span>
+<span class="c1"># List of DNS providers, each having a unique name used below under &quot;domains&quot;</span>
+<span class="w">    </span><span class="c1"># A unique name for this DNS provider entry</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Netcup&quot;</span>
+<span class="w">    </span><span class="c1"># Type of DNS provider. Currently, only &quot;Netcup&quot; is supported</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Netcup&quot;</span>
+<span class="w">    </span><span class="c1"># The Netcup User ID</span>
+<span class="w">    </span><span class="nt">userid</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;netcup-userid&gt;&quot;</span>
+<span class="w">    </span><span class="c1"># The Netcup API key</span>
+<span class="w">    </span><span class="nt">apikey</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;netcup-apikey&gt;&quot;</span>
+<span class="w">    </span><span class="c1"># The Netcup API password</span>
+<span class="w">    </span><span class="nt">apipass</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;netcup-apipass&gt;&quot;</span>
+<span class="nt">router</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ipv4</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="c1"># method to resolve public IPv4: &quot;web&quot;, &quot;wan&quot; or &quot;fritzbox&quot;</span>
+<span class="w">    </span><span class="c1">#method: &quot;web&quot;</span>
+<span class="w">    </span><span class="c1"># If method is &quot;web&quot;: address of server to query IPv4 from</span>
+<span class="w">    </span><span class="c1">#web_url: &quot;http://myexternalip.com/raw&quot;</span>
+<span class="w">    </span><span class="c1"># If method is &quot;web&quot;: an optional timeout</span>
+<span class="w">    </span><span class="c1">#web_timeout: 60</span>
+<span class="w">    </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;wan&quot;</span>
+<span class="w">    </span><span class="c1"># If method is &quot;wan&quot;: Name of the local WAN network interface</span>
+<span class="w">    </span><span class="nt">wan_interface</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;put-wan-iface-here&gt;&quot;</span>
+<span class="w">    </span><span class="c1">#method: &quot;fritzbox&quot;</span>
+<span class="w">    </span><span class="c1"># If method is &quot;fritzbox&quot;: IP of Fritz!Box</span>
+<span class="w">    </span><span class="c1">#fritzbox_address: &quot;&lt;fritz-box-ip-address&gt;&quot;</span>
+<span class="w">    </span><span class="c1"># If method is &quot;fritzbox&quot;: Wether or not to use TLS</span>
+<span class="w">    </span><span class="c1">#fritzbox_tls: false</span>
+<span class="w">  </span><span class="nt">ipv6</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="c1"># method to resolve public IPv6: &quot;web&quot;, &quot;wan&quot; or &quot;fritzbox&quot;</span>
+<span class="w">    </span><span class="c1">#method: &quot;web&quot;</span>
+<span class="w">    </span><span class="c1"># If method is &quot;web&quot;: address of server to query IPv6 from</span>
+<span class="w">    </span><span class="c1">#web_url: &quot;http://myexternalip.com/raw&quot;</span>
+<span class="w">    </span><span class="c1"># If method is &quot;web&quot;: an optional timeout</span>
+<span class="w">    </span><span class="c1">#web_timeout: 60</span>
+<span class="w">    </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;wan&quot;</span>
+<span class="w">    </span><span class="c1"># If method is &quot;wan&quot;: Name of the local WAN network interface</span>
+<span class="w">    </span><span class="nt">wan_interface</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;put-wan-iface-here&gt;&quot;</span>
+<span class="w">    </span><span class="c1">#method: &quot;fritzbox&quot;</span>
+<span class="w">    </span><span class="c1"># If method is &quot;fritzbox&quot;: IP of Fritz!Box</span>
+<span class="w">    </span><span class="c1">#fritzbox_address: &quot;&lt;fritz-box-ip-address&gt;&quot;</span>
+<span class="w">    </span><span class="c1"># If method is &quot;fritzbox&quot;: Wether or not to use TLS</span>
+<span class="w">    </span><span class="c1">#fritzbox_tls: false</span>
+<span class="nt">domains</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test.invalid&quot;</span>
+<span class="w">    </span><span class="c1"># Name of the dns provider to be used as onfigured above</span>
+<span class="w">    </span><span class="nt">dns_provider</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Netcup&quot;</span>
+<span class="w">    </span><span class="c1"># The minimal delay in seconds to wait until next updated. Increase if using dnssec (as resigning the updated records takes quite a lot time)</span>
+<span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
+<span class="w">    </span><span class="c1"># List of hosts</span>
+<span class="w">    </span><span class="nt">hosts</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># the internal fully qualified domain name</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;openwrt.lan&quot;</span>
+<span class="w">        </span><span class="c1"># The public fully qualified domain name</span>
+<span class="w">        </span><span class="nt">fqdn</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;openwrt.home.test.invalid&quot;</span>
+<span class="w">        </span><span class="c1"># method for resolving the desired IP address</span>
+<span class="w">        </span><span class="nt">public_ip_methods</span><span class="p">:</span>
+<span class="w">          </span><span class="c1"># the method for IPv4: &quot;router&quot; or &quot;local_dns&quot;</span>
+<span class="w">          </span><span class="nt">ipv4</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;router&quot;</span>
+<span class="w">          </span><span class="c1"># the method for IPv6: &quot;router&quot; or &quot;local_dns&quot;</span>
+<span class="w">          </span><span class="nt">ipv6</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;router&quot;</span>
+<span class="w">        </span><span class="c1"># the internal fully qualified domain name</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;server.lan&quot;</span>
+<span class="w">        </span><span class="c1"># The public fully qualified domain name</span>
+<span class="w">        </span><span class="nt">fqdn</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;server.home.test.invalid&quot;</span>
+<span class="w">        </span><span class="c1"># method for resolving the desired IP address</span>
+<span class="w">        </span><span class="nt">public_ip_methods</span><span class="p">:</span>
+<span class="w">          </span><span class="c1"># the method for IPv4: &quot;router&quot; or &quot;local_dns&quot;</span>
+<span class="w">          </span><span class="nt">ipv4</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;router&quot;</span>
+<span class="w">          </span><span class="c1"># the method for IPv6: &quot;router&quot; or &quot;local_dns&quot;</span>
+<span class="w">          </span><span class="nt">ipv6</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;local_dns&quot;</span>
+</pre></div>
+</div>
+<section id="explanation-of-parameters">
+<h3>Explanation of Parameters<a class="headerlink" href="#explanation-of-parameters" title="Permalink to this heading">#</a></h3>
+<section id="section-common">
+<h4>Section <code class="docutils literal notranslate"><span class="pre">common</span></code><a class="headerlink" href="#section-common" title="Permalink to this heading">#</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">cache_dir</span></code>: A folder where a cache file is stored. Must be writable by user running the tool.</p>
+</section>
+<section id="section-dns-providers">
+<h4>Section <code class="docutils literal notranslate"><span class="pre">dns_providers</span></code><a class="headerlink" href="#section-dns-providers" title="Permalink to this heading">#</a></h4>
+<p>This section can contain multiple DNS providers. At least one provider must be specified.</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name of the configuration entry. Domain entries can refer to specific DNS provider using its configuration name</p>
+<p><code class="docutils literal notranslate"><span class="pre">type</span></code>: Type of the DNS provider. Currently, only <code class="docutils literal notranslate"><span class="pre">Netcup</span></code> is supported.</p>
+<p>For DNS provider <code class="docutils literal notranslate"><span class="pre">Netcup</span></code>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">userid</span></code>: The Netcup User ID (customer ID)</p>
+<p><code class="docutils literal notranslate"><span class="pre">apikey</span></code>: The Netcup API Key</p>
+<p><code class="docutils literal notranslate"><span class="pre">apipass</span></code>: The Netcup API Password</p>
+</section>
+<section id="section-router">
+<h4>Section <code class="docutils literal notranslate"><span class="pre">router</span></code><a class="headerlink" href="#section-router" title="Permalink to this heading">#</a></h4>
+<p>This section specifies the router configuration. We assume, that there is exactly on router</p>
+<p><code class="docutils literal notranslate"><span class="pre">ipv4</span></code>: Settings for IPv4</p>
+<p><code class="docutils literal notranslate"><span class="pre">method</span></code>: The method how to find the public IPv4 of the router.
+Can be either <code class="docutils literal notranslate"><span class="pre">web</span></code> where an external HTTP service is queried for the raw IP address.
+Or <code class="docutils literal notranslate"><span class="pre">wan</span></code>, where the first public IPv4 is taken from the WAN interface specified in <code class="docutils literal notranslate"><span class="pre">wan_interface</span></code>.
+Finally, the value <code class="docutils literal notranslate"><span class="pre">fritzbox</span></code> specifies that a locally running Fritz!Box is queried via <code class="docutils literal notranslate"><span class="pre">fritzbox_address</span></code>.
+TLS is used if <code class="docutils literal notranslate"><span class="pre">fritzbox_tls</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ipv6</span></code>: Settings for IPv6</p>
+<p><code class="docutils literal notranslate"><span class="pre">method</span></code>: The method how to find the public IPv6 of the router.
+Can be either <code class="docutils literal notranslate"><span class="pre">web</span></code> where an external HTTP service is queried for the raw IP address.
+Or <code class="docutils literal notranslate"><span class="pre">wan</span></code>, where the first public IPv6 is taken from the WAN interface specified in <code class="docutils literal notranslate"><span class="pre">wan_interface</span></code>.
+Finally, the value <code class="docutils literal notranslate"><span class="pre">fritzbox</span></code> specifies that a locally running Fritz!Box is queried via <code class="docutils literal notranslate"><span class="pre">fritzbox_address</span></code>.
+TLS is used if <code class="docutils literal notranslate"><span class="pre">fritzbox_tls</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+</section>
+<section id="section-domains">
+<h4>Section <code class="docutils literal notranslate"><span class="pre">domains</span></code><a class="headerlink" href="#section-domains" title="Permalink to this heading">#</a></h4>
+<p>A list of domains to use. Each list entry consists of the following properties.</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Public fully qualified domain name of the domain to handle.</p>
+<p><code class="docutils literal notranslate"><span class="pre">dns_provider</span></code>: Specify the name of the above configured DNS providers to use to handle this domain.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hosts</span></code>: A list of hosts on the intranet to handle. Each list entry consists of the following properties.</p>
+<p>List of hosts, each with the following properties:</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>: The internal fully qualified domain name used to query the local DNS resolver for the current IP of the host</p>
+<p><code class="docutils literal notranslate"><span class="pre">fqdn</span></code>: Fully qualified domain name of the host. Must be a sub record of the domain name</p>
+<p><code class="docutils literal notranslate"><span class="pre">public_ip_methods</span></code>: Specifies the public IP addresses to which the public FQDN of this host shall point to.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ipv4</span></code>: If <code class="docutils literal notranslate"><span class="pre">router</span></code>, the public IPv4 or the router is used. If <code class="docutils literal notranslate"><span class="pre">local_dns</span></code>, the first public IPv4 resolved for the internal host is used.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ipv6</span></code>: If <code class="docutils literal notranslate"><span class="pre">router</span></code>, the public IPv6 or the router is used. If <code class="docutils literal notranslate"><span class="pre">local_dns</span></code>, the first public IPv6 resolved for the internal host is used.</p>
+</section>
+</section>
+</section>
+<section id="running-the-tool-periodically">
+<h2>Running the Tool periodically<a class="headerlink" href="#running-the-tool-periodically" title="Permalink to this heading">#</a></h2>
+<p>Use a cronjob or systemd to run the tool periodically.
+It is highly recommended not to run the tool with root privileges.</p>
 </section>
 </section>
 
@@ -227,14 +354,14 @@
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="index.html">
+          <a class="prev-page" href="installation.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Home</div>
+                <div class="title">Installation</div>
                 
               </div>
             </a>
@@ -269,8 +396,17 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Usage</a><ul>
-<li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#explanation-of-parameters">Explanation of Parameters</a><ul>
+<li><a class="reference internal" href="#section-common">Section <code class="docutils literal notranslate"><span class="pre">common</span></code></a></li>
+<li><a class="reference internal" href="#section-dns-providers">Section <code class="docutils literal notranslate"><span class="pre">dns_providers</span></code></a></li>
+<li><a class="reference internal" href="#section-router">Section <code class="docutils literal notranslate"><span class="pre">router</span></code></a></li>
+<li><a class="reference internal" href="#section-domains">Section <code class="docutils literal notranslate"><span class="pre">domains</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-the-tool-periodically">Running the Tool periodically</a></li>
 </ul>
 </li>
 </ul>
