@@ -106,7 +106,7 @@ This project use based on `poetry`. You can install `poetry` by following the in
 For development including tools for generating documentation, use:
 
 ```
-poetry install -E docs
+poetry install
 ```
 
 For installing only the packages required to run the tool, use:
@@ -170,10 +170,6 @@ poetry run mypy multidyndnscli
 ```
 
 ### Build the docs
-First, install the extra packages for building the docs:
-```
-poetry install --extras docs
-```
 
 Build the docs in folder `docs`:
 

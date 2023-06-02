@@ -7,7 +7,7 @@ REM Command file for Sphinx documentation
 if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=poetry run sphinx-build
 )
-set POETRYINSTALL=poetry install -E docs
+set POETRYINSTALL=poetry install
 set SOURCEDIR=source
 set BUILDDIR=build
 set POETRY_VIRTUALENVS.IN-PROJECT=1
