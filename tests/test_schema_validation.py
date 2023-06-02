@@ -1,9 +1,10 @@
 import yaml
 import multidyndnscli
 
+CONFIG_EXAMPLE_FILE="config.example.yaml"
 
 def test_example_config():
-    with open("config.yaml.example", "r") as f:
+    with open(CONFIG_EXAMPLE_FILE, "r") as f:
         config = yaml.safe_load(f)
         schema = multidyndnscli.get_config_file_schema()
         assert schema.validate(config)

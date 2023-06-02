@@ -4,6 +4,7 @@ from multidyndnscli import Updater
 from multidyndnscli.cli import run
 import logging
 
+CONFIG_EXAMPLE_FILE="config.example.yaml"
 
 def test_run_missing_config_file(mocker):
     args = []
@@ -14,7 +15,7 @@ def test_run_dry_run(mocker):
     updater_mock = MagicMock(spec=Updater)
     updater_mock.return_value.update = Mock(return_value=0)
     mocker.patch('multidyndnscli.Updater.from_config', updater_mock)
-    args = ['--dry-run', 'config.yaml.example']
+    args = ['--dry-run', CONFIG_EXAMPLE_FILE]
     assert run(args) == 0
     updater_mock.return_value.update.assert_called_once_with(True)
 
@@ -23,7 +24,7 @@ def test_run_non_dry_run(mocker):
     updater_mock = MagicMock(spec=Updater)
     updater_mock.return_value.update = Mock(return_value=0)
     mocker.patch('multidyndnscli.Updater.from_config', updater_mock)
-    args = ['config.yaml.example']
+    args = [CONFIG_EXAMPLE_FILE]
     assert run(args) == 0
     updater_mock.return_value.update.assert_called_once_with(False)
     # Check default log level
@@ -34,7 +35,7 @@ def test_run_logger_info(mocker):
     updater_mock = MagicMock(spec=Updater)
     updater_mock.return_value.update = Mock(return_value=0)
     mocker.patch('multidyndnscli.Updater.from_config', updater_mock)
-    args = ['--verbose', 'config.yaml.example']
+    args = ['--verbose', CONFIG_EXAMPLE_FILE]
     assert run(args) == 0
     assert logging.getLogger().level == logging.INFO
 
@@ -43,7 +44,7 @@ def test_run_logger_debug(mocker):
     updater_mock = MagicMock(spec=Updater)
     updater_mock.return_value.update = Mock(return_value=0)
     mocker.patch('multidyndnscli.Updater.from_config', updater_mock)
-    args = ['--verbose', '--verbose', 'config.yaml.example']
+    args = ['--verbose', '--verbose', CONFIG_EXAMPLE_FILE]
     assert run(args) == 0
     assert logging.getLogger().level == logging.DEBUG
 
@@ -52,5 +53,5 @@ def test_run_logger_exception(mocker):
     updater_mock = MagicMock(spec=Updater)
     updater_mock.return_value.update = Mock(side_effect=Exception('Test'))
     mocker.patch('multidyndnscli.Updater.from_config', updater_mock)
-    args = ['config.yaml.example']
+    args = [CONFIG_EXAMPLE_FILE]
     assert run(args) == 1
