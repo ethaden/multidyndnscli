@@ -78,7 +78,18 @@ For further information, have a look at the documentation: https://ethaden.githu
 
 ### Running multidyndnscli
 
-Once the Python package is installed, run it by executing `multidyndnscli <your-config-file>`.
+This project generates a command line script `multidyndnscli` in either your virtual env's `bin` folder, 
+in the well-known locations in the user's home directory (e.g. ``$HOME/.local/bin``) or in a system-wide bin folder (e.g. `/usr/local/bin`).
+Make sure the respective path is in your `$PATH`.
+
+Once the Python package is installed, run it by executing 
+
+```bash
+multidyndnscli <your-config-file>
+```
+
+Use a cronjob or systemd to run the tool periodically.
+It is highly recommended not to run the tool with root privileges.
 
 ## Development
 
