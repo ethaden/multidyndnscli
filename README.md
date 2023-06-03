@@ -177,6 +177,11 @@ Build the docs in folder `docs`:
 poetry run sphinx-build -b html docs/source/  docs/build/html
 ```
 
+### Increase the version
+
+Update the version in `pyproject.tom`. The tool will report this version after the release.
+
+
 # Contributors
 
 See [Contributors](CONTRIBUTORS.md)

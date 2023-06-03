@@ -21,12 +21,11 @@ import requests
 import fritzconnection  # type: ignore
 import fritzconnection.lib.fritzstatus  # type: ignore
 import fritzconnection.core.exceptions  # type: ignore
+from importlib_metadata import version
 # Module imports
 from . import util
 from .schemata import get_config_file_schema
 from .nc_dnsapi import Client, DNSRecord  # type: ignore
-
-from importlib_metadata import version
 
 __version__ = version(__package__)
 
