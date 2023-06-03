@@ -19,8 +19,6 @@ Thomas G. (coldfix)
 
 import requests
 import json
-import pytest
-pytestmark = pytest.mark.skip
 
 name = "nc_dns"
 
