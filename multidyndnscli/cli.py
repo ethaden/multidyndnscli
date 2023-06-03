@@ -20,12 +20,13 @@ def run(args: Optional[List[str]] = None) -> int:
     :rtype: int
     """
     if sys.version_info >= (3, 9):
-        parser = argparse.ArgumentParser(exit_on_error=False) # type: ignore  # pragma: no cover
+        parser = argparse.ArgumentParser(prog='multidyndnscli', exit_on_error=False) # type: ignore  # pragma: no cover
     else:
-        parser = argparse.ArgumentParser() # type: ignore  # pragma: no cover
+        parser = argparse.ArgumentParser(prog='multidyndnscli') # type: ignore  # pragma: no cover
     parser.add_argument("config_file")
     parser.add_argument("--verbose", "-v", action="count", default=0)
     parser.add_argument("--dry-run", "-n", action="store_true")
+    parser.add_argument('--version', action='version', version=f'%(prog)s {multidyndnscli.__version__}')
     try:
         parsed_args = parser.parse_args(args=args)
         config_file = parsed_args.config_file
