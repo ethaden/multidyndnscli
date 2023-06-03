@@ -26,6 +26,10 @@ from . import util
 from .schemata import get_config_file_schema
 from .nc_dnsapi import Client, DNSRecord  # type: ignore
 
+from importlib_metadata import version
+
+__version__ = version(__package__)
+
 CACHE_FILE_NAME = 'multidyndns.cache'
 """The name used for the updater cache file if a (valid) cache dir has been configured"""
 KEY_DOMAINS: Final[str] = 'domains'
