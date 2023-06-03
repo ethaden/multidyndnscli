@@ -158,8 +158,19 @@ List of hosts, each with the following properties:
 ``ipv6``: If ``router``, the public IPv6 or the router is used. If ``local_dns``, the first public IPv6 resolved for the internal host is used.
 
 
-Running the Tool periodically
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Running multidyndnscli
+~~~~~~~~~~~~~~~~~~~~~~
+
+This project generates a command line script ``multidyndnscli`` in either your virtual env's ``bin`` folder, 
+in the well-known locations in the user's home directory (e.g. ``$HOME/.local/bin``) or in a system-wide bin folder (e.g. ``/usr/local/bin``).
+Make sure the respective path is in your ``$PATH``.
+
+You can run the script by executing:
+
+.. code-block:: bash
+    multidyndnscli <your-config-file>
 
 Use a cronjob or systemd to run the tool periodically.
 It is highly recommended not to run the tool with root privileges.
+
+
