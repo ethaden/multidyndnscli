@@ -56,6 +56,7 @@ Attributes
 
 .. autoapisummary::
 
+   multidyndnscli.__version__
    multidyndnscli.CACHE_FILE_NAME
    multidyndnscli.KEY_DOMAINS
    multidyndnscli.KEY_LAST_UPDATE
@@ -151,6 +152,10 @@ Attributes
       Return self==value.
 
 
+
+.. py:data:: __version__
+
+   
 
 .. py:data:: CACHE_FILE_NAME
    :value: 'multidyndns.cache'
