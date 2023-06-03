@@ -351,7 +351,7 @@ class Domain:
         for host in self._host_list:
             if host.needs_update():
                 needs_update = True
-                dns_prefix = host.fqdn.rstrip(self._domain_name).rstrip('.')
+                dns_prefix = host.fqdn.rstrip(f'.{self._domain_name}')
                 if host.host_ipv4 is not None:
                     record = DNSRecord(
                         hostname=dns_prefix, type='A', destination=str(host.host_ipv4)
@@ -382,6 +382,10 @@ class Domain:
             records = records_ipv4 + records_ipv6
             if not dry_run:
                 self._dns_provider.update_domain(self, records)
+            else:
+                print(f'Would update the following records of domain {self.domain_name}:')
+                for rec in records:
+                    print (f'  {str(rec)}')
 
     def _rebuild_domain_records_cache(self):
         """Rebuild the domain record cache from data fetched from the configure DNS provider
