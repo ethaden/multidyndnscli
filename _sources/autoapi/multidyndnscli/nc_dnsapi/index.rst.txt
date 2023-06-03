@@ -41,13 +41,8 @@ Attributes
 
 .. autoapisummary::
 
-   multidyndnscli.nc_dnsapi.pytestmark
    multidyndnscli.nc_dnsapi.name
 
-
-.. py:data:: pytestmark
-
-   
 
 .. py:data:: name
    :value: 'nc_dns'
