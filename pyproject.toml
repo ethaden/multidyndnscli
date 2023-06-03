@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "multidyndnscli"
-version = "0.1.5"
+version = "0.1.6"
 description = "DynDNS Command-line Client"
 authors = ["Eike Thaden <eike.thaden@gmail.com>"]
 license = "GPL-3.0-or-later"
