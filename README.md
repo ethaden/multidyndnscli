@@ -15,7 +15,7 @@ Install the package from Pypi (https://pypi.org/project/multidyndnscli) by runni
 First, install the required packages on OpenWRT:
 
 ```bash
-opkg install python3 python3-yaml python3-dns python3-netaddr python3-netifaces
+opkg install python3
 ```
 
 Then install the Pypi packages as described above.
@@ -176,6 +176,11 @@ Build the docs in folder `docs`:
 ```
 poetry run sphinx-build -b html docs/source/  docs/build/html
 ```
+
+### Increase the version
+
+Update the version in `pyproject.tom`. The tool will report this version after the release.
+
 
 # Contributors
 
