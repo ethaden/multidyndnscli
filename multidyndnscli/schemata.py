@@ -13,7 +13,12 @@ def get_config_file_schema()->Schema:
     """
     return Schema(
         {
-            Optional("common"): {Optional("cache_dir"): And(str)},
+            Optional("common"): Or(
+                None,
+                {
+                    Optional("cache_dir"): And(str)
+                }
+            ),
             "dns_providers": [
                 Or(
                     {

@@ -13,3 +13,4 @@ cov.xml
 .pytest_cache
 junit
 dist
+test*config.yaml

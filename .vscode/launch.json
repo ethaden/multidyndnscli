@@ -17,7 +17,7 @@
             "name": "Python: update.py",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/multi-dyndns-cli.py",
+            "program": "${workspaceFolder}/multidyndnscli-test.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["-v", "config.yaml"]
@@ -26,7 +26,7 @@
             "name": "Python: update.py (dry-run)",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/multi-dyndns-cli.py",
+            "program": "${workspaceFolder}/multidyndnscli-test.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["-v", "-n", "config.yaml"]

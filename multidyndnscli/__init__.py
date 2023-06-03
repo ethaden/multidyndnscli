@@ -123,7 +123,7 @@ class Host:
             result = dns.resolver.resolve(self._fqdn, rdtype=dns.rdatatype.A)
             if len(result.rrset) > 0:
                 self._current_fqdn_dns_ipv4 = IPAddress(result.rrset[0].address)
-        except (ValueError, AddrFormatError):
+        except (ValueError, AddrFormatError, dns.resolver.NXDOMAIN):
             self._current_fqdn_dns_ipv4 = None
 
     def _resolve_current_fqdn_ipv6_set(self):
@@ -137,7 +137,7 @@ class Host:
                 if util.is_public_ipv6(address):
                     addresses.add(address)
             self._current_fqdn_dns_ipv6_set = addresses
-        except (ValueError, AddrFormatError):
+        except (ValueError, AddrFormatError, dns.resolver.NXDOMAIN):
             self._current_fqdn_dns_ipv6_set = set()
 
     def _resolve_host_ipv4(self, method: str):
@@ -151,7 +151,7 @@ class Host:
                 result = dns.resolver.resolve(self._name, rdtype=dns.rdatatype.A)
                 if result.rrset is not None and len(result.rrset) > 0:
                     address = result.rrset[0].address
-            except (ValueError, AddrFormatError) as exc:
+            except (ValueError, AddrFormatError, dns.resolver.NXDOMAIN) as exc:
                 raise DNSResolutionException(
                     f'Unable to find IPv4 for local hostname {self._name}') from exc
 
@@ -174,7 +174,7 @@ class Host:
                     address = IPAddress(result_addr.address)
                     if util.is_public_ipv6(address):
                         addresses.add(address)
-            except (ValueError, AddrFormatError) as exc:
+            except (ValueError, AddrFormatError, dns.resolver.NXDOMAIN) as exc:
                 raise DNSResolutionException(
                     f'Unable to find IPv6s for local hostname {self._name}') from exc
         if len(addresses) > 0:
@@ -351,7 +351,10 @@ class Domain:
         for host in self._host_list:
             if host.needs_update():
                 needs_update = True
-                dns_prefix = host.fqdn.rstrip(self._domain_name).rstrip('.')
+                dns_prefix = host.fqdn
+                # Strip domain name of, if any
+                if dns_prefix.endswith(f'.{self._domain_name}'):
+                    dns_prefix = dns_prefix[:-len(f'.{self._domain_name}')]
                 if host.host_ipv4 is not None:
                     record = DNSRecord(
                         hostname=dns_prefix, type='A', destination=str(host.host_ipv4)
@@ -382,6 +385,10 @@ class Domain:
             records = records_ipv4 + records_ipv6
             if not dry_run:
                 self._dns_provider.update_domain(self, records)
+            else:
+                print(f'Would update the following records of domain {self.domain_name}:')
+                for rec in records:
+                    print (f'  {str(rec)}')
 
     def _rebuild_domain_records_cache(self):
         """Rebuild the domain record cache from data fetched from the configure DNS provider
