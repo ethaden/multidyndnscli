@@ -333,8 +333,12 @@ TLS is used if <code class="docutils literal notranslate"><span class="pre">frit
 </section>
 </section>
 </section>
-<section id="running-the-tool-periodically">
-<h2>Running the Tool periodically<a class="headerlink" href="#running-the-tool-periodically" title="Permalink to this heading">#</a></h2>
+<section id="running-multidyndnscli">
+<h2>Running multidyndnscli<a class="headerlink" href="#running-multidyndnscli" title="Permalink to this heading">#</a></h2>
+<p>This project generates a command line script <code class="docutils literal notranslate"><span class="pre">multidyndnscli</span></code> in either your virtual env’s <code class="docutils literal notranslate"><span class="pre">bin</span></code> folder,
+in the well-known locations in the user’s home directory (e.g. <code class="docutils literal notranslate"><span class="pre">$HOME/.local/bin</span></code>) or in a system-wide bin folder (e.g. <code class="docutils literal notranslate"><span class="pre">/usr/local/bin</span></code>).
+Make sure the respective path is in your <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>.</p>
+<p>You can run the script by executing:</p>
 <p>Use a cronjob or systemd to run the tool periodically.
 It is highly recommended not to run the tool with root privileges.</p>
 </section>
@@ -406,7 +410,7 @@ It is highly recommended not to run the tool with root privileges.</p>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#running-the-tool-periodically">Running the Tool periodically</a></li>
+<li><a class="reference internal" href="#running-multidyndnscli">Running multidyndnscli</a></li>
 </ul>
 </li>
 </ul>
