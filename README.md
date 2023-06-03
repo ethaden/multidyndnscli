@@ -9,8 +9,10 @@
 </p>
 
 ## Installation
-Install the package from Pypi (https://pypi.org/project/multidyndnscli) by running `pip install multidyndnscli`. It requires Python 3.8+.
+THis project requires Python 3.8+.
+Install the package from Pypi by running `pip install multidyndnscli`.
 
+For details, see https://pypi.org/project/multidyndnscli.
 ## Installation on OpenWRT
 First, install the required packages on OpenWRT:
 
@@ -21,6 +23,8 @@ opkg install python3
 Then install the Pypi packages as described above.
 
 ## Usage
+
+### Config file
 
 Create a config file and customize it. A small example might look like this:
 
@@ -71,6 +75,10 @@ For every configured domain, all records to be updated will be identified and th
 You can find a complete example configuration file [here](config.example.yaml).
 
 For further information, have a look at the documentation: https://ethaden.github.io/multidyndnscli/.
+
+### Running multidyndnscli
+
+Once the Python package is installed, run it by executing `multidyndnscli <your-config-file>`.
 
 ## Development
 
